@@ -1,0 +1,14 @@
+{
+  "name": "fortera-homes",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint:js": "eslint main.js",
+    "lint:html": "htmlhint index.html"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "htmlhint": "^1.1.4"
+  }
+}

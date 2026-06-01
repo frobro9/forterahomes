@@ -1,0 +1,10 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/expertise",     "destination": "/vision",                                          "permanent": true },
+    { "source": "/neighbourhood", "destination": "/projects/beechwood-collection#neighbourhood",     "permanent": true },
+    { "source": "/floorplans",    "destination": "/projects/beechwood-collection#floorplans",        "permanent": true },
+    { "source": "/gallery",       "destination": "/projects/beechwood-collection#gallery",           "permanent": true }
+  ]
+}

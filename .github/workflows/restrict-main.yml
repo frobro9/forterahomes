@@ -1,0 +1,17 @@
+name: Restrict merges to main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Only allow merges from staging
+        if: github.head_ref != 'staging'
+        run: |
+          echo "PRs into main must come from the staging branch."
+          echo "Source branch was: ${{ github.head_ref }}"
+          exit 1
