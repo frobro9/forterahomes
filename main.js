@@ -250,7 +250,7 @@ if (form) {
       const body = {};
       data.forEach((v, k) => body[k] = v);
 
-      const res = await fetch('https://formspree.io/f/xjkknell', {
+      const res = await fetch('https://formspree.io/f/xjybyzjq', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(body),
