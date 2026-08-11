@@ -1035,12 +1035,11 @@ html:has(.admin-login-body) { overflow-x: hidden; }
 .admin-login-logo {
   display: inline-block;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2.75rem;
+  font-size: clamp(2.75rem, 5.5vw, 5rem);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--white);
 }
-.admin-login-tagline { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; color: rgba(255,255,255,0.55); margin-top: 1.25rem; line-height: 1.6; }
 
 .admin-login-card {
   width: 380px;
@@ -1049,7 +1048,8 @@ html:has(.admin-login-body) { overflow-x: hidden; }
   padding: 2.75rem;
   box-shadow: 0 30px 80px rgba(0,0,0,0.45);
 }
-.admin-card-label { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bronze); margin-bottom: 1.75rem; }
+.admin-card-label { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bronze); margin-bottom: 0.75rem; }
+.admin-card-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--charcoal); margin-bottom: 1.75rem; }
 
 .admin-card-field { margin-bottom: 1.5rem; }
 .admin-card-field label { display: block; font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.5rem; }
