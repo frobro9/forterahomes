@@ -1108,8 +1108,6 @@ html:has(.admin-login-body) { overflow-x: hidden; }
 }
 .admin-card-submit:hover { background: #9e8369; border-color: #9e8369; }
 
-.admin-login-note { font-family: 'Montserrat', sans-serif; font-size: 0.68rem; color: rgba(28,26,24,0.4); margin-top: 1rem; text-align: center; }
-
 .admin-login-back {
   position: absolute;
   left: 7vw;
