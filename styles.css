@@ -1022,26 +1022,16 @@ html:has(.admin-login-body) { overflow-x: hidden; }
 
 .admin-login-page {
   position: relative;
+  background: var(--charcoal);
   min-height: 100vh;
   display: flex;
   align-items: center;
-  overflow: hidden;
+  justify-content: center;
+  gap: 9vw;
+  padding: 0 4vw;
 }
 
-.admin-login-accent {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--bronze) 0%, #9e8369 100%);
-  clip-path: polygon(58% 0, 100% 0, 100% 100%, 34% 100%);
-  z-index: 0;
-}
-
-.admin-login-brand {
-  position: relative;
-  z-index: 1;
-  max-width: 420px;
-  margin-left: 7vw;
-}
+.admin-login-brand { max-width: 420px; }
 .admin-login-logo {
   display: inline-block;
   font-family: 'Cormorant Garamond', serif;
@@ -1053,15 +1043,11 @@ html:has(.admin-login-body) { overflow-x: hidden; }
 .admin-login-tagline { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; color: rgba(255,255,255,0.55); margin-top: 1.25rem; line-height: 1.6; }
 
 .admin-login-card {
-  position: relative;
-  z-index: 1;
-  margin-left: auto;
-  margin-right: 9vw;
   width: 380px;
   max-width: calc(100vw - 3rem);
   background: var(--white);
   padding: 2.75rem;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
 }
 .admin-card-label { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bronze); margin-bottom: 1.75rem; }
 
@@ -1139,10 +1125,8 @@ html:has(.admin-login-body) { overflow-x: hidden; }
 .admin-login-back:hover { color: var(--white); }
 
 @media (max-width: 860px) {
-  .admin-login-page { flex-direction: column; justify-content: center; padding: 6rem 0 4rem; gap: 3rem; }
-  .admin-login-accent { clip-path: polygon(0 0, 100% 0, 100% 38%, 0 62%); }
-  .admin-login-brand { margin-left: 0; padding: 0 1.5rem; text-align: center; max-width: 100%; }
-  .admin-login-card { margin: 0 auto; }
+  .admin-login-page { flex-direction: column; padding: 6rem 1.5rem 4rem; gap: 3rem; }
+  .admin-login-brand { text-align: center; max-width: 100%; }
   .admin-login-back { position: static; margin-top: 2rem; text-align: center; }
 }
 
