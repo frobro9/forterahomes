@@ -1026,22 +1026,22 @@ html:has(.admin-login-body) { overflow-x: hidden; }
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 9vw;
   padding: 0 4vw;
 }
 
-.admin-login-brand { max-width: 420px; }
+.admin-login-brand { max-width: 420px; margin-left: 2vw; }
 .admin-login-logo {
   display: inline-block;
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.75rem, 5.5vw, 5rem);
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--white);
 }
 
 .admin-login-card {
+  margin-left: auto;
+  margin-right: 6vw;
   width: 380px;
   max-width: calc(100vw - 3rem);
   background: var(--white);
@@ -1049,7 +1049,7 @@ html:has(.admin-login-body) { overflow-x: hidden; }
   box-shadow: 0 30px 80px rgba(0,0,0,0.45);
 }
 .admin-card-label { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bronze); margin-bottom: 0.75rem; }
-.admin-card-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--charcoal); margin-bottom: 1.75rem; }
+.admin-card-title { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(28,26,24,0.5); margin-bottom: 1.75rem; }
 
 .admin-card-field { margin-bottom: 1.5rem; }
 .admin-card-field label { display: block; font-family: 'Montserrat', sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.5rem; }
@@ -1123,8 +1123,9 @@ html:has(.admin-login-body) { overflow-x: hidden; }
 .admin-login-back:hover { color: var(--white); }
 
 @media (max-width: 860px) {
-  .admin-login-page { flex-direction: column; padding: 6rem 1.5rem 4rem; gap: 3rem; }
-  .admin-login-brand { text-align: center; max-width: 100%; }
+  .admin-login-page { flex-direction: column; justify-content: center; padding: 6rem 1.5rem 4rem; gap: 3rem; }
+  .admin-login-brand { text-align: center; max-width: 100%; margin-left: 0; }
+  .admin-login-card { margin-left: auto; margin-right: auto; }
   .admin-login-back { position: static; margin-top: 2rem; text-align: center; }
 }
 
