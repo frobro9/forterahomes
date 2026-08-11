@@ -276,4 +276,10 @@ if (form) {
   });
 }
 
+/* ---- Admin login (UI only, not yet connected) -------------- */
+const adminForm = document.getElementById('adminLoginForm');
+if (adminForm) {
+  adminForm.addEventListener('submit', (e) => e.preventDefault());
+}
+
 });
