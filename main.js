@@ -282,4 +282,15 @@ if (adminForm) {
   adminForm.addEventListener('submit', (e) => e.preventDefault());
 }
 
+const adminPasswordToggle = document.getElementById('adminPasswordToggle');
+const adminPasswordInput = document.getElementById('adminPassword');
+if (adminPasswordToggle && adminPasswordInput) {
+  adminPasswordToggle.addEventListener('click', () => {
+    const showing = adminPasswordInput.type === 'text';
+    adminPasswordInput.type = showing ? 'password' : 'text';
+    adminPasswordToggle.setAttribute('aria-pressed', String(!showing));
+    adminPasswordToggle.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+  });
+}
+
 });
