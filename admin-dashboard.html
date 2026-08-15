@@ -35,7 +35,7 @@
                 <span class="portal-nav-parent-chevron" aria-hidden="true">&#8250;</span>
               </button>
               <div class="portal-nav-children is-open" data-children="beechwood">
-                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="punch-list">Punch List</button>
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="action-items">Action Items</button>
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="calendar">Calendar</button>
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="budget">Budget Tracker</button>
               </div>
@@ -54,24 +54,24 @@
 
     <main class="portal-main">
 
-      <!-- Punch List -->
-      <section class="portal-page" data-page="punch-list">
+      <!-- Action Items -->
+      <section class="portal-page" data-page="action-items">
         <div class="portal-page-header">
           <div>
             <span class="portal-page-label">BEECHWOOD COLLECTION</span>
-            <h1 class="portal-page-title">Punch List</h1>
+            <h1 class="portal-page-title">Action Items</h1>
           </div>
         </div>
 
-        <form class="punch-add-form" id="punchAddForm" novalidate>
-          <input class="portal-field-input" type="text" name="name" id="punchName" placeholder="Task name" maxlength="200" required>
-          <select class="portal-field-select" name="priority" id="punchPriority">
+        <form class="action-items-add-form" id="actionItemsForm" novalidate>
+          <input class="portal-field-input" type="text" name="name" id="actionItemName" placeholder="Task name" maxlength="200" required>
+          <select class="portal-field-select" name="priority" id="actionItemPriority">
             <option value="high">High</option>
             <option value="medium" selected>Medium</option>
             <option value="low">Low</option>
             <option value="na">N/A</option>
           </select>
-          <select class="portal-field-select" name="owner" id="punchOwner">
+          <select class="portal-field-select" name="owner" id="actionItemOwner">
             <option>Cam Frohar</option>
             <option>Adam Hosny</option>
             <option>Ryan Gray</option>
@@ -79,17 +79,17 @@
             <option>Jacob Splinter</option>
             <option>Other</option>
           </select>
-          <input class="portal-field-input" type="date" name="dueDate" id="punchDueDate">
+          <input class="portal-field-input" type="date" name="dueDate" id="actionItemDueDate">
           <button type="submit" class="portal-btn">Add Task</button>
         </form>
 
-        <div class="punch-controls">
-          <span class="punch-controls-label">Sort by</span>
-          <button type="button" class="punch-sort-btn active" data-sort="priority">Priority</button>
-          <button type="button" class="punch-sort-btn" data-sort="due_date">Due Date</button>
+        <div class="action-items-controls">
+          <span class="action-items-controls-label">Sort by</span>
+          <button type="button" class="action-items-sort-btn active" data-sort="priority">Priority</button>
+          <button type="button" class="action-items-sort-btn" data-sort="due_date">Due Date</button>
         </div>
 
-        <ul class="punch-list" id="punchList"></ul>
+        <ul class="action-items-list" id="actionItemsList"></ul>
       </section>
 
       <!-- Calendar -->

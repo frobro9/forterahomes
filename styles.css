@@ -1399,8 +1399,8 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .portal-btn-outline:hover { border-color: var(--charcoal); }
 
-/* --- Punch List -------------------------------------------- */
-.punch-add-form {
+/* --- Action Items -------------------------------------------- */
+.action-items-add-form {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -1409,24 +1409,24 @@ html:has(.portal-body) { overflow-x: hidden; }
   box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   margin-bottom: 1.5rem;
 }
-.punch-add-form .portal-field-input[name="name"] { flex: 2 1 220px; }
-.punch-add-form .portal-field-select { flex: 1 1 140px; }
-.punch-add-form .portal-field-input[type="date"] { flex: 1 1 150px; }
+.action-items-add-form .portal-field-input[name="name"] { flex: 2 1 220px; }
+.action-items-add-form .portal-field-select { flex: 1 1 140px; }
+.action-items-add-form .portal-field-input[type="date"] { flex: 1 1 150px; }
 
-.punch-controls {
+.action-items-controls {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
 }
-.punch-controls-label {
+.action-items-controls-label {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(28,26,24,0.4);
 }
-.punch-sort-btn {
+.action-items-sort-btn {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.65rem;
   font-weight: 600;
@@ -1438,12 +1438,12 @@ html:has(.portal-body) { overflow-x: hidden; }
   color: rgba(28,26,24,0.6);
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
-.punch-sort-btn:hover { border-color: var(--charcoal); }
-.punch-sort-btn.active { background: var(--charcoal); color: var(--white); border-color: var(--charcoal); }
+.action-items-sort-btn:hover { border-color: var(--charcoal); }
+.action-items-sort-btn.active { background: var(--charcoal); color: var(--white); border-color: var(--charcoal); }
 
-.punch-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.action-items-list { display: flex; flex-direction: column; gap: 0.6rem; }
 
-.punch-row {
+.action-items-row {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -1452,31 +1452,31 @@ html:has(.portal-body) { overflow-x: hidden; }
   box-shadow: 0 1px 6px rgba(0,0,0,0.04);
   transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
 }
-.punch-row.is-entering { opacity: 0; transform: translateY(-6px); }
-.punch-row.is-removing { opacity: 0; transform: translateX(16px); }
+.action-items-row.is-entering { opacity: 0; transform: translateY(-6px); }
+.action-items-row.is-removing { opacity: 0; transform: translateX(16px); }
 
-.punch-row-main { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; }
-.punch-row-meta { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
+.action-items-row-main { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; }
+.action-items-row-meta { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
 
-.punch-priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.punch-priority-dot--high { background: #b9483f; }
-.punch-priority-dot--medium { background: var(--bronze); }
-.punch-priority-dot--low { background: var(--sand); }
-.punch-priority-dot--na { background: rgba(28,26,24,0.2); }
+.action-items-priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.action-items-priority-dot--high { background: #b9483f; }
+.action-items-priority-dot--medium { background: var(--bronze); }
+.action-items-priority-dot--low { background: var(--sand); }
+.action-items-priority-dot--na { background: rgba(28,26,24,0.2); }
 
-.punch-row-name { flex: 1; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.punch-row-owner { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.55); width: 120px; flex-shrink: 0; }
-.punch-row-due { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.55); width: 90px; flex-shrink: 0; }
-.punch-row-due.is-overdue { color: #b9483f; font-weight: 600; }
+.action-items-row-name { flex: 1; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.action-items-row-owner { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.55); width: 120px; flex-shrink: 0; }
+.action-items-row-due { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.55); width: 90px; flex-shrink: 0; }
+.action-items-row-due.is-overdue { color: #b9483f; font-weight: 600; }
 
 @media (max-width: 640px) {
-  .punch-row { flex-wrap: wrap; row-gap: 0.6rem; }
-  .punch-row-main { flex: 1 1 100%; }
-  .punch-row-meta { flex: 1 1 100%; justify-content: space-between; }
-  .punch-row-owner, .punch-row-due { width: auto; }
+  .action-items-row { flex-wrap: wrap; row-gap: 0.6rem; }
+  .action-items-row-main { flex: 1 1 100%; }
+  .action-items-row-meta { flex: 1 1 100%; justify-content: space-between; }
+  .action-items-row-owner, .action-items-row-due { width: auto; }
 }
 
-.punch-row-remove {
+.action-items-row-remove {
   color: rgba(28,26,24,0.3);
   font-size: 1.2rem;
   line-height: 1;
@@ -1484,9 +1484,9 @@ html:has(.portal-body) { overflow-x: hidden; }
   flex-shrink: 0;
   transition: color 0.2s ease;
 }
-.punch-row-remove:hover { color: #b9483f; }
+.action-items-row-remove:hover { color: #b9483f; }
 
-.punch-empty {
+.action-items-empty {
   text-align: center;
   padding: 3.5rem 2rem;
   color: rgba(28,26,24,0.35);
@@ -1537,7 +1537,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 .cal-day--muted .cal-day-num { color: rgba(28,26,24,0.22); }
 .cal-day--today .cal-day-num { background: var(--bronze); color: var(--white); border-radius: 50%; }
 
-.cal-week-events { position: absolute; left: 0; right: 0; top: 26px; pointer-events: none; }
+.cal-week-events { position: absolute; left: 0; right: 0; top: 36px; pointer-events: none; }
 .cal-event-bar {
   position: absolute;
   height: 18px;

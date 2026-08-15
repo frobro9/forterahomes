@@ -30,7 +30,7 @@ function showPage(pageKey) {
   pages.forEach((p) => p.classList.toggle('active', p.dataset.page === pageKey));
   navLeaves.forEach((l) => l.classList.toggle('active', l.dataset.page === pageKey));
   history.replaceState(null, '', `#${pageKey}`);
-  if (pageKey === 'punch-list' && !punchLoaded) loadPunchList();
+  if (pageKey === 'action-items' && !actionItemsLoaded) loadActionItems();
   if (pageKey === 'calendar' && !calendarLoaded) loadCalendar();
 }
 
@@ -48,33 +48,33 @@ if (logoutBtn) {
 }
 
 /* ================================================================
-   PUNCH LIST
+   ACTION ITEMS
    ================================================================ */
-let punchLoaded = false;
-let punchTasks = [];
-let punchSort = 'priority';
+let actionItemsLoaded = false;
+let actionItems = [];
+let actionItemsSort = 'priority';
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2, na: 3 };
 
-const punchListEl = document.getElementById('punchList');
-const punchAddForm = document.getElementById('punchAddForm');
-const punchSortBtns = document.querySelectorAll('.punch-sort-btn');
+const actionItemsListEl = document.getElementById('actionItemsList');
+const actionItemsForm = document.getElementById('actionItemsForm');
+const actionItemsSortBtns = document.querySelectorAll('.action-items-sort-btn');
 
-async function loadPunchList() {
-  punchLoaded = true;
+async function loadActionItems() {
+  actionItemsLoaded = true;
   try {
     const res = await fetch('/api/tasks?property=beechwood');
     const data = await res.json();
-    punchTasks = data.tasks || [];
-    renderPunchList();
+    actionItems = data.tasks || [];
+    renderActionItems();
   } catch {
-    punchListEl.innerHTML = '<li class="punch-empty">Couldn’t load the punch list. Please refresh.</li>';
+    actionItemsListEl.innerHTML = '<li class="action-items-empty">Couldn’t load action items. Please refresh.</li>';
   }
 }
 
-function sortedPunchTasks() {
-  const tasks = [...punchTasks];
-  if (punchSort === 'due_date') {
+function sortedActionItems() {
+  const tasks = [...actionItems];
+  if (actionItemsSort === 'due_date') {
     tasks.sort((a, b) => {
       if (!a.due_date && !b.due_date) return a.name.localeCompare(b.name);
       if (!a.due_date) return 1;
@@ -101,48 +101,48 @@ function isOverdue(dateStr) {
   return new Date(y, m - 1, d) < today;
 }
 
-function renderPunchList() {
-  const tasks = sortedPunchTasks();
+function renderActionItems() {
+  const tasks = sortedActionItems();
   if (!tasks.length) {
-    punchListEl.innerHTML = '<li class="punch-empty">No tasks yet — add one above.</li>';
+    actionItemsListEl.innerHTML = '<li class="action-items-empty">No tasks yet — add one above.</li>';
     return;
   }
-  punchListEl.innerHTML = tasks
+  actionItemsListEl.innerHTML = tasks
     .map(
       (t) => `
-    <li class="punch-row" data-id="${t.id}">
-      <div class="punch-row-main">
-        <span class="punch-priority-dot punch-priority-dot--${t.priority}"></span>
-        <span class="punch-row-name">${escapeHtml(t.name)}</span>
+    <li class="action-items-row" data-id="${t.id}">
+      <div class="action-items-row-main">
+        <span class="action-items-priority-dot action-items-priority-dot--${t.priority}"></span>
+        <span class="action-items-row-name">${escapeHtml(t.name)}</span>
       </div>
-      <div class="punch-row-meta">
-        <span class="punch-row-owner">${escapeHtml(t.owner)}</span>
-        <span class="punch-row-due ${isOverdue(t.due_date) ? 'is-overdue' : ''}">${formatShortDate(t.due_date)}</span>
-        <button type="button" class="punch-row-remove" aria-label="Remove task" data-id="${t.id}">&times;</button>
+      <div class="action-items-row-meta">
+        <span class="action-items-row-owner">${escapeHtml(t.owner)}</span>
+        <span class="action-items-row-due ${isOverdue(t.due_date) ? 'is-overdue' : ''}">${formatShortDate(t.due_date)}</span>
+        <button type="button" class="action-items-row-remove" aria-label="Remove task" data-id="${t.id}">&times;</button>
       </div>
     </li>`
     )
     .join('');
 }
 
-punchSortBtns.forEach((btn) => {
+actionItemsSortBtns.forEach((btn) => {
   btn.addEventListener('click', () => {
-    punchSort = btn.dataset.sort;
-    punchSortBtns.forEach((b) => b.classList.toggle('active', b === btn));
-    renderPunchList();
+    actionItemsSort = btn.dataset.sort;
+    actionItemsSortBtns.forEach((b) => b.classList.toggle('active', b === btn));
+    renderActionItems();
   });
 });
 
-if (punchAddForm) {
-  punchAddForm.addEventListener('submit', async (e) => {
+if (actionItemsForm) {
+  actionItemsForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('punchName').value.trim();
-    const priority = document.getElementById('punchPriority').value;
-    const owner = document.getElementById('punchOwner').value;
-    const dueDate = document.getElementById('punchDueDate').value || null;
+    const name = document.getElementById('actionItemName').value.trim();
+    const priority = document.getElementById('actionItemPriority').value;
+    const owner = document.getElementById('actionItemOwner').value;
+    const dueDate = document.getElementById('actionItemDueDate').value || null;
     if (!name) return;
 
-    const submitBtn = punchAddForm.querySelector('button[type="submit"]');
+    const submitBtn = actionItemsForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
 
     try {
@@ -153,14 +153,14 @@ if (punchAddForm) {
       });
       if (res.ok) {
         const data = await res.json();
-        punchTasks.push(data.task);
-        renderPunchList();
-        const newRow = punchListEl.querySelector(`[data-id="${data.task.id}"]`);
+        actionItems.push(data.task);
+        renderActionItems();
+        const newRow = actionItemsListEl.querySelector(`[data-id="${data.task.id}"]`);
         if (newRow) {
           newRow.classList.add('is-entering');
           requestAnimationFrame(() => requestAnimationFrame(() => newRow.classList.remove('is-entering')));
         }
-        punchAddForm.reset();
+        actionItemsForm.reset();
       }
     } finally {
       submitBtn.disabled = false;
@@ -168,18 +168,18 @@ if (punchAddForm) {
   });
 }
 
-if (punchListEl) {
-  punchListEl.addEventListener('click', async (e) => {
-    const btn = e.target.closest('.punch-row-remove');
+if (actionItemsListEl) {
+  actionItemsListEl.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.action-items-row-remove');
     if (!btn) return;
     const id = Number(btn.dataset.id);
-    const row = btn.closest('.punch-row');
+    const row = btn.closest('.action-items-row');
     if (row) row.classList.add('is-removing');
     try {
       const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
       if (res.ok) {
-        punchTasks = punchTasks.filter((t) => t.id !== id);
-        setTimeout(renderPunchList, 200);
+        actionItems = actionItems.filter((t) => t.id !== id);
+        setTimeout(renderActionItems, 200);
       } else if (row) {
         row.classList.remove('is-removing');
       }
@@ -422,7 +422,7 @@ if (calSummaryList) {
 }
 
 /* ---- Initial page ------------------------------------------- */
-const initialPage = validPages.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'punch-list';
+const initialPage = validPages.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'action-items';
 showPage(initialPage);
 
 });
