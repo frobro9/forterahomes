@@ -20,33 +20,35 @@
 
   <div class="portal-shell">
     <aside class="portal-sidebar">
-      <a href="/" class="portal-sidebar-logo" aria-label="Fortera Homes">FORTERA</a>
+      <div class="portal-sidebar-inner">
+        <a href="/" class="portal-sidebar-logo" aria-label="Fortera Homes">FORTERA</a>
 
-      <nav class="portal-nav" id="portalNav">
-        <div class="portal-nav-group">
-          <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="properties" aria-expanded="true">
-            <span>Properties</span>
-            <span class="portal-nav-parent-chevron" aria-hidden="true">&#8250;</span>
-          </button>
-          <div class="portal-nav-children is-open" data-children="properties">
-            <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="beechwood" aria-expanded="true">
-              <span>Beechwood Collection</span>
+        <nav class="portal-nav" id="portalNav">
+          <div class="portal-nav-group">
+            <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="properties" aria-expanded="true">
+              <span>Properties</span>
               <span class="portal-nav-parent-chevron" aria-hidden="true">&#8250;</span>
             </button>
-            <div class="portal-nav-children is-open" data-children="beechwood">
-              <button type="button" class="portal-nav-item portal-nav-leaf" data-page="punch-list">Punch List</button>
-              <button type="button" class="portal-nav-item portal-nav-leaf" data-page="calendar">Calendar</button>
-              <button type="button" class="portal-nav-item portal-nav-leaf" data-page="budget">Budget Tracker</button>
+            <div class="portal-nav-children is-open" data-children="properties">
+              <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="beechwood" aria-expanded="true">
+                <span>Beechwood Collection</span>
+                <span class="portal-nav-parent-chevron" aria-hidden="true">&#8250;</span>
+              </button>
+              <div class="portal-nav-children is-open" data-children="beechwood">
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="punch-list">Punch List</button>
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="calendar">Calendar</button>
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="budget">Budget Tracker</button>
+              </div>
             </div>
           </div>
+
+          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="finder">Property Finder Tool</button>
+          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="pm-portal">Property Management Portal</button>
+        </nav>
+
+        <div class="portal-sidebar-footer">
+          <button type="button" class="portal-sidebar-logout" id="portalLogoutBtn">Log Out</button>
         </div>
-
-        <button type="button" class="portal-nav-item portal-nav-leaf" data-page="finder">Property Finder Tool</button>
-        <button type="button" class="portal-nav-item portal-nav-leaf" data-page="pm-portal">Property Management Portal</button>
-      </nav>
-
-      <div class="portal-sidebar-footer">
-        <button type="button" class="portal-sidebar-logout" id="portalLogoutBtn">Log Out</button>
       </div>
     </aside>
 

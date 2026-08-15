@@ -1193,15 +1193,23 @@ html:has(.portal-body) { overflow-x: hidden; }
 .portal-shell { display: flex; align-items: stretch; min-height: 100vh; }
 
 /* --- Sidebar ------------------------------------------------ */
+/* .portal-sidebar has no explicit height, so it stretches (flex
+   default align-items: stretch) to match whichever column is taller —
+   itself or .portal-main — so the dark background never runs out
+   partway down a tall page. .portal-sidebar-inner is the part that
+   actually sticks to the viewport while scrolling. */
 .portal-sidebar {
   width: 268px;
   flex-shrink: 0;
   background: var(--charcoal);
+}
+
+.portal-sidebar-inner {
   display: flex;
   flex-direction: column;
   position: sticky;
   top: 0;
-  height: 100vh;
+  max-height: 100vh;
   overflow-y: auto;
 }
 
@@ -1609,7 +1617,8 @@ html:has(.portal-body) { overflow-x: hidden; }
 
 @media (max-width: 960px) {
   .portal-shell { flex-direction: column; }
-  .portal-sidebar { width: 100%; height: auto; position: static; flex-direction: column; padding: 0; }
+  .portal-sidebar { width: 100%; }
+  .portal-sidebar-inner { position: static; max-height: none; overflow: visible; }
   .portal-sidebar-logo { padding: 1.25rem 1.25rem 0.75rem; }
   .portal-nav {
     display: flex;
