@@ -1267,6 +1267,22 @@ html:has(.admin-dashboard-body) { overflow-x: hidden; }
 .footer-nav-col { display: flex; flex-direction: column; gap: 0.75rem; }
 .footer-nav-link { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); transition: color 0.2s ease; }
 .footer-nav-link:hover { color: var(--white); }
+.footer-management-btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  background: var(--bronze);
+  color: var(--white);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.25rem;
+  border-radius: 50px;
+  border: 1px solid var(--bronze);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.footer-management-btn:hover { background: #9e8369; border-color: #9e8369; }
 .footer-social-col { display: flex; gap: 1rem; justify-content: flex-end; align-items: center; }
 .footer-social-link { color: rgba(255,255,255,0.28); transition: color 0.2s ease; }
 .footer-social-link:hover { color: var(--white); }
