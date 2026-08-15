@@ -1,7 +1,7 @@
 import { next } from '@vercel/edge';
 
 export const config = {
-  matcher: ['/admin/dashboard'],
+  matcher: ['/admin-dashboard'],
 };
 
 const SESSION_COOKIE = 'fortera_session';

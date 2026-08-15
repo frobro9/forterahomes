@@ -311,7 +311,7 @@ if (adminForm) {
       });
 
       if (res.ok) {
-        window.location.href = '/admin/dashboard';
+        window.location.href = '/admin-dashboard';
         return;
       }
 
