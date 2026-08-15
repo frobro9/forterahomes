@@ -2,6 +2,7 @@
   "name": "fortera-homes",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint:js": "eslint main.js",
     "lint:html": "htmlhint index.html"

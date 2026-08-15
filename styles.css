@@ -1107,6 +1107,18 @@ html:has(.admin-login-body) { overflow-x: hidden; }
   transition: background 0.25s ease;
 }
 .admin-card-submit:hover { background: #9e8369; border-color: #9e8369; }
+.admin-card-submit:disabled { opacity: 0.6; cursor: default; }
+
+.admin-card-error {
+  display: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  color: #b9483f;
+  background: rgba(185,72,63,0.08);
+  border: 1px solid rgba(185,72,63,0.25);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+}
 
 .admin-login-back {
   position: absolute;
@@ -1128,6 +1140,49 @@ html:has(.admin-login-body) { overflow-x: hidden; }
   .admin-login-card { margin-left: auto; margin-right: auto; }
   .admin-login-back { position: static; margin-top: 2rem; text-align: center; }
 }
+
+/* --- Admin dashboard (placeholder, standalone) --------------- */
+html:has(.admin-dashboard-body) { overflow-x: hidden; }
+.admin-dashboard-body { background: var(--charcoal); min-height: 100vh; }
+
+.admin-dashboard-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.admin-dashboard-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  margin-bottom: 2.5rem;
+}
+
+.admin-dashboard-label { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bronze); margin-bottom: 0.75rem; }
+.admin-dashboard-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.75rem, 3vw, 2.5rem); color: var(--white); margin-bottom: 0.75rem; }
+.admin-dashboard-desc { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.5); max-width: 420px; margin: 0 auto 2.5rem; }
+
+.admin-dashboard-logout {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: var(--white);
+  border-radius: 50px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.admin-dashboard-logout:hover { border-color: var(--bronze); color: var(--bronze-light); }
 
 /* ============================================================
    ABOUT PAGE
@@ -1212,6 +1267,22 @@ html:has(.admin-login-body) { overflow-x: hidden; }
 .footer-nav-col { display: flex; flex-direction: column; gap: 0.75rem; }
 .footer-nav-link { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); transition: color 0.2s ease; }
 .footer-nav-link:hover { color: var(--white); }
+.footer-management-btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  background: var(--bronze);
+  color: var(--white);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.25rem;
+  border-radius: 50px;
+  border: 1px solid var(--bronze);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.footer-management-btn:hover { background: #9e8369; border-color: #9e8369; }
 .footer-social-col { display: flex; gap: 1rem; justify-content: flex-end; align-items: center; }
 .footer-social-link { color: rgba(255,255,255,0.28); transition: color 0.2s ease; }
 .footer-social-link:hover { color: var(--white); }
