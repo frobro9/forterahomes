@@ -5,7 +5,7 @@ import { verifyPassword } from '../_lib/password.js';
 // usernames still run a verify — keeps response timing from revealing
 // which usernames exist.
 const DUMMY_HASH =
-  'pbkdf2$210000$mGQWUPRiIVvHv31vCCEVlA$tB8u4RSeWzpZwraBFXCCmB4IRfPzrQGkIYJD2kvqYzs';
+  'pbkdf2$50000$-3hxzv1xz15Yx4lFFsCIPg$N-eVkfq1bKhIavHEdmcGt7rxmAKH2ESEd10xw5KrD4s';
 
 function getUsers(env) {
   try {
