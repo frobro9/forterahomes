@@ -1,0 +1,68 @@
+// Password hashing for the management portal, using PBKDF2 via Web Crypto —
+// no npm dependency, since Cloudflare Pages doesn't run `npm install` for
+// this project (no build command is configured, and this stays a
+// build-step-free static site on purpose).
+//
+// Iteration count is kept well under Workers' per-request CPU budget: at
+// 210,000 (a common general-purpose recommendation) the KDF alone measured
+// ~25ms, which is at or over the limit on some Workers plans and crashed
+// every request in production. 50,000 measured ~5-6ms, leaving headroom for
+// the rest of the request, while staying 5x above NIST SP 800-63B's PBKDF2
+// floor of 10,000 — an acceptable tradeoff for a handful of internal
+// accounts with no public signup surface to brute-force at scale.
+
+import { base64urlEncode, base64urlDecode } from './base64url.js';
+
+const PBKDF2_ITERATIONS = 50000;
+const SALT_BYTES = 16;
+const HASH_BITS = 256;
+
+async function deriveBits(password, salt, iterations) {
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(password),
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
+    keyMaterial,
+    HASH_BITS
+  );
+  return new Uint8Array(bits);
+}
+
+function constantTimeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
+export async function hashPassword(password) {
+  const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
+  const hash = await deriveBits(password, salt, PBKDF2_ITERATIONS);
+  return `pbkdf2$${PBKDF2_ITERATIONS}$${base64urlEncode(salt)}$${base64urlEncode(hash)}`;
+}
+
+export async function verifyPassword(password, stored) {
+  if (typeof stored !== 'string') return false;
+  const parts = stored.split('$');
+  if (parts.length !== 4 || parts[0] !== 'pbkdf2') return false;
+
+  const iterations = parseInt(parts[1], 10);
+  if (!Number.isInteger(iterations) || iterations <= 0) return false;
+
+  let salt;
+  let expectedHash;
+  try {
+    salt = base64urlDecode(parts[2]);
+    expectedHash = base64urlDecode(parts[3]);
+  } catch {
+    return false;
+  }
+
+  const hash = await deriveBits(password, salt, iterations);
+  return constantTimeEqual(hash, expectedHash);
+}
