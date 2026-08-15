@@ -12,7 +12,6 @@
     "htmlhint": "^1.1.4"
   },
   "dependencies": {
-    "@vercel/edge": "^1.1.1",
     "bcryptjs": "^2.4.3"
   }
 }
