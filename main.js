@@ -276,10 +276,62 @@ if (form) {
   });
 }
 
-/* ---- Admin login (UI only, not yet connected) -------------- */
+/* ---- Admin login -------------------------------------------- */
 const adminForm = document.getElementById('adminLoginForm');
 if (adminForm) {
-  adminForm.addEventListener('submit', (e) => e.preventDefault());
+  const adminSubmitBtn = document.getElementById('adminLoginSubmit');
+  const adminErrorEl = document.getElementById('adminLoginError');
+
+  adminForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = adminForm.username.value.trim();
+    const password = adminForm.password.value;
+
+    if (adminErrorEl) adminErrorEl.style.display = 'none';
+
+    if (!username || !password) {
+      if (adminErrorEl) {
+        adminErrorEl.textContent = 'Enter your username and password.';
+        adminErrorEl.style.display = 'block';
+      }
+      return;
+    }
+
+    if (adminSubmitBtn) {
+      adminSubmitBtn.disabled = true;
+      adminSubmitBtn.textContent = 'Signing In…';
+    }
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (res.ok) {
+        window.location.href = '/admin/dashboard';
+        return;
+      }
+
+      const data = await res.json().catch(() => ({}));
+      if (adminErrorEl) {
+        adminErrorEl.textContent = data.error || 'Invalid username or password.';
+        adminErrorEl.style.display = 'block';
+      }
+    } catch {
+      if (adminErrorEl) {
+        adminErrorEl.textContent = 'Something went wrong. Please try again.';
+        adminErrorEl.style.display = 'block';
+      }
+    } finally {
+      if (adminSubmitBtn) {
+        adminSubmitBtn.disabled = false;
+        adminSubmitBtn.textContent = 'Sign In';
+      }
+    }
+  });
 }
 
 const adminPasswordToggle = document.getElementById('adminPasswordToggle');
