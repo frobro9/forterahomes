@@ -28,9 +28,10 @@
       <p class="admin-card-label">MANAGEMENT PORTAL</p>
       <h2 class="admin-card-title">Sign In</h2>
       <form id="adminLoginForm" novalidate>
+        <p class="admin-card-error" id="adminLoginError" role="alert"></p>
         <div class="admin-card-field">
-          <label for="adminEmail">Email</label>
-          <input type="email" id="adminEmail" name="email" autocomplete="username" placeholder="you@forterahomes.ca">
+          <label for="adminEmail">Username</label>
+          <input type="text" id="adminEmail" name="username" autocomplete="username" placeholder="Username">
         </div>
         <div class="admin-card-field">
           <label for="adminPassword">Password</label>
@@ -48,7 +49,7 @@
           </label>
           <a href="#" class="admin-card-forgot">Forgot password?</a>
         </div>
-        <button type="submit" class="admin-card-submit">Sign In</button>
+        <button type="submit" class="admin-card-submit" id="adminLoginSubmit">Sign In</button>
       </form>
     </div>
 
