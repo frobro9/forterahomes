@@ -1,10 +1,11 @@
-import bcrypt from 'bcryptjs';
 import { createSessionToken, SESSION_COOKIE, SESSION_TTL_SECONDS } from '../_lib/session.js';
+import { verifyPassword } from '../_lib/password.js';
 
-// Valid-format bcrypt hash of a password nobody has, so lookups for unknown
-// usernames still run a compare — keeps response timing from revealing
+// Valid-format hash of a password nobody has, so lookups for unknown
+// usernames still run a verify — keeps response timing from revealing
 // which usernames exist.
-const DUMMY_HASH = '$2a$12$8wkupYQUsMxsTRgaaCZdl.QoLB3qeD6ZVqlatjPpgijuNEDCMWS/u';
+const DUMMY_HASH =
+  'pbkdf2$210000$mGQWUPRiIVvHv31vCCEVlA$tB8u4RSeWzpZwraBFXCCmB4IRfPzrQGkIYJD2kvqYzs';
 
 function getUsers(env) {
   try {
@@ -34,7 +35,7 @@ export async function onRequestPost(context) {
   const normalizedUsername = username.trim().toLowerCase();
   const user = users.find((u) => u && u.username === normalizedUsername);
 
-  const ok = await bcrypt.compare(password, user ? user.passwordHash : DUMMY_HASH);
+  const ok = await verifyPassword(password, user ? user.passwordHash : DUMMY_HASH);
 
   if (!user || !ok) {
     return Response.json({ error: 'Invalid username or password.' }, { status: 401 });

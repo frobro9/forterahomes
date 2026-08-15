@@ -2,6 +2,7 @@
   "name": "fortera-homes",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint:js": "eslint main.js",
     "lint:html": "htmlhint index.html"
@@ -10,8 +11,5 @@
     "eslint": "^9.0.0",
     "globals": "^15.0.0",
     "htmlhint": "^1.1.4"
-  },
-  "dependencies": {
-    "bcryptjs": "^2.4.3"
   }
 }

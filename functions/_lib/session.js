@@ -2,24 +2,10 @@
 // Runs on the Workers runtime (Cloudflare Pages Functions), so this uses
 // only Web Crypto / Web platform APIs — no Node built-ins.
 
+import { base64urlEncode, base64urlDecode } from './base64url.js';
+
 export const SESSION_COOKIE = 'fortera_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 12; // 12 hours
-
-function base64urlEncode(bytes) {
-  let binary = '';
-  const arr = new Uint8Array(bytes);
-  for (let i = 0; i < arr.length; i++) binary += String.fromCharCode(arr[i]);
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
-function base64urlDecode(b64url) {
-  const pad = '='.repeat((4 - (b64url.length % 4)) % 4);
-  const b64 = (b64url + pad).replace(/-/g, '+').replace(/_/g, '/');
-  const binary = atob(b64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return bytes;
-}
 
 async function hmacKey(secret) {
   return crypto.subtle.importKey(
