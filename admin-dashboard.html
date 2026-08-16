@@ -156,11 +156,22 @@
             <span class="portal-page-label">TOOLS</span>
             <h1 class="portal-page-title">Property Finder Tool</h1>
           </div>
+          <button type="button" class="portal-btn-outline" id="finderSettingsBtn">Settings</button>
         </div>
-        <div class="portal-coming-soon">
-          <p class="portal-coming-soon-label">COMING SOON</p>
-          <h2 class="portal-coming-soon-title">Property Finder Tool is on the way</h2>
-          <p class="portal-coming-soon-desc">This section will help you search and evaluate new acquisition opportunities.</p>
+
+        <form class="finder-form" id="finderForm" novalidate>
+          <input class="portal-field-input finder-form-address" type="text" name="address" id="finderAddress" placeholder="Street address, Ottawa" maxlength="300" required>
+          <input class="portal-field-input" type="number" name="listPrice" id="finderListPrice" placeholder="List price ($)" min="1" step="1" required>
+          <input class="portal-field-input" type="number" name="lotSqft" id="finderLotSqft" placeholder="Lot size (sq ft)" min="1" step="1" required>
+          <button type="submit" class="portal-btn" id="finderSubmitBtn">Analyze Property</button>
+        </form>
+        <p class="finder-form-error" id="finderFormError" role="alert"></p>
+
+        <div class="finder-result" id="finderResult" hidden></div>
+
+        <div class="finder-history">
+          <h3 class="finder-history-title">Past Analyses</h3>
+          <div class="finder-history-list" id="finderHistoryList"></div>
         </div>
       </section>
 
@@ -219,6 +230,76 @@
         <button type="button" class="portal-btn-outline" id="deleteConfirmCancel">Cancel</button>
         <button type="button" class="portal-btn portal-btn-danger" id="deleteConfirmConfirm">Delete</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Property Finder settings modal -->
+  <div class="portal-modal" id="finderSettingsModal" hidden>
+    <div class="portal-modal-card portal-modal-card--wide">
+      <h3 class="portal-modal-title">Property Finder Settings</h3>
+      <p class="portal-modal-desc">These assumptions drive every score. Update them to match Fortera's real cost and rent data.</p>
+      <form id="finderSettingsForm" novalidate>
+        <p class="portal-modal-error" id="finderSettingsError" role="alert"></p>
+        <div class="portal-modal-row">
+          <div class="portal-modal-field">
+            <label for="fsHardCost">Hard cost ($/sq ft)</label>
+            <input class="portal-field-input" type="number" id="fsHardCost" name="hard_cost_per_sqft" min="0" step="1" required>
+          </div>
+          <div class="portal-modal-field">
+            <label for="fsSoftCost">Soft costs (% of hard cost)</label>
+            <input class="portal-field-input" type="number" id="fsSoftCost" name="soft_cost_pct" min="0" step="0.5" required>
+          </div>
+        </div>
+        <div class="portal-modal-row">
+          <div class="portal-modal-field">
+            <label for="fsUnitSqft">Avg. unit size (sq ft)</label>
+            <input class="portal-field-input" type="number" id="fsUnitSqft" name="avg_unit_sqft" min="1" step="10" required>
+          </div>
+          <div class="portal-modal-field">
+            <label for="fsRent">Avg. monthly rent / unit ($)</label>
+            <input class="portal-field-input" type="number" id="fsRent" name="avg_monthly_rent" min="0" step="10" required>
+          </div>
+        </div>
+        <div class="portal-modal-row">
+          <div class="portal-modal-field">
+            <label for="fsVacancy">Vacancy rate (%)</label>
+            <input class="portal-field-input" type="number" id="fsVacancy" name="vacancy_pct" min="0" max="100" step="0.5" required>
+          </div>
+          <div class="portal-modal-field">
+            <label for="fsOpex">Operating expenses (% of rent)</label>
+            <input class="portal-field-input" type="number" id="fsOpex" name="opex_pct" min="0" max="100" step="0.5" required>
+          </div>
+        </div>
+        <div class="portal-modal-row">
+          <div class="portal-modal-field">
+            <label for="fsTargetCap">Target cap rate (%)</label>
+            <input class="portal-field-input" type="number" id="fsTargetCap" name="target_cap_rate_pct" min="0" step="0.1" required>
+          </div>
+          <div class="portal-modal-field">
+            <label for="fsTargetCost">Target land cost ($/sq ft)</label>
+            <input class="portal-field-input" type="number" id="fsTargetCost" name="target_cost_per_sqft" min="0" step="1" required>
+          </div>
+        </div>
+        <p class="finder-settings-subhead">Score weighting</p>
+        <div class="portal-modal-row portal-modal-row--three">
+          <div class="portal-modal-field">
+            <label for="fsWeightCap">Cap rate</label>
+            <input class="portal-field-input" type="number" id="fsWeightCap" name="weight_cap_rate" min="0" step="1" required>
+          </div>
+          <div class="portal-modal-field">
+            <label for="fsWeightCost">Land cost</label>
+            <input class="portal-field-input" type="number" id="fsWeightCost" name="weight_cost" min="0" step="1" required>
+          </div>
+          <div class="portal-modal-field">
+            <label for="fsWeightDensity">Density</label>
+            <input class="portal-field-input" type="number" id="fsWeightDensity" name="weight_density" min="0" step="1" required>
+          </div>
+        </div>
+        <div class="portal-modal-actions">
+          <button type="button" class="portal-btn-outline" id="finderSettingsCancel">Cancel</button>
+          <button type="submit" class="portal-btn">Save Settings</button>
+        </div>
+      </form>
     </div>
   </div>
 

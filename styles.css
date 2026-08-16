@@ -1674,6 +1674,84 @@ html:has(.portal-body) { overflow-x: hidden; }
 .portal-modal-row .portal-modal-field { flex: 1; }
 .portal-modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.75rem; }
 .portal-modal-error { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: #b9483f; margin-bottom: 1rem; display: none; }
+.portal-modal-card--wide { width: 560px; }
+.portal-modal-row--three { display: flex; gap: 1rem; }
+.portal-modal-row--three .portal-modal-field { flex: 1; }
+
+/* --- Property Finder Tool ---------------------------------------- */
+.finder-form { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 0.5rem; }
+.finder-form .finder-form-address { flex: 2 1 260px; }
+.finder-form .portal-field-input[type="number"] { flex: 1 1 160px; }
+.finder-form-error { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: #b9483f; margin-bottom: 1.5rem; display: none; }
+
+.finder-result { background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,0.04); padding: 2rem; margin-bottom: 2.5rem; }
+.finder-result-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.75rem; }
+.finder-score-badge {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--white);
+}
+.finder-score-value { font-size: 2rem; font-weight: 600; line-height: 1; }
+.finder-score-max { font-size: 0.8rem; opacity: 0.75; margin-left: 0.15rem; }
+.finder-score--good { background: #4a8f5c; }
+.finder-score--ok { background: var(--bronze); }
+.finder-score--poor { background: #b9483f; }
+
+.finder-result-address { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 0.25rem; }
+.finder-result-zone { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; color: rgba(28,26,24,0.55); text-transform: uppercase; letter-spacing: 0.04em; }
+
+.finder-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(28,26,24,0.08);
+}
+.finder-stat { display: flex; flex-direction: column; gap: 0.35rem; }
+.finder-stat-label { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(28,26,24,0.45); }
+.finder-stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); }
+
+.finder-score-breakdown {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(28,26,24,0.08);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(28,26,24,0.55);
+}
+.finder-disclaimer { font-family: 'Montserrat', sans-serif; font-size: 0.68rem; line-height: 1.6; color: rgba(28,26,24,0.4); margin-top: 1.5rem; font-style: italic; }
+
+.finder-history-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }
+.finder-history-list { background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.finder-history-row { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1.25rem; border-bottom: 1px solid rgba(28,26,24,0.06); font-family: 'Montserrat', sans-serif; }
+.finder-history-row:last-child { border-bottom: none; }
+.finder-history-score {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--white);
+  flex-shrink: 0;
+}
+.finder-history-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.finder-history-address { font-size: 0.82rem; font-weight: 600; color: var(--charcoal); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.finder-history-meta { font-size: 0.7rem; color: rgba(28,26,24,0.5); }
+.finder-history-remove { color: rgba(28,26,24,0.3); font-size: 1.1rem; line-height: 1; padding: 0.25rem 0.4rem; transition: color 0.2s ease; flex-shrink: 0; }
+.finder-history-remove:hover { color: #b9483f; }
+.finder-history-empty { padding: 2.5rem; text-align: center; color: rgba(28,26,24,0.35); font-family: 'Montserrat', sans-serif; font-size: 0.82rem; background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.finder-settings-subhead { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(28,26,24,0.45); margin: 1.75rem 0 0.75rem; }
 
 @media (max-width: 960px) {
   .portal-shell { flex-direction: column; }
