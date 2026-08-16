@@ -1,4 +1,4 @@
-import { createSessionToken, SESSION_COOKIE, SESSION_TTL_SECONDS } from '../_lib/session.js';
+import { createSessionToken, SESSION_COOKIE, SESSION_TTL_SECONDS, SESSION_TTL_REMEMBER_SECONDS } from '../_lib/session.js';
 import { verifyPassword } from '../_lib/password.js';
 import { USER_FIRST_NAMES } from '../_lib/portal-constants.js';
 
@@ -27,7 +27,7 @@ export async function onRequestPost(context) {
     return Response.json({ error: 'Invalid request body.' }, { status: 400 });
   }
 
-  const { username, password } = body || {};
+  const { username, password, remember } = body || {};
   if (typeof username !== 'string' || typeof password !== 'string' || !username || !password) {
     return Response.json({ error: 'Username and password are required.' }, { status: 400 });
   }
@@ -48,12 +48,13 @@ export async function onRequestPost(context) {
   }
 
   const firstName = USER_FIRST_NAMES[user.username] || null;
-  const token = await createSessionToken(user.username, firstName, secret);
+  const ttlSeconds = remember === true ? SESSION_TTL_REMEMBER_SECONDS : SESSION_TTL_SECONDS;
+  const token = await createSessionToken(user.username, firstName, secret, ttlSeconds);
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Set-Cookie': `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_TTL_SECONDS}`,
+      'Set-Cookie': `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${ttlSeconds}`,
     },
   });
 }
