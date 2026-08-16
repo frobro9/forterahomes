@@ -1567,7 +1567,20 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 
 .action-items-row-name { flex: 1; font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.action-items-row-owner { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.55); width: 120px; flex-shrink: 0; }
+.action-items-row-owner { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; width: 130px; flex-shrink: 0; }
+.action-items-owner-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  background: rgba(178,151,125,0.18);
+  border-radius: 50px;
+  padding: 0.2rem 0.6rem;
+  white-space: nowrap;
+}
+.action-items-owner-tag--all { background: var(--bronze); color: var(--white); }
 .action-items-row-due { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.55); width: 90px; flex-shrink: 0; }
 .action-items-row-due.is-overdue { color: #b9483f; font-weight: 600; }
 

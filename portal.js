@@ -173,6 +173,14 @@ function sortedActionItems() {
   return tasks;
 }
 
+function ownerTagsHtml(owner) {
+  if (!owner) return '';
+  const names = owner === 'All' ? ['All'] : owner.split(', ');
+  return names
+    .map((n) => `<span class="action-items-owner-tag${n === 'All' ? ' action-items-owner-tag--all' : ''}">${escapeHtml(n)}</span>`)
+    .join('');
+}
+
 function formatShortDate(dateStr) {
   if (!dateStr) return '—';
   const [y, m, d] = dateStr.split('-').map(Number);
@@ -204,7 +212,7 @@ function renderActionItems() {
         <span class="action-items-row-name">${escapeHtml(t.name)}</span>
       </div>
       <div class="action-items-row-meta">
-        <span class="action-items-row-owner">${escapeHtml(t.owner)}</span>
+        <span class="action-items-row-owner">${ownerTagsHtml(t.owner)}</span>
         <span class="action-items-row-due ${isOverdue(t.due_date) ? 'is-overdue' : ''}">${formatShortDate(t.due_date)}</span>
         <div class="action-items-row-actions">
           ${
