@@ -80,6 +80,72 @@ const deleteConfirmModal = document.getElementById('deleteConfirmModal');
 const deleteConfirmCancel = document.getElementById('deleteConfirmCancel');
 const deleteConfirmConfirm = document.getElementById('deleteConfirmConfirm');
 
+/* ---- Owner multi-select (add task form) ------------------------ */
+const ownerField = document.getElementById('actionItemOwnerField');
+const ownerTrigger = document.getElementById('actionItemOwnerTrigger');
+const ownerLabel = document.getElementById('actionItemOwnerLabel');
+const ownerPanel = document.getElementById('actionItemOwnerPanel');
+const ownerCheckboxes = ownerPanel ? Array.from(ownerPanel.querySelectorAll('input[type="checkbox"]')) : [];
+const ownerAllCheckbox = ownerPanel ? ownerPanel.querySelector('input[value="All"]') : null;
+
+function updateOwnerLabel() {
+  const selected = ownerCheckboxes.filter((cb) => cb.checked && cb.value !== 'All').map((cb) => cb.value);
+  if (ownerAllCheckbox && ownerAllCheckbox.checked) {
+    ownerLabel.textContent = 'All';
+  } else if (selected.length) {
+    ownerLabel.textContent = selected.join(', ');
+  } else {
+    ownerLabel.textContent = 'Assign to';
+  }
+}
+
+function getSelectedOwnerValue() {
+  if (ownerAllCheckbox && ownerAllCheckbox.checked) return 'All';
+  return ownerCheckboxes
+    .filter((cb) => cb.checked && cb.value !== 'All')
+    .map((cb) => cb.value)
+    .join(', ');
+}
+
+function resetOwnerSelect() {
+  ownerCheckboxes.forEach((cb) => { cb.checked = false; });
+  updateOwnerLabel();
+}
+
+function closeOwnerPanel() {
+  if (!ownerPanel || ownerPanel.hidden) return;
+  ownerPanel.hidden = true;
+  ownerTrigger.setAttribute('aria-expanded', 'false');
+}
+
+if (ownerTrigger && ownerPanel) {
+  ownerTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = !ownerPanel.hidden;
+    ownerPanel.hidden = isOpen;
+    ownerTrigger.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  ownerCheckboxes.forEach((cb) => {
+    cb.addEventListener('change', () => {
+      if (cb.value === 'All' && cb.checked) {
+        ownerCheckboxes.forEach((other) => { if (other !== cb) other.checked = false; });
+      } else if (cb.checked && ownerAllCheckbox) {
+        ownerAllCheckbox.checked = false;
+      }
+      updateOwnerLabel();
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!ownerField.contains(e.target)) closeOwnerPanel();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeOwnerPanel();
+  });
+}
+
 async function loadActionItems() {
   actionItemsLoaded = true;
   try {
@@ -105,6 +171,14 @@ function sortedActionItems() {
     tasks.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority] || a.name.localeCompare(b.name));
   }
   return tasks;
+}
+
+function ownerTagsHtml(owner) {
+  if (!owner) return '';
+  const names = owner === 'All' ? ['All'] : owner.split(', ');
+  return names
+    .map((n) => `<span class="action-items-owner-tag${n === 'All' ? ' action-items-owner-tag--all' : ''}">${escapeHtml(n)}</span>`)
+    .join('');
 }
 
 function formatShortDate(dateStr) {
@@ -138,7 +212,7 @@ function renderActionItems() {
         <span class="action-items-row-name">${escapeHtml(t.name)}</span>
       </div>
       <div class="action-items-row-meta">
-        <span class="action-items-row-owner">${escapeHtml(t.owner)}</span>
+        <span class="action-items-row-owner">${ownerTagsHtml(t.owner)}</span>
         <span class="action-items-row-due ${isOverdue(t.due_date) ? 'is-overdue' : ''}">${formatShortDate(t.due_date)}</span>
         <div class="action-items-row-actions">
           ${
@@ -175,9 +249,9 @@ if (actionItemsForm) {
     e.preventDefault();
     const name = document.getElementById('actionItemName').value.trim();
     const priority = document.getElementById('actionItemPriority').value;
-    const owner = document.getElementById('actionItemOwner').value;
+    const owner = getSelectedOwnerValue();
     const dueDate = document.getElementById('actionItemDueDate').value || null;
-    if (!name) return;
+    if (!name || !owner) return;
 
     const submitBtn = actionItemsForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
@@ -198,6 +272,7 @@ if (actionItemsForm) {
           requestAnimationFrame(() => requestAnimationFrame(() => newRow.classList.remove('is-entering')));
         }
         actionItemsForm.reset();
+        resetOwnerSelect();
       }
     } finally {
       submitBtn.disabled = false;

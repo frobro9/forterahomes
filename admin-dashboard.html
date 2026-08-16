@@ -72,14 +72,20 @@
             <option value="low">Low</option>
             <option value="na">N/A</option>
           </select>
-          <select class="portal-field-select" name="owner" id="actionItemOwner">
-            <option>Cam Frohar</option>
-            <option>Adam Hosny</option>
-            <option>Ryan Gray</option>
-            <option>Ryan Frohar</option>
-            <option>Jacob Splinter</option>
-            <option>Other</option>
-          </select>
+          <div class="portal-multiselect" id="actionItemOwnerField">
+            <button type="button" class="portal-field-select portal-multiselect-trigger" id="actionItemOwnerTrigger" aria-haspopup="true" aria-expanded="false">
+              <span id="actionItemOwnerLabel">Assign to</span>
+            </button>
+            <div class="portal-multiselect-panel" id="actionItemOwnerPanel" hidden>
+              <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
+            </div>
+          </div>
           <input class="portal-field-input" type="date" name="dueDate" id="actionItemDueDate">
           <button type="submit" class="portal-btn">Add Task</button>
         </form>
