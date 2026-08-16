@@ -1,5 +1,5 @@
 import { badRequest, notFound } from '../../_lib/http.js';
-import { TASK_PRIORITIES, TASK_OWNERS, DATE_RE } from '../../_lib/portal-constants.js';
+import { TASK_PRIORITIES, DATE_RE, isValidOwnerValue } from '../../_lib/portal-constants.js';
 
 export async function onRequestPatch(context) {
   const { request, env, params } = context;
@@ -28,7 +28,7 @@ export async function onRequestPatch(context) {
     values.push(body.priority);
   }
   if (body.owner !== undefined) {
-    if (!TASK_OWNERS.includes(body.owner)) return badRequest('Invalid owner.');
+    if (!isValidOwnerValue(body.owner)) return badRequest('Invalid owner.');
     updates.push('owner = ?');
     values.push(body.owner);
   }

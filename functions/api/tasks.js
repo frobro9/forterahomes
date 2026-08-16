@@ -1,5 +1,5 @@
 import { badRequest } from '../_lib/http.js';
-import { TASK_PRIORITIES, TASK_OWNERS, DATE_RE, DEFAULT_PROPERTY } from '../_lib/portal-constants.js';
+import { TASK_PRIORITIES, DATE_RE, DEFAULT_PROPERTY, isValidOwnerValue } from '../_lib/portal-constants.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -34,7 +34,7 @@ export async function onRequestPost(context) {
 
   if (!name || name.length > 200) return badRequest('Name is required (max 200 characters).');
   if (!TASK_PRIORITIES.includes(priority)) return badRequest('Invalid priority.');
-  if (!TASK_OWNERS.includes(owner)) return badRequest('Invalid owner.');
+  if (!isValidOwnerValue(owner)) return badRequest('Invalid owner.');
   if (dueDate !== null && !DATE_RE.test(dueDate)) return badRequest('Invalid due date.');
 
   const row = await env.DB.prepare(
