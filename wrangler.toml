@@ -1,0 +1,10 @@
+name = "forterahomes"
+compatibility_date = "2026-06-01"
+pages_build_output_dir = "."
+
+# D1 binding only — secrets (SESSION_SECRET, ADMIN_USERS) stay in the
+# Cloudflare Pages dashboard, never here.
+[[d1_databases]]
+binding = "DB"
+database_name = "forterahomes-portal"
+database_id = "0e80e915-b9dc-46a1-9dd3-d39a09ee10da"
