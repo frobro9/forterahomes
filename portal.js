@@ -38,6 +38,19 @@ navLeaves.forEach((btn) => {
   btn.addEventListener('click', () => showPage(btn.dataset.page));
 });
 
+/* ---- Welcome greeting ----------------------------------------- */
+const portalWelcome = document.getElementById('portalWelcome');
+if (portalWelcome) {
+  fetch('/api/me')
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (!data || !data.firstName) return;
+      portalWelcome.textContent = `Welcome, ${data.firstName}.`;
+      portalWelcome.hidden = false;
+    })
+    .catch(() => {});
+}
+
 /* ---- Logout -------------------------------------------------- */
 const logoutBtn = document.getElementById('portalLogoutBtn');
 if (logoutBtn) {
