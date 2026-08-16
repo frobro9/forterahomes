@@ -53,12 +53,19 @@ if (logoutBtn) {
 let actionItemsLoaded = false;
 let actionItems = [];
 let actionItemsSort = 'priority';
+let actionItemsTab = 'active';
+let pendingDeleteId = null;
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2, na: 3 };
+const PRIORITY_LABEL = { high: 'High', medium: 'Medium', low: 'Low', na: 'N/A' };
 
 const actionItemsListEl = document.getElementById('actionItemsList');
 const actionItemsForm = document.getElementById('actionItemsForm');
-const actionItemsSortBtns = document.querySelectorAll('.action-items-sort-btn');
+const actionItemsSortBtns = document.querySelectorAll('.action-items-sort-btn[data-sort]');
+const actionItemsTabBtns = document.querySelectorAll('.action-items-sort-btn[data-tab]');
+const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+const deleteConfirmCancel = document.getElementById('deleteConfirmCancel');
+const deleteConfirmConfirm = document.getElementById('deleteConfirmConfirm');
 
 async function loadActionItems() {
   actionItemsLoaded = true;
@@ -73,7 +80,7 @@ async function loadActionItems() {
 }
 
 function sortedActionItems() {
-  const tasks = [...actionItems];
+  const tasks = actionItems.filter((t) => Boolean(t.completed) === (actionItemsTab === 'completed'));
   if (actionItemsSort === 'due_date') {
     tasks.sort((a, b) => {
       if (!a.due_date && !b.due_date) return a.name.localeCompare(b.name);
@@ -104,21 +111,30 @@ function isOverdue(dateStr) {
 function renderActionItems() {
   const tasks = sortedActionItems();
   if (!tasks.length) {
-    actionItemsListEl.innerHTML = '<li class="action-items-empty">No tasks yet — add one above.</li>';
+    const emptyMsg = actionItemsTab === 'completed' ? 'No completed tasks yet.' : 'No tasks yet — add one above.';
+    actionItemsListEl.innerHTML = `<li class="action-items-empty">${emptyMsg}</li>`;
     return;
   }
   actionItemsListEl.innerHTML = tasks
     .map(
       (t) => `
-    <li class="action-items-row" data-id="${t.id}">
+    <li class="action-items-row ${t.completed ? 'is-completed' : ''}" data-id="${t.id}">
       <div class="action-items-row-main">
         <span class="action-items-priority-dot action-items-priority-dot--${t.priority}"></span>
+        <span class="action-items-priority-label">${PRIORITY_LABEL[t.priority]}</span>
         <span class="action-items-row-name">${escapeHtml(t.name)}</span>
       </div>
       <div class="action-items-row-meta">
         <span class="action-items-row-owner">${escapeHtml(t.owner)}</span>
         <span class="action-items-row-due ${isOverdue(t.due_date) ? 'is-overdue' : ''}">${formatShortDate(t.due_date)}</span>
-        <button type="button" class="action-items-row-remove" aria-label="Remove task" data-id="${t.id}">&times;</button>
+        <div class="action-items-row-actions">
+          ${
+            t.completed
+              ? ''
+              : `<button type="button" class="action-items-row-complete" aria-label="Mark complete" data-id="${t.id}">&#10003;</button>`
+          }
+          <button type="button" class="action-items-row-delete" aria-label="Delete task" data-id="${t.id}">&times;</button>
+        </div>
       </div>
     </li>`
     )
@@ -129,6 +145,14 @@ actionItemsSortBtns.forEach((btn) => {
   btn.addEventListener('click', () => {
     actionItemsSort = btn.dataset.sort;
     actionItemsSortBtns.forEach((b) => b.classList.toggle('active', b === btn));
+    renderActionItems();
+  });
+});
+
+actionItemsTabBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    actionItemsTab = btn.dataset.tab;
+    actionItemsTabBtns.forEach((b) => b.classList.toggle('active', b === btn));
     renderActionItems();
   });
 });
@@ -170,21 +194,69 @@ if (actionItemsForm) {
 
 if (actionItemsListEl) {
   actionItemsListEl.addEventListener('click', async (e) => {
-    const btn = e.target.closest('.action-items-row-remove');
-    if (!btn) return;
-    const id = Number(btn.dataset.id);
-    const row = btn.closest('.action-items-row');
-    if (row) row.classList.add('is-removing');
-    try {
-      const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        actionItems = actionItems.filter((t) => t.id !== id);
-        setTimeout(renderActionItems, 200);
-      } else if (row) {
-        row.classList.remove('is-removing');
+    const completeBtn = e.target.closest('.action-items-row-complete');
+    if (completeBtn) {
+      const id = Number(completeBtn.dataset.id);
+      completeBtn.disabled = true;
+      try {
+        const res = await fetch(`/api/tasks/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ completed: true }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const idx = actionItems.findIndex((t) => t.id === id);
+          if (idx !== -1) actionItems[idx] = data.task;
+          renderActionItems();
+        }
+      } finally {
+        completeBtn.disabled = false;
       }
-    } catch {
-      if (row) row.classList.remove('is-removing');
+      return;
+    }
+
+    const deleteBtn = e.target.closest('.action-items-row-delete');
+    if (deleteBtn) {
+      pendingDeleteId = Number(deleteBtn.dataset.id);
+      deleteConfirmModal.hidden = false;
+    }
+  });
+}
+
+async function confirmDeleteActionItem() {
+  if (pendingDeleteId === null) return;
+  const id = pendingDeleteId;
+  deleteConfirmModal.hidden = true;
+  pendingDeleteId = null;
+
+  const row = actionItemsListEl.querySelector(`.action-items-row[data-id="${id}"]`);
+  if (row) row.classList.add('is-removing');
+  try {
+    const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      actionItems = actionItems.filter((t) => t.id !== id);
+      setTimeout(renderActionItems, 200);
+    } else if (row) {
+      row.classList.remove('is-removing');
+    }
+  } catch {
+    if (row) row.classList.remove('is-removing');
+  }
+}
+
+if (deleteConfirmConfirm) deleteConfirmConfirm.addEventListener('click', confirmDeleteActionItem);
+if (deleteConfirmCancel) {
+  deleteConfirmCancel.addEventListener('click', () => {
+    pendingDeleteId = null;
+    deleteConfirmModal.hidden = true;
+  });
+}
+if (deleteConfirmModal) {
+  deleteConfirmModal.addEventListener('click', (e) => {
+    if (e.target === deleteConfirmModal) {
+      pendingDeleteId = null;
+      deleteConfirmModal.hidden = true;
     }
   });
 }

@@ -38,18 +38,23 @@ export async function onRequestPatch(context) {
     updates.push('due_date = ?');
     values.push(dueDate);
   }
+  if (body.completed !== undefined) {
+    if (typeof body.completed !== 'boolean') return badRequest('Invalid completed value.');
+    updates.push('completed = ?');
+    values.push(body.completed ? 1 : 0);
+  }
 
   if (!updates.length) return badRequest('No fields to update.');
 
   values.push(id);
-  const task = await env.DB.prepare(
-    `UPDATE tasks SET ${updates.join(', ')} WHERE id = ? RETURNING id, property, name, priority, owner, due_date, created_at`
+  const row = await env.DB.prepare(
+    `UPDATE tasks SET ${updates.join(', ')} WHERE id = ? RETURNING id, property, name, priority, owner, due_date, completed, created_at`
   )
     .bind(...values)
     .first();
 
-  if (!task) return notFound();
-  return Response.json({ task });
+  if (!row) return notFound();
+  return Response.json({ task: { ...row, completed: Boolean(row.completed) } });
 }
 
 export async function onRequestDelete(context) {

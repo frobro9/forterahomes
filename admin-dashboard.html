@@ -84,9 +84,15 @@
         </form>
 
         <div class="action-items-controls">
-          <span class="action-items-controls-label">Sort by</span>
-          <button type="button" class="action-items-sort-btn active" data-sort="priority">Priority</button>
-          <button type="button" class="action-items-sort-btn" data-sort="due_date">Due Date</button>
+          <div class="action-items-tabs">
+            <button type="button" class="action-items-sort-btn active" data-tab="active">Active</button>
+            <button type="button" class="action-items-sort-btn" data-tab="completed">Completed</button>
+          </div>
+          <div class="action-items-sort">
+            <span class="action-items-controls-label">Sort by</span>
+            <button type="button" class="action-items-sort-btn active" data-sort="priority">Priority</button>
+            <button type="button" class="action-items-sort-btn" data-sort="due_date">Due Date</button>
+          </div>
         </div>
 
         <ul class="action-items-list" id="actionItemsList"></ul>
@@ -176,30 +182,42 @@
   </div>
 
   <!-- Add event modal -->
-  <div class="cal-modal" id="calModal" hidden>
-    <div class="cal-modal-card">
-      <h3 class="cal-modal-title">Add Event</h3>
+  <div class="portal-modal" id="calModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title">Add Event</h3>
       <form id="calEventForm" novalidate>
-        <p class="cal-modal-error" id="calEventError" role="alert"></p>
-        <div class="cal-modal-field">
+        <p class="portal-modal-error" id="calEventError" role="alert"></p>
+        <div class="portal-modal-field">
           <label for="calEventName">Event name</label>
           <input class="portal-field-input" type="text" id="calEventName" name="name" placeholder="e.g. Demolition" maxlength="200" required>
         </div>
-        <div class="cal-modal-row">
-          <div class="cal-modal-field">
+        <div class="portal-modal-row">
+          <div class="portal-modal-field">
             <label for="calEventStart">Start date</label>
             <input class="portal-field-input" type="date" id="calEventStart" name="startDate" required>
           </div>
-          <div class="cal-modal-field">
+          <div class="portal-modal-field">
             <label for="calEventEnd">End date</label>
             <input class="portal-field-input" type="date" id="calEventEnd" name="endDate" required>
           </div>
         </div>
-        <div class="cal-modal-actions">
+        <div class="portal-modal-actions">
           <button type="button" class="portal-btn-outline" id="calModalCancel">Cancel</button>
           <button type="submit" class="portal-btn">Add Event</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div class="portal-modal" id="deleteConfirmModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title">Delete this task?</h3>
+      <p class="portal-modal-desc">Are you sure you'd like to delete it? This can't be undone.</p>
+      <div class="portal-modal-actions">
+        <button type="button" class="portal-btn-outline" id="deleteConfirmCancel">Cancel</button>
+        <button type="button" class="portal-btn portal-btn-danger" id="deleteConfirmConfirm">Delete</button>
+      </div>
     </div>
   </div>
 
