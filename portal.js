@@ -192,27 +192,54 @@ if (actionItemsForm) {
   });
 }
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function markActionItemComplete(id, row) {
+  if (row) {
+    row.style.pointerEvents = 'none';
+    row.classList.add('is-completing');
+  }
+
+  const patchPromise = fetch(`/api/tasks/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ completed: true }),
+  });
+
+  // Let the success flash + checkmark pulse play, then slide the row out,
+  // before swapping the data underneath it.
+  await wait(350);
+  if (row) row.classList.add('is-removing');
+  await wait(250);
+
+  try {
+    const res = await patchPromise;
+    if (res.ok) {
+      const data = await res.json();
+      const idx = actionItems.findIndex((t) => t.id === id);
+      if (idx !== -1) actionItems[idx] = data.task;
+      renderActionItems();
+    } else if (row) {
+      row.style.pointerEvents = '';
+      row.classList.remove('is-completing', 'is-removing');
+    }
+  } catch {
+    if (row) {
+      row.style.pointerEvents = '';
+      row.classList.remove('is-completing', 'is-removing');
+    }
+  }
+}
+
 if (actionItemsListEl) {
   actionItemsListEl.addEventListener('click', async (e) => {
     const completeBtn = e.target.closest('.action-items-row-complete');
     if (completeBtn) {
       const id = Number(completeBtn.dataset.id);
-      completeBtn.disabled = true;
-      try {
-        const res = await fetch(`/api/tasks/${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ completed: true }),
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const idx = actionItems.findIndex((t) => t.id === id);
-          if (idx !== -1) actionItems[idx] = data.task;
-          renderActionItems();
-        }
-      } finally {
-        completeBtn.disabled = false;
-      }
+      const row = completeBtn.closest('.action-items-row');
+      await markActionItemComplete(id, row);
       return;
     }
 

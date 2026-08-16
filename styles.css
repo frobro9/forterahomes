@@ -1463,6 +1463,28 @@ html:has(.portal-body) { overflow-x: hidden; }
 .action-items-row.is-completed .action-items-row-name { text-decoration: line-through; color: rgba(28,26,24,0.4); }
 .action-items-row.is-completed .action-items-priority-dot { opacity: 0.4; }
 
+/* Brief success flash + pulse when a task is marked complete, before it
+   fades away (is-removing gets added right after this plays). */
+.action-items-row.is-completing {
+  background: rgba(74,143,92,0.1);
+  transition: background 0.3s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+.action-items-row.is-completing .action-items-row-name {
+  text-decoration: line-through;
+  color: rgba(28,26,24,0.4);
+  transition: color 0.3s ease;
+}
+.action-items-row.is-completing .action-items-priority-dot {
+  opacity: 0.4;
+  transform: scale(0.7);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.action-items-row.is-completing .action-items-row-complete {
+  color: #4a8f5c;
+  transform: scale(1.35) rotate(-10deg);
+  transition: color 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 .action-items-row-main { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; }
 .action-items-row-meta { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
 
