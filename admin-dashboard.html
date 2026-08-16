@@ -16,22 +16,212 @@
   <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
   <script defer src="/_vercel/insights/script.js"></script>
 </head>
-<body class="admin-dashboard-body">
+<body class="portal-body">
 
-  <div class="admin-dashboard-page">
-    <a href="/" class="admin-dashboard-logo" aria-label="Fortera Homes">FORTERA</a>
-    <p class="admin-dashboard-label">MANAGEMENT PORTAL</p>
-    <h1 class="admin-dashboard-title">You're signed in</h1>
-    <p class="admin-dashboard-desc">This is a placeholder for the management portal. Portal features will be built out here.</p>
-    <button type="button" class="admin-dashboard-logout" id="adminLogoutBtn">Log Out</button>
+  <div class="portal-shell">
+    <aside class="portal-sidebar">
+      <div class="portal-sidebar-inner">
+        <a href="/" class="portal-sidebar-logo" aria-label="Fortera Homes">FORTERA</a>
+
+        <nav class="portal-nav" id="portalNav">
+          <div class="portal-nav-group">
+            <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="properties" aria-expanded="true">
+              <span>Properties</span>
+              <span class="portal-nav-parent-chevron" aria-hidden="true">&#8250;</span>
+            </button>
+            <div class="portal-nav-children is-open" data-children="properties">
+              <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="beechwood" aria-expanded="true">
+                <span>Beechwood Collection</span>
+                <span class="portal-nav-parent-chevron" aria-hidden="true">&#8250;</span>
+              </button>
+              <div class="portal-nav-children is-open" data-children="beechwood">
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="action-items">Action Items</button>
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="calendar">Calendar</button>
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="budget">Budget Tracker</button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="finder">Property Finder Tool</button>
+          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="pm-portal">Property Management Portal</button>
+        </nav>
+
+        <div class="portal-sidebar-footer">
+          <button type="button" class="portal-sidebar-logout" id="portalLogoutBtn">Log Out</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="portal-main">
+
+      <!-- Action Items -->
+      <section class="portal-page" data-page="action-items">
+        <div class="portal-page-header">
+          <div>
+            <span class="portal-page-label">BEECHWOOD COLLECTION</span>
+            <h1 class="portal-page-title">Action Items</h1>
+          </div>
+        </div>
+
+        <form class="action-items-add-form" id="actionItemsForm" novalidate>
+          <input class="portal-field-input" type="text" name="name" id="actionItemName" placeholder="Task name" maxlength="200" required>
+          <select class="portal-field-select" name="priority" id="actionItemPriority">
+            <option value="high">High</option>
+            <option value="medium" selected>Medium</option>
+            <option value="low">Low</option>
+            <option value="na">N/A</option>
+          </select>
+          <select class="portal-field-select" name="owner" id="actionItemOwner">
+            <option>Cam Frohar</option>
+            <option>Adam Hosny</option>
+            <option>Ryan Gray</option>
+            <option>Ryan Frohar</option>
+            <option>Jacob Splinter</option>
+            <option>Other</option>
+          </select>
+          <input class="portal-field-input" type="date" name="dueDate" id="actionItemDueDate">
+          <button type="submit" class="portal-btn">Add Task</button>
+        </form>
+
+        <div class="action-items-controls">
+          <div class="action-items-tabs">
+            <button type="button" class="action-items-sort-btn active" data-tab="active">Active</button>
+            <button type="button" class="action-items-sort-btn" data-tab="completed">Completed</button>
+          </div>
+          <div class="action-items-sort">
+            <span class="action-items-controls-label">Sort by</span>
+            <button type="button" class="action-items-sort-btn active" data-sort="priority">Priority</button>
+            <button type="button" class="action-items-sort-btn" data-sort="due_date">Due Date</button>
+          </div>
+        </div>
+
+        <ul class="action-items-list" id="actionItemsList"></ul>
+      </section>
+
+      <!-- Calendar -->
+      <section class="portal-page" data-page="calendar">
+        <div class="portal-page-header">
+          <div>
+            <span class="portal-page-label">BEECHWOOD COLLECTION</span>
+            <h1 class="portal-page-title">Calendar</h1>
+          </div>
+          <button type="button" class="portal-btn" id="calAddEventBtn">+ Add Event</button>
+        </div>
+
+        <div class="cal-toolbar">
+          <button type="button" class="cal-nav-btn" id="calPrevBtn" aria-label="Previous month">&#8249;</button>
+          <h2 class="cal-month-label" id="calMonthLabel"></h2>
+          <button type="button" class="cal-nav-btn" id="calNextBtn" aria-label="Next month">&#8250;</button>
+        </div>
+
+        <div class="cal-grid">
+          <div class="cal-weekdays">
+            <span class="cal-weekday">Sun</span>
+            <span class="cal-weekday">Mon</span>
+            <span class="cal-weekday">Tue</span>
+            <span class="cal-weekday">Wed</span>
+            <span class="cal-weekday">Thu</span>
+            <span class="cal-weekday">Fri</span>
+            <span class="cal-weekday">Sat</span>
+          </div>
+          <div id="calWeeks"></div>
+        </div>
+
+        <div class="cal-summary">
+          <h3 class="cal-summary-title">Timeline Summary</h3>
+          <div class="cal-summary-list" id="calSummaryList"></div>
+        </div>
+      </section>
+
+      <!-- Budget Tracker -->
+      <section class="portal-page" data-page="budget">
+        <div class="portal-page-header">
+          <div>
+            <span class="portal-page-label">BEECHWOOD COLLECTION</span>
+            <h1 class="portal-page-title">Budget Tracker</h1>
+          </div>
+        </div>
+        <div class="portal-coming-soon">
+          <p class="portal-coming-soon-label">COMING SOON</p>
+          <h2 class="portal-coming-soon-title">Budget tracking is on the way</h2>
+          <p class="portal-coming-soon-desc">This section will let you track project costs against budget for Beechwood Collection.</p>
+        </div>
+      </section>
+
+      <!-- Property Finder Tool -->
+      <section class="portal-page" data-page="finder">
+        <div class="portal-page-header">
+          <div>
+            <span class="portal-page-label">TOOLS</span>
+            <h1 class="portal-page-title">Property Finder Tool</h1>
+          </div>
+        </div>
+        <div class="portal-coming-soon">
+          <p class="portal-coming-soon-label">COMING SOON</p>
+          <h2 class="portal-coming-soon-title">Property Finder Tool is on the way</h2>
+          <p class="portal-coming-soon-desc">This section will help you search and evaluate new acquisition opportunities.</p>
+        </div>
+      </section>
+
+      <!-- Property Management Portal -->
+      <section class="portal-page" data-page="pm-portal">
+        <div class="portal-page-header">
+          <div>
+            <span class="portal-page-label">TOOLS</span>
+            <h1 class="portal-page-title">Property Management Portal</h1>
+          </div>
+        </div>
+        <div class="portal-coming-soon">
+          <p class="portal-coming-soon-label">COMING SOON</p>
+          <h2 class="portal-coming-soon-title">Property Management Portal is on the way</h2>
+          <p class="portal-coming-soon-desc">This section will handle day-to-day management of completed rental properties.</p>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-  <script>
-    document.getElementById('adminLogoutBtn').addEventListener('click', async () => {
-      await fetch('/api/logout', { method: 'POST' });
-      window.location.href = '/admin';
-    });
-  </script>
+  <!-- Add event modal -->
+  <div class="portal-modal" id="calModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title">Add Event</h3>
+      <form id="calEventForm" novalidate>
+        <p class="portal-modal-error" id="calEventError" role="alert"></p>
+        <div class="portal-modal-field">
+          <label for="calEventName">Event name</label>
+          <input class="portal-field-input" type="text" id="calEventName" name="name" placeholder="e.g. Demolition" maxlength="200" required>
+        </div>
+        <div class="portal-modal-row">
+          <div class="portal-modal-field">
+            <label for="calEventStart">Start date</label>
+            <input class="portal-field-input" type="date" id="calEventStart" name="startDate" required>
+          </div>
+          <div class="portal-modal-field">
+            <label for="calEventEnd">End date</label>
+            <input class="portal-field-input" type="date" id="calEventEnd" name="endDate" required>
+          </div>
+        </div>
+        <div class="portal-modal-actions">
+          <button type="button" class="portal-btn-outline" id="calModalCancel">Cancel</button>
+          <button type="submit" class="portal-btn">Add Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete confirmation modal -->
+  <div class="portal-modal" id="deleteConfirmModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title">Delete this task?</h3>
+      <p class="portal-modal-desc">Are you sure you'd like to delete it? This can't be undone.</p>
+      <div class="portal-modal-actions">
+        <button type="button" class="portal-btn-outline" id="deleteConfirmCancel">Cancel</button>
+        <button type="button" class="portal-btn portal-btn-danger" id="deleteConfirmConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/portal.js"></script>
 
 </body>
 </html>

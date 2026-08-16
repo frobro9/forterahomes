@@ -2,7 +2,7 @@ const globals = require('globals');
 
 module.exports = [
   {
-    files: ['main.js'],
+    files: ['main.js', 'portal.js'],
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'script',

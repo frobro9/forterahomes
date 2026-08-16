@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint:js": "eslint main.js",
+    "lint:js": "eslint main.js portal.js",
     "lint:html": "htmlhint index.html"
   },
   "devDependencies": {
