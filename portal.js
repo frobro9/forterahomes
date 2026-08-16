@@ -32,6 +32,7 @@ function showPage(pageKey) {
   history.replaceState(null, '', `#${pageKey}`);
   if (pageKey === 'action-items' && !actionItemsLoaded) loadActionItems();
   if (pageKey === 'calendar' && !calendarLoaded) loadCalendar();
+  if (pageKey === 'finder' && !finderLoaded) loadFinder();
 }
 
 navLeaves.forEach((btn) => {
@@ -614,6 +615,268 @@ if (calSummaryList) {
       }
     } catch {
       // leave list as-is; user can retry
+    }
+  });
+}
+
+/* ================================================================
+   PROPERTY FINDER TOOL
+   ================================================================ */
+let finderLoaded = false;
+let finderSettings = null;
+let finderAnalyses = [];
+
+const FINDER_ZONE_LABELS = {
+  R1: 'Low Density — Single-Detached',
+  R2: 'Low-Medium Density — Semi/Duplex',
+  R3: 'Medium Density — Townhome / Low-Rise',
+  R4: 'Medium-High Density — Low-Rise Apartment',
+  R5: 'High Density — Apartment',
+  AM: 'Mixed-Use — Arterial Mainstreet',
+  TM: 'Mixed-Use — Traditional Mainstreet',
+  GM: 'Mixed-Use — General Mainstreet',
+  MC: 'Mixed-Use Centre',
+  MD: 'Mixed-Use Downtown',
+  RU: 'Rural',
+  AG: 'Agricultural',
+  EP: 'Environmental Protection',
+};
+
+function finderZoneLabel(zoneMain) {
+  return FINDER_ZONE_LABELS[(zoneMain || '').toUpperCase()] || 'Unclassified / Other';
+}
+
+const finderCurrencyFmt = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+function formatFinderCurrency(n) {
+  return finderCurrencyFmt.format(Number(n) || 0);
+}
+function formatFinderPercent(n) {
+  return `${(Number(n) || 0).toFixed(1)}%`;
+}
+function finderScoreClass(score) {
+  if (score >= 75) return 'finder-score--good';
+  if (score >= 50) return 'finder-score--ok';
+  return 'finder-score--poor';
+}
+
+const finderForm = document.getElementById('finderForm');
+const finderFormError = document.getElementById('finderFormError');
+const finderResultEl = document.getElementById('finderResult');
+const finderHistoryList = document.getElementById('finderHistoryList');
+const finderSettingsBtn = document.getElementById('finderSettingsBtn');
+const finderSettingsModal = document.getElementById('finderSettingsModal');
+const finderSettingsForm = document.getElementById('finderSettingsForm');
+const finderSettingsError = document.getElementById('finderSettingsError');
+const finderSettingsCancel = document.getElementById('finderSettingsCancel');
+
+async function loadFinder() {
+  finderLoaded = true;
+  try {
+    const [settingsRes, analysesRes] = await Promise.all([
+      fetch('/api/finder-settings'),
+      fetch('/api/finder-analyses'),
+    ]);
+    const settingsData = await settingsRes.json();
+    const analysesData = await analysesRes.json();
+    finderSettings = settingsData.settings || null;
+    finderAnalyses = analysesData.analyses || [];
+    renderFinderHistory();
+  } catch {
+    if (finderHistoryList) finderHistoryList.innerHTML = '<p class="finder-history-empty">Couldn’t load past analyses.</p>';
+  }
+}
+
+function renderFinderResult(analysis, scoreBreakdown) {
+  if (!finderResultEl) return;
+  finderResultEl.hidden = false;
+  const scoreClass = finderScoreClass(analysis.score);
+  finderResultEl.innerHTML = `
+    <div class="finder-result-header">
+      <div class="finder-score-badge ${scoreClass}">
+        <span class="finder-score-value">${Math.round(analysis.score)}</span>
+        <span class="finder-score-max">/100</span>
+      </div>
+      <div class="finder-result-heading">
+        <p class="finder-result-address">${escapeHtml(analysis.address)}</p>
+        <p class="finder-result-zone">${escapeHtml(analysis.zone_code || 'Zone unknown')} — ${escapeHtml(finderZoneLabel(analysis.zone_main))}</p>
+      </div>
+    </div>
+    <div class="finder-result-grid">
+      <div class="finder-stat"><span class="finder-stat-label">Est. Units</span><span class="finder-stat-value">${analysis.estimated_units}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">Buildable Sq Ft</span><span class="finder-stat-value">${Math.round(analysis.estimated_buildable_sqft).toLocaleString()}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">Land $/Sq Ft</span><span class="finder-stat-value">${formatFinderCurrency(analysis.cost_per_sqft_land)}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">Hard Cost</span><span class="finder-stat-value">${formatFinderCurrency(analysis.hard_cost)}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">Soft Cost</span><span class="finder-stat-value">${formatFinderCurrency(analysis.soft_cost)}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">Total Project Cost</span><span class="finder-stat-value">${formatFinderCurrency(analysis.total_project_cost)}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">Annual Gross Rent</span><span class="finder-stat-value">${formatFinderCurrency(analysis.annual_gross_rent)}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">NOI</span><span class="finder-stat-value">${formatFinderCurrency(analysis.noi)}</span></div>
+      <div class="finder-stat"><span class="finder-stat-label">Cap Rate</span><span class="finder-stat-value">${formatFinderPercent(analysis.cap_rate)}</span></div>
+    </div>
+    ${scoreBreakdown ? `
+    <div class="finder-score-breakdown">
+      <span>Cap rate fit ${Math.round(scoreBreakdown.capRateComponent)}</span>
+      <span>Land cost fit ${Math.round(scoreBreakdown.costComponent)}</span>
+      <span>Density ${Math.round(scoreBreakdown.densityComponent)}</span>
+    </div>` : ''}
+    <p class="finder-disclaimer">Estimate only — the zoning-derived unit count is a planning-level heuristic, not a confirmed site plan. Confirm with a zoning professional before purchase.</p>
+  `;
+}
+
+function renderFinderHistory() {
+  if (!finderHistoryList) return;
+  if (!finderAnalyses.length) {
+    finderHistoryList.innerHTML = '<p class="finder-history-empty">No analyses yet — run one above.</p>';
+    return;
+  }
+  finderHistoryList.innerHTML = finderAnalyses
+    .map(
+      (a) => `
+    <div class="finder-history-row" data-id="${a.id}">
+      <span class="finder-history-score ${finderScoreClass(a.score)}">${Math.round(a.score)}</span>
+      <div class="finder-history-main">
+        <span class="finder-history-address">${escapeHtml(a.address)}</span>
+        <span class="finder-history-meta">${escapeHtml(a.zone_code || '—')} · ${a.estimated_units} units · ${formatFinderCurrency(a.list_price)}</span>
+      </div>
+      <button type="button" class="finder-history-remove" aria-label="Delete analysis" data-id="${a.id}">&times;</button>
+    </div>`
+    )
+    .join('');
+}
+
+if (finderForm) {
+  finderForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    finderFormError.style.display = 'none';
+    const address = document.getElementById('finderAddress').value.trim();
+    const listPrice = document.getElementById('finderListPrice').value;
+    const lotSqft = document.getElementById('finderLotSqft').value;
+    if (!address || !listPrice || !lotSqft) return;
+
+    const submitBtn = document.getElementById('finderSubmitBtn');
+    submitBtn.disabled = true;
+    const originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Analyzing…';
+
+    try {
+      const res = await fetch('/api/finder-analyses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address, listPrice: Number(listPrice), lotSqft: Number(lotSqft) }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        finderAnalyses.unshift(data.analysis);
+        renderFinderResult(data.analysis, data.scoreBreakdown);
+        renderFinderHistory();
+        finderForm.reset();
+      } else {
+        finderFormError.textContent = data.error || 'Something went wrong.';
+        finderFormError.style.display = 'block';
+      }
+    } catch {
+      finderFormError.textContent = 'Something went wrong. Please try again.';
+      finderFormError.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+    }
+  });
+}
+
+if (finderHistoryList) {
+  finderHistoryList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.finder-history-remove');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    try {
+      const res = await fetch(`/api/finder-analyses/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        finderAnalyses = finderAnalyses.filter((a) => a.id !== id);
+        renderFinderHistory();
+      }
+    } catch {
+      // leave list as-is; user can retry
+    }
+  });
+}
+
+const FINDER_SETTINGS_FIELD_IDS = {
+  hard_cost_per_sqft: 'fsHardCost',
+  soft_cost_pct: 'fsSoftCost',
+  avg_unit_sqft: 'fsUnitSqft',
+  avg_monthly_rent: 'fsRent',
+  vacancy_pct: 'fsVacancy',
+  opex_pct: 'fsOpex',
+  target_cap_rate_pct: 'fsTargetCap',
+  target_cost_per_sqft: 'fsTargetCost',
+  weight_cap_rate: 'fsWeightCap',
+  weight_cost: 'fsWeightCost',
+  weight_density: 'fsWeightDensity',
+};
+
+function openFinderSettings() {
+  if (finderSettings) {
+    Object.entries(FINDER_SETTINGS_FIELD_IDS).forEach(([field, id]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = finderSettings[field];
+    });
+  }
+  finderSettingsError.style.display = 'none';
+  finderSettingsModal.hidden = false;
+}
+
+if (finderSettingsBtn) {
+  finderSettingsBtn.addEventListener('click', async () => {
+    if (!finderSettings) {
+      try {
+        const res = await fetch('/api/finder-settings');
+        const data = await res.json();
+        finderSettings = data.settings;
+      } catch {
+        // fall through with no cached settings; form will just show blanks
+      }
+    }
+    openFinderSettings();
+  });
+}
+if (finderSettingsCancel) finderSettingsCancel.addEventListener('click', () => { finderSettingsModal.hidden = true; });
+if (finderSettingsModal) {
+  finderSettingsModal.addEventListener('click', (e) => {
+    if (e.target === finderSettingsModal) finderSettingsModal.hidden = true;
+  });
+}
+
+if (finderSettingsForm) {
+  finderSettingsForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    finderSettingsError.style.display = 'none';
+
+    const payload = {};
+    for (const [field, id] of Object.entries(FINDER_SETTINGS_FIELD_IDS)) {
+      payload[field] = Number(document.getElementById(id).value);
+    }
+
+    const submitBtn = finderSettingsForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    try {
+      const res = await fetch('/api/finder-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        finderSettings = data.settings;
+        finderSettingsModal.hidden = true;
+      } else {
+        finderSettingsError.textContent = data.error || 'Something went wrong.';
+        finderSettingsError.style.display = 'block';
+      }
+    } catch {
+      finderSettingsError.textContent = 'Something went wrong. Please try again.';
+      finderSettingsError.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
     }
   });
 }
