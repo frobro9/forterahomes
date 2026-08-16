@@ -1518,8 +1518,10 @@ html:has(.portal-body) { overflow-x: hidden; }
   background: var(--white);
   padding: 0.9rem 1.25rem;
   box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-  transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
+  cursor: pointer;
+  transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease, box-shadow 0.2s ease;
 }
+.action-items-row:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.09); }
 .action-items-row.is-entering { opacity: 0; transform: translateY(-6px); }
 .action-items-row.is-removing { opacity: 0; transform: translateX(16px); }
 .action-items-row.is-completed .action-items-row-name { text-decoration: line-through; color: rgba(28,26,24,0.4); }
@@ -1737,7 +1739,9 @@ html:has(.portal-body) { overflow-x: hidden; }
   color: var(--charcoal);
   margin-bottom: 0.5rem;
 }
-.portal-modal-field .portal-field-input { width: 100%; }
+.portal-modal-field .portal-field-input,
+.portal-modal-field .portal-field-select,
+.portal-modal-field .portal-multiselect { width: 100%; }
 .portal-modal-row { display: flex; gap: 1rem; }
 .portal-modal-row .portal-modal-field { flex: 1; }
 .portal-modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.75rem; }
