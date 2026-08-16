@@ -1,5 +1,6 @@
 import { createSessionToken, SESSION_COOKIE, SESSION_TTL_SECONDS } from '../_lib/session.js';
 import { verifyPassword } from '../_lib/password.js';
+import { USER_FIRST_NAMES } from '../_lib/portal-constants.js';
 
 // Valid-format hash of a password nobody has, so lookups for unknown
 // usernames still run a verify — keeps response timing from revealing
@@ -46,7 +47,8 @@ export async function onRequestPost(context) {
     return Response.json({ error: 'Server misconfigured.' }, { status: 500 });
   }
 
-  const token = await createSessionToken(user.username, secret);
+  const firstName = USER_FIRST_NAMES[user.username] || null;
+  const token = await createSessionToken(user.username, firstName, secret);
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,
     headers: {

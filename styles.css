@@ -1270,6 +1270,13 @@ html:has(.portal-body) { overflow-x: hidden; }
   border-top: 1px solid rgba(255,255,255,0.08);
 }
 
+.portal-sidebar-welcome {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.75rem;
+}
+
 .portal-sidebar-logout {
   width: 100%;
   background: none;
