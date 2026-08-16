@@ -1606,9 +1606,9 @@ html:has(.portal-body) { overflow-x: hidden; }
   text-overflow: ellipsis;
   pointer-events: auto;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: filter 0.15s ease;
 }
-.cal-event-bar:hover { background: #9e8369; }
+.cal-event-bar:hover { filter: brightness(0.9); }
 
 .cal-summary { margin-top: 2.5rem; }
 .cal-summary-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }

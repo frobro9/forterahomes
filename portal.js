@@ -317,6 +317,15 @@ function parseDate(str) {
   return new Date(y, m - 1, d);
 }
 
+const CAL_EVENT_COLORS = [
+  '#a6785c', '#5c7f8f', '#8f6b9e', '#7a9459',
+  '#c17f4f', '#557a9e', '#b06a86', '#6f8f7a',
+];
+
+function calEventColor(ev) {
+  return CAL_EVENT_COLORS[ev.id % CAL_EVENT_COLORS.length];
+}
+
 async function loadCalendar() {
   calendarLoaded = true;
   const now = new Date();
@@ -408,7 +417,8 @@ function renderCalendar() {
         const left = (startCol / 7) * 100;
         const width = ((endCol - startCol + 1) / 7) * 100;
         const top = item.lane * 22;
-        return `<div class="cal-event-bar" style="left:${left}%;width:calc(${width}% - 4px);top:${top}px" title="${escapeHtml(item.ev.name)}">${escapeHtml(item.ev.name)}</div>`;
+        const color = calEventColor(item.ev);
+        return `<div class="cal-event-bar" style="left:${left}%;width:calc(${width}% - 4px);top:${top}px;background:${color}" title="${escapeHtml(item.ev.name)}">${escapeHtml(item.ev.name)}</div>`;
       })
       .join('');
 
@@ -438,7 +448,7 @@ function renderCalSummary() {
     .map(
       (ev) => `
     <div class="cal-summary-row">
-      <span class="cal-summary-swatch"></span>
+      <span class="cal-summary-swatch" style="background:${calEventColor(ev)}"></span>
       <span class="cal-summary-name">${escapeHtml(ev.name)}</span>
       <span class="cal-summary-dates">${formatShortDate(ev.start_date)} – ${formatShortDate(ev.end_date)}</span>
       <span class="cal-summary-duration">${durationLabel(ev.start_date, ev.end_date)}</span>
