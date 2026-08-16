@@ -17,8 +17,8 @@ async function hmacKey(secret) {
   );
 }
 
-export async function createSessionToken(username, secret) {
-  const payload = { u: username, exp: Date.now() + SESSION_TTL_SECONDS * 1000 };
+export async function createSessionToken(username, firstName, secret) {
+  const payload = { u: username, n: firstName || null, exp: Date.now() + SESSION_TTL_SECONDS * 1000 };
   const payloadB64 = base64urlEncode(new TextEncoder().encode(JSON.stringify(payload)));
   const key = await hmacKey(secret);
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payloadB64));
@@ -48,7 +48,7 @@ export async function verifySessionToken(token, secret) {
   try {
     const payload = JSON.parse(new TextDecoder().decode(base64urlDecode(payloadB64)));
     if (!payload.exp || Date.now() > payload.exp) return null;
-    return payload.u;
+    return { username: payload.u, firstName: payload.n || null };
   } catch {
     return null;
   }

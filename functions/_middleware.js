@@ -1,7 +1,7 @@
 import { verifySessionToken, SESSION_COOKIE } from './_lib/session.js';
 
 const PROTECTED_PAGES = new Set(['/admin-dashboard', '/admin-dashboard.html', '/admin-dashboard/']);
-const PROTECTED_API_PREFIXES = ['/api/tasks', '/api/events'];
+const PROTECTED_API_PREFIXES = ['/api/tasks', '/api/events', '/api/me'];
 
 function getCookie(request, name) {
   const header = request.headers.get('cookie') || '';
@@ -24,14 +24,15 @@ export async function onRequest(context) {
 
   const secret = env.SESSION_SECRET;
   const token = getCookie(request, SESSION_COOKIE);
-  const username = secret ? await verifySessionToken(token, secret) : null;
+  const session = secret ? await verifySessionToken(token, secret) : null;
 
-  if (!username) {
+  if (!session) {
     if (isProtectedApi) {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
     return Response.redirect(new URL('/admin', url), 302);
   }
 
+  context.data.user = session;
   return next();
 }
