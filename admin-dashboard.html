@@ -228,6 +228,50 @@
     </div>
   </div>
 
+  <!-- Edit task modal -->
+  <div class="portal-modal" id="editItemModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title" id="editItemTaskName">Edit task</h3>
+      <form id="editItemForm" novalidate>
+        <p class="portal-modal-error" id="editItemError" role="alert"></p>
+        <div class="portal-modal-field">
+          <label for="editItemPriority">Priority</label>
+          <select class="portal-field-select" id="editItemPriority" name="priority">
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="na">N/A</option>
+          </select>
+        </div>
+        <div class="portal-modal-field">
+          <label for="editItemOwnerTrigger">Assignees</label>
+          <div class="portal-multiselect" id="editItemOwnerField">
+            <button type="button" class="portal-field-select portal-multiselect-trigger" id="editItemOwnerTrigger" aria-haspopup="true" aria-expanded="false">
+              <span id="editItemOwnerLabel">Assign to</span>
+            </button>
+            <div class="portal-multiselect-panel" id="editItemOwnerPanel" hidden>
+              <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
+              <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="portal-modal-field">
+          <label for="editItemDueDate">Due date</label>
+          <input class="portal-field-input" type="date" id="editItemDueDate" name="dueDate">
+        </div>
+        <div class="portal-modal-actions">
+          <button type="button" class="portal-btn-outline" id="editItemCancel">Cancel</button>
+          <button type="submit" class="portal-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="/portal.js"></script>
 
 </body>

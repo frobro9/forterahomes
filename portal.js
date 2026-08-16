@@ -80,71 +80,84 @@ const deleteConfirmModal = document.getElementById('deleteConfirmModal');
 const deleteConfirmCancel = document.getElementById('deleteConfirmCancel');
 const deleteConfirmConfirm = document.getElementById('deleteConfirmConfirm');
 
-/* ---- Owner multi-select (add task form) ------------------------ */
-const ownerField = document.getElementById('actionItemOwnerField');
-const ownerTrigger = document.getElementById('actionItemOwnerTrigger');
-const ownerLabel = document.getElementById('actionItemOwnerLabel');
-const ownerPanel = document.getElementById('actionItemOwnerPanel');
-const ownerCheckboxes = ownerPanel ? Array.from(ownerPanel.querySelectorAll('input[type="checkbox"]')) : [];
-const ownerAllCheckbox = ownerPanel ? ownerPanel.querySelector('input[value="All"]') : null;
+/* ---- Owner multi-select (reused by the add form and edit modal) --- */
+function initOwnerMultiselect(fieldEl, triggerEl, labelEl, panelEl) {
+  const checkboxes = panelEl ? Array.from(panelEl.querySelectorAll('input[type="checkbox"]')) : [];
+  const allCheckbox = panelEl ? panelEl.querySelector('input[value="All"]') : null;
 
-function updateOwnerLabel() {
-  const selected = ownerCheckboxes.filter((cb) => cb.checked && cb.value !== 'All').map((cb) => cb.value);
-  if (ownerAllCheckbox && ownerAllCheckbox.checked) {
-    ownerLabel.textContent = 'All';
-  } else if (selected.length) {
-    ownerLabel.textContent = selected.join(', ');
-  } else {
-    ownerLabel.textContent = 'Assign to';
+  function updateLabel() {
+    const selected = checkboxes.filter((cb) => cb.checked && cb.value !== 'All').map((cb) => cb.value);
+    if (allCheckbox && allCheckbox.checked) {
+      labelEl.textContent = 'All';
+    } else if (selected.length) {
+      labelEl.textContent = selected.join(', ');
+    } else {
+      labelEl.textContent = 'Assign to';
+    }
   }
-}
 
-function getSelectedOwnerValue() {
-  if (ownerAllCheckbox && ownerAllCheckbox.checked) return 'All';
-  return ownerCheckboxes
-    .filter((cb) => cb.checked && cb.value !== 'All')
-    .map((cb) => cb.value)
-    .join(', ');
-}
+  function getValue() {
+    if (allCheckbox && allCheckbox.checked) return 'All';
+    return checkboxes
+      .filter((cb) => cb.checked && cb.value !== 'All')
+      .map((cb) => cb.value)
+      .join(', ');
+  }
 
-function resetOwnerSelect() {
-  ownerCheckboxes.forEach((cb) => { cb.checked = false; });
-  updateOwnerLabel();
-}
+  function setValue(owner) {
+    const parts = owner === 'All' ? ['All'] : owner ? owner.split(', ') : [];
+    checkboxes.forEach((cb) => { cb.checked = parts.includes(cb.value); });
+    updateLabel();
+  }
 
-function closeOwnerPanel() {
-  if (!ownerPanel || ownerPanel.hidden) return;
-  ownerPanel.hidden = true;
-  ownerTrigger.setAttribute('aria-expanded', 'false');
-}
+  function reset() {
+    checkboxes.forEach((cb) => { cb.checked = false; });
+    updateLabel();
+  }
 
-if (ownerTrigger && ownerPanel) {
-  ownerTrigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = !ownerPanel.hidden;
-    ownerPanel.hidden = isOpen;
-    ownerTrigger.setAttribute('aria-expanded', String(!isOpen));
-  });
+  function close() {
+    if (!panelEl || panelEl.hidden) return;
+    panelEl.hidden = true;
+    triggerEl.setAttribute('aria-expanded', 'false');
+  }
 
-  ownerCheckboxes.forEach((cb) => {
-    cb.addEventListener('change', () => {
-      if (cb.value === 'All' && cb.checked) {
-        ownerCheckboxes.forEach((other) => { if (other !== cb) other.checked = false; });
-      } else if (cb.checked && ownerAllCheckbox) {
-        ownerAllCheckbox.checked = false;
-      }
-      updateOwnerLabel();
+  if (triggerEl && panelEl) {
+    triggerEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = !panelEl.hidden;
+      panelEl.hidden = isOpen;
+      triggerEl.setAttribute('aria-expanded', String(!isOpen));
     });
-  });
 
-  document.addEventListener('click', (e) => {
-    if (!ownerField.contains(e.target)) closeOwnerPanel();
-  });
+    checkboxes.forEach((cb) => {
+      cb.addEventListener('change', () => {
+        if (cb.value === 'All' && cb.checked) {
+          checkboxes.forEach((other) => { if (other !== cb) other.checked = false; });
+        } else if (cb.checked && allCheckbox) {
+          allCheckbox.checked = false;
+        }
+        updateLabel();
+      });
+    });
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeOwnerPanel();
-  });
+    document.addEventListener('click', (e) => {
+      if (!fieldEl.contains(e.target)) close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  }
+
+  return { updateLabel, getValue, setValue, reset, close };
 }
+
+const ownerSelect = initOwnerMultiselect(
+  document.getElementById('actionItemOwnerField'),
+  document.getElementById('actionItemOwnerTrigger'),
+  document.getElementById('actionItemOwnerLabel'),
+  document.getElementById('actionItemOwnerPanel')
+);
 
 async function loadActionItems() {
   actionItemsLoaded = true;
@@ -249,7 +262,7 @@ if (actionItemsForm) {
     e.preventDefault();
     const name = document.getElementById('actionItemName').value.trim();
     const priority = document.getElementById('actionItemPriority').value;
-    const owner = getSelectedOwnerValue();
+    const owner = ownerSelect.getValue();
     const dueDate = document.getElementById('actionItemDueDate').value || null;
     if (!name || !owner) return;
 
@@ -272,7 +285,7 @@ if (actionItemsForm) {
           requestAnimationFrame(() => requestAnimationFrame(() => newRow.classList.remove('is-entering')));
         }
         actionItemsForm.reset();
-        resetOwnerSelect();
+        ownerSelect.reset();
       }
     } finally {
       submitBtn.disabled = false;
@@ -335,7 +348,11 @@ if (actionItemsListEl) {
     if (deleteBtn) {
       pendingDeleteId = Number(deleteBtn.dataset.id);
       deleteConfirmModal.hidden = false;
+      return;
     }
+
+    const row = e.target.closest('.action-items-row');
+    if (row) openEditItemModal(Number(row.dataset.id));
   });
 }
 
@@ -372,6 +389,91 @@ if (deleteConfirmModal) {
     if (e.target === deleteConfirmModal) {
       pendingDeleteId = null;
       deleteConfirmModal.hidden = true;
+    }
+  });
+}
+
+/* ---- Edit task modal ------------------------------------------ */
+let editingItemId = null;
+
+const editItemModal = document.getElementById('editItemModal');
+const editItemForm = document.getElementById('editItemForm');
+const editItemTaskName = document.getElementById('editItemTaskName');
+const editItemPriority = document.getElementById('editItemPriority');
+const editItemDueDate = document.getElementById('editItemDueDate');
+const editItemCancel = document.getElementById('editItemCancel');
+const editItemError = document.getElementById('editItemError');
+
+const editItemOwnerSelect = initOwnerMultiselect(
+  document.getElementById('editItemOwnerField'),
+  document.getElementById('editItemOwnerTrigger'),
+  document.getElementById('editItemOwnerLabel'),
+  document.getElementById('editItemOwnerPanel')
+);
+
+function openEditItemModal(id) {
+  const task = actionItems.find((t) => t.id === id);
+  if (!task || !editItemModal) return;
+  editingItemId = id;
+  editItemTaskName.textContent = task.name;
+  editItemPriority.value = task.priority;
+  editItemOwnerSelect.setValue(task.owner);
+  editItemDueDate.value = task.due_date || '';
+  editItemError.style.display = 'none';
+  editItemModal.hidden = false;
+}
+
+function closeEditItemModal() {
+  if (editItemModal) editItemModal.hidden = true;
+  editingItemId = null;
+}
+
+if (editItemCancel) editItemCancel.addEventListener('click', closeEditItemModal);
+if (editItemModal) {
+  editItemModal.addEventListener('click', (e) => {
+    if (e.target === editItemModal) closeEditItemModal();
+  });
+}
+
+if (editItemForm) {
+  editItemForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (editingItemId === null) return;
+
+    const priority = editItemPriority.value;
+    const owner = editItemOwnerSelect.getValue();
+    const dueDate = editItemDueDate.value || null;
+    editItemError.style.display = 'none';
+
+    if (!owner) {
+      editItemError.textContent = 'Select at least one assignee.';
+      editItemError.style.display = 'block';
+      return;
+    }
+
+    const submitBtn = editItemForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/tasks/${editingItemId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priority, owner, dueDate }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const idx = actionItems.findIndex((t) => t.id === editingItemId);
+        if (idx !== -1) actionItems[idx] = data.task;
+        renderActionItems();
+        closeEditItemModal();
+      } else {
+        editItemError.textContent = 'Something went wrong. Please try again.';
+        editItemError.style.display = 'block';
+      }
+    } catch {
+      editItemError.textContent = 'Something went wrong. Please try again.';
+      editItemError.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
     }
   });
 }
