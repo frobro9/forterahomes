@@ -844,8 +844,6 @@ const meetingActiveDate = document.getElementById('meetingActiveDate');
 const meetingEndBtn = document.getElementById('meetingEndBtn');
 const meetingActiveTopicsList = document.getElementById('meetingActiveTopicsList');
 const meetingActiveTopicForm = document.getElementById('meetingActiveTopicForm');
-const meetingNotes = document.getElementById('meetingNotes');
-const meetingNotesSaveBtn = document.getElementById('meetingNotesSaveBtn');
 const meetingDraftsList = document.getElementById('meetingDraftsList');
 const meetingDraftsSection = document.getElementById('meetingDraftsSection');
 
@@ -871,14 +869,11 @@ const meetingPresentTitle = document.getElementById('meetingPresentTitle');
 const meetingPresentContentText = document.getElementById('meetingPresentContentText');
 const meetingPresentDiscussion = document.getElementById('meetingPresentDiscussion');
 const meetingPresentDiscussionSaveBtn = document.getElementById('meetingPresentDiscussionSaveBtn');
-const meetingSlideNotes = document.getElementById('meetingSlideNotes');
-const meetingPresentNotes = document.getElementById('meetingPresentNotes');
-const meetingPresentNotesSaveBtn = document.getElementById('meetingPresentNotesSaveBtn');
 const meetingSlideComplete = document.getElementById('meetingSlideComplete');
 
-initRichEditor(document.getElementById('meetingNotesToolbar'), meetingNotes);
+initRichEditor(document.getElementById('meetingActiveTopicContentToolbar'), document.querySelector('#meetingActiveTopicForm .meeting-topic-content-input'));
 initRichEditor(document.getElementById('meetingPresentDiscussionToolbar'), meetingPresentDiscussion);
-initRichEditor(document.getElementById('meetingPresentNotesToolbar'), meetingPresentNotes);
+initRichEditor(document.getElementById('meetingTopicEditContentToolbar'), document.getElementById('meetingTopicEditContent'));
 
 const meetingQuickTaskToggleBtn = document.getElementById('meetingQuickTaskToggleBtn');
 const meetingQuickTaskForm = document.getElementById('meetingQuickTaskForm');
@@ -921,7 +916,6 @@ const meetingArchiveModal = document.getElementById('meetingArchiveModal');
 const meetingViewDate = document.getElementById('meetingViewDate');
 const meetingViewAttendees = document.getElementById('meetingViewAttendees');
 const meetingViewTopics = document.getElementById('meetingViewTopics');
-const meetingViewNotes = document.getElementById('meetingViewNotes');
 const meetingViewClose = document.getElementById('meetingViewClose');
 const meetingViewDeleteBtn = document.getElementById('meetingViewDeleteBtn');
 
@@ -977,8 +971,6 @@ function renderMeetings() {
   if (activeMeeting) {
     meetingActiveDate.textContent = formatMeetingDate(activeMeeting.meeting_date);
     meetingAttendeesSelect.setValue(activeMeeting.attendees);
-    meetingNotes.innerHTML = sanitizeRichHtml(activeMeeting.notes);
-    meetingNotesSaveBtn.disabled = true;
     renderActiveTopics();
     if (isPresenting) renderPresentSlide();
   } else {
@@ -1003,7 +995,7 @@ function renderTopicsInto(listEl, topics, { editable }) {
       <span class="meeting-topic-row-num">${i + 1}</span>
       <div class="meeting-topic-row-main">
         <div class="meeting-topic-row-title">${escapeHtml(t.title)}</div>
-        ${t.content ? `<div class="meeting-topic-row-content">${escapeHtml(t.content)}</div>` : ''}
+        ${t.content ? `<div class="meeting-topic-row-content">${sanitizeRichHtml(t.content)}</div>` : ''}
         ${t.discussion ? `<div class="meeting-topic-row-discussion"><strong>Discussion:</strong> ${sanitizeRichHtml(t.discussion)}</div>` : ''}
       </div>
       ${
@@ -1052,7 +1044,19 @@ function renderDrafts() {
       <ul class="meeting-topics-list" data-meeting-id="${m.id}"></ul>
       <form class="meeting-topic-add-form" data-meeting-id="${m.id}" novalidate>
         <input class="portal-field-input" type="text" name="title" placeholder="Topic title" maxlength="200" required>
-        <textarea class="portal-field-input meeting-topic-textarea" name="content" placeholder="Notes for this topic (optional)" rows="2"></textarea>
+        <div class="rich-editor-toolbar meeting-topic-content-toolbar">
+          <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
+          <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
+          <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
+          <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
+          <select class="rich-editor-fontsize" aria-label="Font size">
+            <option value="">Size</option>
+            <option value="2">Small</option>
+            <option value="3">Normal</option>
+            <option value="5">Large</option>
+          </select>
+        </div>
+        <div class="rich-editor rich-editor--compact meeting-topic-content-input" contenteditable="true" data-placeholder="Notes for this topic (optional)"></div>
         <button type="submit" class="portal-btn">+ Add Topic</button>
       </form>
     </div>`
@@ -1062,6 +1066,8 @@ function renderDrafts() {
   draftMeetings.forEach((m) => {
     const listEl = meetingDraftsList.querySelector(`.meeting-topics-list[data-meeting-id="${m.id}"]`);
     if (listEl) renderTopicsInto(listEl, m.topics, { editable: true });
+    const form = meetingDraftsList.querySelector(`.meeting-topic-add-form[data-meeting-id="${m.id}"]`);
+    if (form) initRichEditor(form.querySelector('.meeting-topic-content-toolbar'), form.querySelector('.meeting-topic-content-input'));
   });
 }
 
@@ -1129,7 +1135,6 @@ function fillArchiveModalContent(meeting) {
     ? ownerTagsHtml(meeting.attendees)
     : '<span class="meeting-archive-row-attendees">No attendance recorded</span>';
   renderTopicsInto(meetingViewTopics, meeting.topics, { editable: false });
-  meetingViewNotes.innerHTML = meeting.notes ? sanitizeRichHtml(meeting.notes) : 'No notes recorded.';
 }
 
 /* ---- Start a new draft ----------------------------------------- */
@@ -1172,34 +1177,6 @@ async function saveMeetingAttendees() {
   }
 }
 
-/* ---- Notes (in-progress meeting only) --------------------------- */
-if (meetingNotes) {
-  meetingNotes.addEventListener('input', () => {
-    meetingNotesSaveBtn.disabled = false;
-  });
-}
-if (meetingNotesSaveBtn) {
-  meetingNotesSaveBtn.addEventListener('click', async () => {
-    if (!activeMeeting) return;
-    meetingNotesSaveBtn.disabled = true;
-    try {
-      const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: meetingNotes.innerHTML }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        activeMeeting.notes = data.meeting.notes;
-      } else {
-        meetingNotesSaveBtn.disabled = false;
-      }
-    } catch {
-      meetingNotesSaveBtn.disabled = false;
-    }
-  });
-}
-
 /* ---- Present mode: a fixed slide deck you swipe through ----------- */
 const SEGUE_SLIDES = [
   {
@@ -1227,7 +1204,6 @@ function buildPresentSlides() {
   const topics = (activeMeeting && activeMeeting.topics) || [];
   const slides = [{ type: 'welcome' }, ...SEGUE_SLIDES];
   topics.forEach((t) => slides.push({ type: 'topic', topicId: t.id }));
-  slides.push({ type: 'notes' });
   slides.push({ type: 'complete' });
   return slides;
 }
@@ -1271,7 +1247,6 @@ function renderPresentSlide() {
   meetingSlideWelcome.hidden = true;
   meetingSlideSegue.hidden = true;
   meetingSlideTopic.hidden = true;
-  meetingSlideNotes.hidden = true;
   meetingSlideComplete.hidden = true;
 
   const slide = presentSlides[presentIndex];
@@ -1298,13 +1273,9 @@ function renderPresentSlide() {
     if (!topic) return;
     meetingSlideTopic.hidden = false;
     meetingPresentTitle.textContent = topic.title;
-    meetingPresentContentText.textContent = topic.content || '';
+    meetingPresentContentText.innerHTML = sanitizeRichHtml(topic.content);
     meetingPresentDiscussion.innerHTML = sanitizeRichHtml(topic.discussion);
     meetingPresentDiscussionSaveBtn.disabled = true;
-  } else if (slide.type === 'notes') {
-    meetingSlideNotes.hidden = false;
-    meetingPresentNotes.innerHTML = sanitizeRichHtml(activeMeeting.notes);
-    meetingPresentNotesSaveBtn.disabled = true;
   } else if (slide.type === 'complete') {
     meetingSlideComplete.hidden = false;
   }
@@ -1351,35 +1322,6 @@ if (meetingPresentDiscussionSaveBtn) {
       }
     } catch {
       meetingPresentDiscussionSaveBtn.disabled = false;
-    }
-  });
-}
-
-if (meetingPresentNotes) {
-  meetingPresentNotes.addEventListener('input', () => {
-    meetingPresentNotesSaveBtn.disabled = false;
-  });
-}
-if (meetingPresentNotesSaveBtn) {
-  meetingPresentNotesSaveBtn.addEventListener('click', async () => {
-    if (!activeMeeting) return;
-    meetingPresentNotesSaveBtn.disabled = true;
-    try {
-      const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: meetingPresentNotes.innerHTML }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        activeMeeting.notes = data.meeting.notes;
-        meetingNotes.innerHTML = sanitizeRichHtml(data.meeting.notes);
-        meetingNotesSaveBtn.disabled = true;
-      } else {
-        meetingPresentNotesSaveBtn.disabled = false;
-      }
-    } catch {
-      meetingPresentNotesSaveBtn.disabled = false;
     }
   });
 }
@@ -1432,7 +1374,8 @@ if (meetingQuickTaskForm) {
 /* ---- Topics: shared add/delete helpers -------------------------- */
 async function addTopic(meeting, formEl, onDone) {
   const title = formEl.elements.title.value.trim();
-  const content = formEl.elements.content.value.trim();
+  const contentEditor = formEl.querySelector('.meeting-topic-content-input');
+  const content = contentEditor ? contentEditor.innerHTML.trim() : '';
   if (!title) return;
   const submitBtn = formEl.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
@@ -1446,6 +1389,7 @@ async function addTopic(meeting, formEl, onDone) {
       const data = await res.json();
       meeting.topics.push(data.topic);
       formEl.reset();
+      if (contentEditor) contentEditor.innerHTML = '';
       onDone();
     }
   } finally {
@@ -1568,7 +1512,7 @@ function openTopicEditModal(meeting, topicId) {
   editingTopicMeeting = meeting;
   editingTopicId = topicId;
   meetingTopicEditTitle.value = topic.title;
-  meetingTopicEditContent.value = topic.content || '';
+  meetingTopicEditContent.innerHTML = sanitizeRichHtml(topic.content);
   meetingTopicEditError.style.display = 'none';
   meetingTopicEditModal.hidden = false;
 }
@@ -1591,7 +1535,7 @@ if (meetingTopicEditForm) {
     e.preventDefault();
     if (!editingTopicMeeting || editingTopicId === null) return;
     const title = meetingTopicEditTitle.value.trim();
-    const content = meetingTopicEditContent.value.trim();
+    const content = meetingTopicEditContent.innerHTML.trim();
     meetingTopicEditError.style.display = 'none';
 
     if (!title) {

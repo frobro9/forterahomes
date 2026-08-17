@@ -29,7 +29,7 @@ export async function onRequestPatch(context) {
   }
   if (body.content !== undefined) {
     const content = typeof body.content === 'string' ? body.content.trim() : '';
-    if (content.length > 5000) return badRequest('Content is too long (max 5000 characters).');
+    if (content.length > 8000) return badRequest('Content is too long (max 8000 characters).');
     updates.push('content = ?');
     values.push(content);
   }
