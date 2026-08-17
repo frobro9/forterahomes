@@ -113,7 +113,10 @@
             <span class="portal-page-label">BEECHWOOD COLLECTION</span>
             <h1 class="portal-page-title">Team Meetings</h1>
           </div>
-          <button type="button" class="portal-btn" id="meetingNewDraftBtn">+ New Meeting</button>
+          <div class="meeting-header-actions">
+            <button type="button" class="portal-btn-outline" id="meetingArchiveBtn">Archive</button>
+            <button type="button" class="portal-btn" id="meetingNewDraftBtn">+ New Meeting</button>
+          </div>
         </div>
 
         <!-- In progress -->
@@ -165,23 +168,6 @@
         <div class="meeting-section">
           <h3 class="meeting-section-title">Drafts</h3>
           <div class="meeting-drafts-list" id="meetingDraftsList"></div>
-        </div>
-
-        <!-- Archive -->
-        <div class="meeting-section">
-          <h3 class="meeting-section-title">Archive</h3>
-          <div class="meeting-archive-search">
-            <label class="meeting-archive-search-field">
-              <span>From</span>
-              <input class="portal-field-input" type="date" id="meetingArchiveFrom">
-            </label>
-            <label class="meeting-archive-search-field">
-              <span>To</span>
-              <input class="portal-field-input" type="date" id="meetingArchiveTo">
-            </label>
-            <button type="button" class="portal-btn-outline" id="meetingArchiveClearBtn">Clear</button>
-          </div>
-          <div class="meeting-archive-list" id="meetingArchiveList"></div>
         </div>
       </section>
 
@@ -398,22 +384,47 @@
     </div>
   </div>
 
-  <!-- View archived meeting -->
-  <div class="portal-modal" id="meetingViewModal" hidden>
+  <!-- Archive: swipe through past meetings -->
+  <div class="portal-modal" id="meetingArchiveModal" hidden>
     <div class="portal-modal-card meeting-view-card">
-      <h3 class="portal-modal-title" id="meetingViewDate"></h3>
-      <div class="meeting-view-section">
-        <span class="meeting-field-label">Attendance</span>
-        <div class="meeting-view-attendees" id="meetingViewAttendees"></div>
+      <h3 class="portal-modal-title">Archive</h3>
+
+      <div class="meeting-archive-search">
+        <label class="meeting-archive-search-field">
+          <span>From</span>
+          <input class="portal-field-input" type="date" id="meetingArchiveFrom">
+        </label>
+        <label class="meeting-archive-search-field">
+          <span>To</span>
+          <input class="portal-field-input" type="date" id="meetingArchiveTo">
+        </label>
+        <button type="button" class="portal-btn-outline" id="meetingArchiveClearBtn">Clear</button>
       </div>
-      <div class="meeting-view-section">
-        <span class="meeting-field-label">Topics</span>
-        <ul class="meeting-topics-list meeting-topics-list--readonly" id="meetingViewTopics"></ul>
+
+      <div class="meeting-empty" id="meetingArchiveEmpty" hidden>No past meetings match.</div>
+
+      <div id="meetingArchiveContent">
+        <h4 class="meeting-active-date" id="meetingViewDate"></h4>
+        <div class="meeting-view-section">
+          <span class="meeting-field-label">Attendance</span>
+          <div class="meeting-view-attendees" id="meetingViewAttendees"></div>
+        </div>
+        <div class="meeting-view-section">
+          <span class="meeting-field-label">Topics</span>
+          <ul class="meeting-topics-list meeting-topics-list--readonly" id="meetingViewTopics"></ul>
+        </div>
+        <div class="meeting-view-section">
+          <span class="meeting-field-label">Notes &amp; Discussion</span>
+          <p class="meeting-view-notes" id="meetingViewNotes"></p>
+        </div>
       </div>
-      <div class="meeting-view-section">
-        <span class="meeting-field-label">Notes &amp; Discussion</span>
-        <p class="meeting-view-notes" id="meetingViewNotes"></p>
+
+      <div class="meeting-archive-pager">
+        <button type="button" class="meeting-archive-pager-btn" id="meetingArchivePrevBtn" aria-label="Previous meeting">&#8249; Prev</button>
+        <span class="meeting-archive-pager-label" id="meetingArchivePagerLabel"></span>
+        <button type="button" class="meeting-archive-pager-btn" id="meetingArchiveNextBtn" aria-label="Next meeting">Next &#8250;</button>
       </div>
+
       <div class="portal-modal-actions">
         <button type="button" class="portal-btn-danger" id="meetingViewDeleteBtn">Delete</button>
         <button type="button" class="portal-btn-outline" id="meetingViewClose">Close</button>

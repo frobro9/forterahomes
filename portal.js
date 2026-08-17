@@ -734,7 +734,10 @@ let editingTopicId = null;
 let viewingMeeting = null;
 let pendingDeleteMeetingId = null;
 let pendingDeleteFrom = null; // 'draft' | 'archive'
+let archiveIndex = 0;
+const archiveDetailCache = new Map();
 
+const meetingArchiveBtn = document.getElementById('meetingArchiveBtn');
 const meetingNewDraftBtn = document.getElementById('meetingNewDraftBtn');
 const meetingActiveEl = document.getElementById('meetingActive');
 const meetingActiveDate = document.getElementById('meetingActiveDate');
@@ -747,7 +750,11 @@ const meetingDraftsList = document.getElementById('meetingDraftsList');
 const meetingArchiveFrom = document.getElementById('meetingArchiveFrom');
 const meetingArchiveTo = document.getElementById('meetingArchiveTo');
 const meetingArchiveClearBtn = document.getElementById('meetingArchiveClearBtn');
-const meetingArchiveList = document.getElementById('meetingArchiveList');
+const meetingArchiveEmpty = document.getElementById('meetingArchiveEmpty');
+const meetingArchiveContent = document.getElementById('meetingArchiveContent');
+const meetingArchivePrevBtn = document.getElementById('meetingArchivePrevBtn');
+const meetingArchiveNextBtn = document.getElementById('meetingArchiveNextBtn');
+const meetingArchivePagerLabel = document.getElementById('meetingArchivePagerLabel');
 
 const meetingTopicEditModal = document.getElementById('meetingTopicEditModal');
 const meetingTopicEditForm = document.getElementById('meetingTopicEditForm');
@@ -764,7 +771,7 @@ const meetingDeleteConfirmModal = document.getElementById('meetingDeleteConfirmM
 const meetingDeleteConfirmCancel = document.getElementById('meetingDeleteConfirmCancel');
 const meetingDeleteConfirmConfirm = document.getElementById('meetingDeleteConfirmConfirm');
 
-const meetingViewModal = document.getElementById('meetingViewModal');
+const meetingArchiveModal = document.getElementById('meetingArchiveModal');
 const meetingViewDate = document.getElementById('meetingViewDate');
 const meetingViewAttendees = document.getElementById('meetingViewAttendees');
 const meetingViewTopics = document.getElementById('meetingViewTopics');
@@ -795,10 +802,6 @@ function formatMeetingDate(dateStr) {
     day: 'numeric',
     year: 'numeric',
   });
-}
-
-function attendeesSummary(attendees) {
-  return attendees ? attendees : 'No attendance recorded';
 }
 
 async function loadMeetings() {
@@ -833,7 +836,6 @@ function renderMeetings() {
     renderActiveTopics();
   }
   renderDrafts();
-  renderArchive();
 }
 
 function renderTopicsInto(listEl, topics, { editable }) {
@@ -919,24 +921,61 @@ function archiveDateFilter() {
   });
 }
 
-function renderArchive() {
+function openArchiveModal() {
+  archiveIndex = 0;
+  meetingArchiveModal.hidden = false;
+  renderArchiveModalEntry();
+}
+
+async function renderArchiveModalEntry() {
   const filtered = archiveDateFilter();
+
   if (!filtered.length) {
-    meetingArchiveList.innerHTML = `<div class="meeting-empty">${
-      archivedMeetings.length ? 'No meetings match that date range.' : 'No past meetings yet.'
-    }</div>`;
+    meetingArchiveEmpty.hidden = false;
+    meetingArchiveEmpty.textContent = archivedMeetings.length ? 'No meetings match that date range.' : 'No past meetings yet.';
+    meetingArchiveContent.hidden = true;
+    meetingArchivePagerLabel.textContent = '';
+    meetingArchivePrevBtn.disabled = true;
+    meetingArchiveNextBtn.disabled = true;
+    meetingViewDeleteBtn.hidden = true;
+    viewingMeeting = null;
     return;
   }
-  meetingArchiveList.innerHTML = filtered
-    .map(
-      (m) => `
-    <div class="meeting-archive-row" data-id="${m.id}">
-      <span class="meeting-archive-row-date">${formatShortDate(m.meeting_date)}</span>
-      <span class="meeting-archive-row-attendees">${escapeHtml(attendeesSummary(m.attendees))}</span>
-      <span class="meeting-archive-row-topics">${m.topic_count} topic${m.topic_count === 1 ? '' : 's'}</span>
-    </div>`
-    )
-    .join('');
+
+  archiveIndex = Math.min(Math.max(archiveIndex, 0), filtered.length - 1);
+  const summary = filtered[archiveIndex];
+
+  meetingArchiveEmpty.hidden = true;
+  meetingArchiveContent.hidden = false;
+  meetingViewDeleteBtn.hidden = false;
+  meetingArchivePagerLabel.textContent = `${archiveIndex + 1} of ${filtered.length}`;
+  meetingArchivePrevBtn.disabled = archiveIndex === 0;
+  meetingArchiveNextBtn.disabled = archiveIndex === filtered.length - 1;
+
+  let detail = archiveDetailCache.get(summary.id);
+  if (!detail) {
+    try {
+      const res = await fetch(`/api/meetings/${summary.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        detail = data.meeting;
+        archiveDetailCache.set(summary.id, detail);
+      }
+    } catch {
+      // leave prior content on screen; user can retry by paging away and back
+    }
+  }
+  if (detail) fillArchiveModalContent(detail);
+}
+
+function fillArchiveModalContent(meeting) {
+  viewingMeeting = meeting;
+  meetingViewDate.textContent = formatMeetingDate(meeting.meeting_date);
+  meetingViewAttendees.innerHTML = meeting.attendees
+    ? ownerTagsHtml(meeting.attendees)
+    : '<span class="meeting-archive-row-attendees">No attendance recorded</span>';
+  renderTopicsInto(meetingViewTopics, meeting.topics, { editable: false });
+  meetingViewNotes.textContent = meeting.notes || 'No notes recorded.';
 }
 
 /* ---- Start a new draft ----------------------------------------- */
@@ -1245,65 +1284,65 @@ if (meetingEndConfirmConfirm) {
   });
 }
 
-/* ---- Archive: search + view + delete ----------------------------- */
-if (meetingArchiveFrom) meetingArchiveFrom.addEventListener('change', renderArchive);
-if (meetingArchiveTo) meetingArchiveTo.addEventListener('change', renderArchive);
+/* ---- Archive: button opens a swipe-through browser ---------------- */
+if (meetingArchiveBtn) meetingArchiveBtn.addEventListener('click', openArchiveModal);
+
+if (meetingArchiveFrom) {
+  meetingArchiveFrom.addEventListener('change', () => {
+    archiveIndex = 0;
+    renderArchiveModalEntry();
+  });
+}
+if (meetingArchiveTo) {
+  meetingArchiveTo.addEventListener('change', () => {
+    archiveIndex = 0;
+    renderArchiveModalEntry();
+  });
+}
 if (meetingArchiveClearBtn) {
   meetingArchiveClearBtn.addEventListener('click', () => {
     meetingArchiveFrom.value = '';
     meetingArchiveTo.value = '';
-    renderArchive();
+    archiveIndex = 0;
+    renderArchiveModalEntry();
   });
 }
 
-if (meetingArchiveList) {
-  meetingArchiveList.addEventListener('click', async (e) => {
-    const row = e.target.closest('.meeting-archive-row');
-    if (!row) return;
-    try {
-      const res = await fetch(`/api/meetings/${Number(row.dataset.id)}`);
-      if (res.ok) {
-        const data = await res.json();
-        openMeetingViewModal(data.meeting);
-      }
-    } catch {
-      // no-op
-    }
+if (meetingArchivePrevBtn) {
+  meetingArchivePrevBtn.addEventListener('click', () => {
+    archiveIndex -= 1;
+    renderArchiveModalEntry();
+  });
+}
+if (meetingArchiveNextBtn) {
+  meetingArchiveNextBtn.addEventListener('click', () => {
+    archiveIndex += 1;
+    renderArchiveModalEntry();
   });
 }
 
-function openMeetingViewModal(meeting) {
-  viewingMeeting = meeting;
-  meetingViewDate.textContent = formatMeetingDate(meeting.meeting_date);
-  meetingViewAttendees.innerHTML = meeting.attendees
-    ? ownerTagsHtml(meeting.attendees)
-    : '<span class="meeting-archive-row-attendees">No attendance recorded</span>';
-  renderTopicsInto(meetingViewTopics, meeting.topics, { editable: false });
-  meetingViewNotes.textContent = meeting.notes || 'No notes recorded.';
-  meetingViewModal.hidden = false;
+function closeArchiveModal() {
+  meetingArchiveModal.hidden = true;
+  viewingMeeting = null;
 }
 
-if (meetingViewClose) {
-  meetingViewClose.addEventListener('click', () => {
-    meetingViewModal.hidden = true;
-    viewingMeeting = null;
+if (meetingArchiveModal) {
+  meetingArchiveModal.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' && !meetingArchivePrevBtn.disabled) meetingArchivePrevBtn.click();
+    if (e.key === 'ArrowRight' && !meetingArchiveNextBtn.disabled) meetingArchiveNextBtn.click();
+  });
+  meetingArchiveModal.addEventListener('click', (e) => {
+    if (e.target === meetingArchiveModal) closeArchiveModal();
   });
 }
-if (meetingViewModal) {
-  meetingViewModal.addEventListener('click', (e) => {
-    if (e.target === meetingViewModal) {
-      meetingViewModal.hidden = true;
-      viewingMeeting = null;
-    }
-  });
-}
+if (meetingViewClose) meetingViewClose.addEventListener('click', closeArchiveModal);
 
 if (meetingViewDeleteBtn) {
   meetingViewDeleteBtn.addEventListener('click', () => {
     if (!viewingMeeting) return;
     pendingDeleteMeetingId = viewingMeeting.id;
     pendingDeleteFrom = 'archive';
-    meetingViewModal.hidden = true;
+    meetingArchiveModal.hidden = true;
     meetingDeleteConfirmModal.hidden = false;
   });
 }
@@ -1339,7 +1378,9 @@ if (meetingDeleteConfirmConfirm) {
           renderDrafts();
         } else {
           archivedMeetings = archivedMeetings.filter((m) => m.id !== id);
-          renderArchive();
+          archiveDetailCache.delete(id);
+          meetingArchiveModal.hidden = false;
+          renderArchiveModalEntry();
         }
       }
     } catch {

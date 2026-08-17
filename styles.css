@@ -1748,6 +1748,8 @@ html:has(.portal-body) { overflow-x: hidden; }
 .portal-modal-error { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: #b9483f; margin-bottom: 1rem; display: none; }
 
 /* --- Team Meetings -------------------------------------------- */
+.meeting-header-actions { display: flex; align-items: center; gap: 0.75rem; }
+
 .meeting-active {
   background: var(--white);
   box-shadow: 0 2px 12px rgba(0,0,0,0.04);
@@ -1878,13 +1880,13 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .meeting-draft-delete:hover { color: #b9483f; }
 
-/* Archive */
+/* Archive: swipe-through modal */
 .meeting-archive-search {
   display: flex;
   align-items: flex-end;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 .meeting-archive-search-field {
   display: flex;
@@ -1897,21 +1899,38 @@ html:has(.portal-body) { overflow-x: hidden; }
   text-transform: uppercase;
   color: rgba(28,26,24,0.5);
 }
-.meeting-archive-list { display: flex; flex-direction: column; gap: 0.6rem; }
-.meeting-archive-row {
+.meeting-archive-row-attendees { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.55); }
+
+.meeting-archive-pager {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  background: var(--white);
-  padding: 0.9rem 1.25rem;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(28,26,24,0.08);
 }
-.meeting-archive-row:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.09); }
-.meeting-archive-row-date { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); width: 130px; flex-shrink: 0; }
-.meeting-archive-row-attendees { flex: 1; font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.55); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.meeting-archive-row-topics { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: var(--bronze); font-weight: 600; flex-shrink: 0; }
+.meeting-archive-pager-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: rgba(28,26,24,0.45);
+}
+.meeting-archive-pager-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(28,26,24,0.15);
+  border-radius: 50px;
+  transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+.meeting-archive-pager-btn:hover { border-color: var(--bronze); color: var(--bronze); }
+.meeting-archive-pager-btn:disabled { opacity: 0.35; cursor: default; }
+.meeting-archive-pager-btn:disabled:hover { border-color: rgba(28,26,24,0.15); color: var(--charcoal); }
 
 /* View archived meeting modal */
 .meeting-view-card { width: 560px; max-height: 85vh; overflow-y: auto; }
@@ -1921,8 +1940,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 
 @media (max-width: 640px) {
   .meeting-active { padding: 1.5rem; }
-  .meeting-archive-row { flex-wrap: wrap; row-gap: 0.5rem; }
-  .meeting-archive-row-date { width: auto; }
+  .meeting-archive-pager { flex-wrap: wrap; }
 }
 
 @media (max-width: 960px) {
