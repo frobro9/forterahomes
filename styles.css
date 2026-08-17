@@ -1815,7 +1815,8 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .meeting-topic-row-main { flex: 1; min-width: 0; }
 .meeting-topic-row-title { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.25rem; }
-.meeting-topic-row-content { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.6); line-height: 1.5; white-space: pre-wrap; }
+.meeting-topic-row-content { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.6); line-height: 1.5; }
+.meeting-topic-row-content ul, .meeting-topic-row-discussion ul { padding-left: 1.1rem; margin: 0.3rem 0; }
 .meeting-topic-row-discussion {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
@@ -1843,12 +1844,12 @@ html:has(.portal-body) { overflow-x: hidden; }
 
 .meeting-topic-add-form {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: stretch;
 }
-.meeting-topic-add-form input { flex: 1 1 220px; }
-.meeting-topic-textarea { flex: 2 1 320px; resize: vertical; min-height: 42px; font-family: 'Montserrat', sans-serif; }
+.meeting-topic-add-form > input[name="title"] { width: 100%; }
+.meeting-topic-add-form button[type="submit"] { align-self: flex-start; }
 
 /* Present mode: a fixed slide deck you swipe through, like presenter mode */
 .meeting-present {
@@ -1969,9 +1970,9 @@ html:has(.portal-body) { overflow-x: hidden; }
   line-height: 1.7;
   color: rgba(255,255,255,0.75);
   margin-bottom: 1.75rem;
-  white-space: pre-wrap;
 }
 .meeting-present-topic-content:empty { display: none; }
+.meeting-present-topic-content ul { padding-left: 1.25rem; margin: 0.4rem 0; }
 
 .meeting-present-discussion-label {
   display: block;
@@ -2030,6 +2031,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   margin-bottom: 0.75rem;
   transition: border-color 0.2s ease;
 }
+.rich-editor--compact { min-height: 56px; max-height: 160px; }
 .rich-editor:focus { border-color: var(--bronze); }
 .rich-editor:empty::before {
   content: attr(data-placeholder);
@@ -2200,7 +2202,6 @@ html:has(.portal-body) { overflow-x: hidden; }
 .meeting-view-card { width: 560px; max-height: 85vh; overflow-y: auto; }
 .meeting-view-section { margin-bottom: 1.5rem; }
 .meeting-view-attendees { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.meeting-view-notes { font-family: 'Montserrat', sans-serif; font-size: 0.82rem; line-height: 1.6; color: rgba(28,26,24,0.7); white-space: pre-wrap; }
 
 @media (max-width: 640px) {
   .meeting-active { padding: 1.5rem; }
