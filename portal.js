@@ -734,7 +734,12 @@ let editingTopicId = null;
 let viewingMeeting = null;
 let pendingDeleteMeetingId = null;
 let pendingDeleteFrom = null; // 'draft' | 'archive'
+let archiveIndex = 0;
+const archiveDetailCache = new Map();
+let isPresenting = false;
+let presentIndex = 0;
 
+const meetingArchiveBtn = document.getElementById('meetingArchiveBtn');
 const meetingNewDraftBtn = document.getElementById('meetingNewDraftBtn');
 const meetingActiveEl = document.getElementById('meetingActive');
 const meetingActiveDate = document.getElementById('meetingActiveDate');
@@ -744,10 +749,42 @@ const meetingActiveTopicForm = document.getElementById('meetingActiveTopicForm')
 const meetingNotes = document.getElementById('meetingNotes');
 const meetingNotesSaveBtn = document.getElementById('meetingNotesSaveBtn');
 const meetingDraftsList = document.getElementById('meetingDraftsList');
+const meetingDraftsSection = document.getElementById('meetingDraftsSection');
+
+const meetingPresentToggleBtn = document.getElementById('meetingPresentToggleBtn');
+const meetingPrepView = document.getElementById('meetingPrepView');
+const meetingPresentView = document.getElementById('meetingPresentView');
+const meetingPresentEmpty = document.getElementById('meetingPresentEmpty');
+const meetingPresentContent = document.getElementById('meetingPresentContent');
+const meetingPresentTitle = document.getElementById('meetingPresentTitle');
+const meetingPresentContentText = document.getElementById('meetingPresentContentText');
+const meetingPresentDiscussion = document.getElementById('meetingPresentDiscussion');
+const meetingPresentDiscussionSaveBtn = document.getElementById('meetingPresentDiscussionSaveBtn');
+const meetingPresentPagerLabel = document.getElementById('meetingPresentPagerLabel');
+const meetingPresentPrevBtn = document.getElementById('meetingPresentPrevBtn');
+const meetingPresentNextBtn = document.getElementById('meetingPresentNextBtn');
+
+const meetingQuickTaskToggleBtn = document.getElementById('meetingQuickTaskToggleBtn');
+const meetingQuickTaskForm = document.getElementById('meetingQuickTaskForm');
+const meetingQuickTaskName = document.getElementById('meetingQuickTaskName');
+const meetingQuickTaskPriority = document.getElementById('meetingQuickTaskPriority');
+const meetingQuickTaskDueDate = document.getElementById('meetingQuickTaskDueDate');
+const meetingQuickTaskSuccess = document.getElementById('meetingQuickTaskSuccess');
+
+const meetingQuickTaskOwnerSelect = initOwnerMultiselect(
+  document.getElementById('meetingQuickTaskOwnerField'),
+  document.getElementById('meetingQuickTaskOwnerTrigger'),
+  document.getElementById('meetingQuickTaskOwnerLabel'),
+  document.getElementById('meetingQuickTaskOwnerPanel')
+);
 const meetingArchiveFrom = document.getElementById('meetingArchiveFrom');
 const meetingArchiveTo = document.getElementById('meetingArchiveTo');
 const meetingArchiveClearBtn = document.getElementById('meetingArchiveClearBtn');
-const meetingArchiveList = document.getElementById('meetingArchiveList');
+const meetingArchiveEmpty = document.getElementById('meetingArchiveEmpty');
+const meetingArchiveContent = document.getElementById('meetingArchiveContent');
+const meetingArchivePrevBtn = document.getElementById('meetingArchivePrevBtn');
+const meetingArchiveNextBtn = document.getElementById('meetingArchiveNextBtn');
+const meetingArchivePagerLabel = document.getElementById('meetingArchivePagerLabel');
 
 const meetingTopicEditModal = document.getElementById('meetingTopicEditModal');
 const meetingTopicEditForm = document.getElementById('meetingTopicEditForm');
@@ -764,7 +801,7 @@ const meetingDeleteConfirmModal = document.getElementById('meetingDeleteConfirmM
 const meetingDeleteConfirmCancel = document.getElementById('meetingDeleteConfirmCancel');
 const meetingDeleteConfirmConfirm = document.getElementById('meetingDeleteConfirmConfirm');
 
-const meetingViewModal = document.getElementById('meetingViewModal');
+const meetingArchiveModal = document.getElementById('meetingArchiveModal');
 const meetingViewDate = document.getElementById('meetingViewDate');
 const meetingViewAttendees = document.getElementById('meetingViewAttendees');
 const meetingViewTopics = document.getElementById('meetingViewTopics');
@@ -797,10 +834,6 @@ function formatMeetingDate(dateStr) {
   });
 }
 
-function attendeesSummary(attendees) {
-  return attendees ? attendees : 'No attendance recorded';
-}
-
 async function loadMeetings() {
   meetingsLoaded = true;
   try {
@@ -831,9 +864,15 @@ function renderMeetings() {
     meetingNotes.value = activeMeeting.notes || '';
     meetingNotesSaveBtn.disabled = true;
     renderActiveTopics();
+    if (isPresenting) renderPresentTopic();
+  } else {
+    isPresenting = false;
+    meetingPresentToggleBtn.textContent = 'Present';
+    meetingPrepView.hidden = false;
+    meetingPresentView.hidden = true;
   }
+  meetingDraftsSection.hidden = isPresenting;
   renderDrafts();
-  renderArchive();
 }
 
 function renderTopicsInto(listEl, topics, { editable }) {
@@ -849,6 +888,7 @@ function renderTopicsInto(listEl, topics, { editable }) {
       <div class="meeting-topic-row-main">
         <div class="meeting-topic-row-title">${escapeHtml(t.title)}</div>
         ${t.content ? `<div class="meeting-topic-row-content">${escapeHtml(t.content)}</div>` : ''}
+        ${t.discussion ? `<div class="meeting-topic-row-discussion"><strong>Discussion:</strong> ${escapeHtml(t.discussion)}</div>` : ''}
       </div>
       ${
         editable
@@ -919,24 +959,61 @@ function archiveDateFilter() {
   });
 }
 
-function renderArchive() {
+function openArchiveModal() {
+  archiveIndex = 0;
+  meetingArchiveModal.hidden = false;
+  renderArchiveModalEntry();
+}
+
+async function renderArchiveModalEntry() {
   const filtered = archiveDateFilter();
+
   if (!filtered.length) {
-    meetingArchiveList.innerHTML = `<div class="meeting-empty">${
-      archivedMeetings.length ? 'No meetings match that date range.' : 'No past meetings yet.'
-    }</div>`;
+    meetingArchiveEmpty.hidden = false;
+    meetingArchiveEmpty.textContent = archivedMeetings.length ? 'No meetings match that date range.' : 'No past meetings yet.';
+    meetingArchiveContent.hidden = true;
+    meetingArchivePagerLabel.textContent = '';
+    meetingArchivePrevBtn.disabled = true;
+    meetingArchiveNextBtn.disabled = true;
+    meetingViewDeleteBtn.hidden = true;
+    viewingMeeting = null;
     return;
   }
-  meetingArchiveList.innerHTML = filtered
-    .map(
-      (m) => `
-    <div class="meeting-archive-row" data-id="${m.id}">
-      <span class="meeting-archive-row-date">${formatShortDate(m.meeting_date)}</span>
-      <span class="meeting-archive-row-attendees">${escapeHtml(attendeesSummary(m.attendees))}</span>
-      <span class="meeting-archive-row-topics">${m.topic_count} topic${m.topic_count === 1 ? '' : 's'}</span>
-    </div>`
-    )
-    .join('');
+
+  archiveIndex = Math.min(Math.max(archiveIndex, 0), filtered.length - 1);
+  const summary = filtered[archiveIndex];
+
+  meetingArchiveEmpty.hidden = true;
+  meetingArchiveContent.hidden = false;
+  meetingViewDeleteBtn.hidden = false;
+  meetingArchivePagerLabel.textContent = `${archiveIndex + 1} of ${filtered.length}`;
+  meetingArchivePrevBtn.disabled = archiveIndex === 0;
+  meetingArchiveNextBtn.disabled = archiveIndex === filtered.length - 1;
+
+  let detail = archiveDetailCache.get(summary.id);
+  if (!detail) {
+    try {
+      const res = await fetch(`/api/meetings/${summary.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        detail = data.meeting;
+        archiveDetailCache.set(summary.id, detail);
+      }
+    } catch {
+      // leave prior content on screen; user can retry by paging away and back
+    }
+  }
+  if (detail) fillArchiveModalContent(detail);
+}
+
+function fillArchiveModalContent(meeting) {
+  viewingMeeting = meeting;
+  meetingViewDate.textContent = formatMeetingDate(meeting.meeting_date);
+  meetingViewAttendees.innerHTML = meeting.attendees
+    ? ownerTagsHtml(meeting.attendees)
+    : '<span class="meeting-archive-row-attendees">No attendance recorded</span>';
+  renderTopicsInto(meetingViewTopics, meeting.topics, { editable: false });
+  meetingViewNotes.textContent = meeting.notes || 'No notes recorded.';
 }
 
 /* ---- Start a new draft ----------------------------------------- */
@@ -1003,6 +1080,134 @@ if (meetingNotesSaveBtn) {
       }
     } catch {
       meetingNotesSaveBtn.disabled = false;
+    }
+  });
+}
+
+/* ---- Present mode: page through topics one at a time -------------- */
+if (meetingPresentToggleBtn) {
+  meetingPresentToggleBtn.addEventListener('click', () => {
+    isPresenting = !isPresenting;
+    meetingPresentToggleBtn.textContent = isPresenting ? 'Exit Presenting' : 'Present';
+    meetingPrepView.hidden = isPresenting;
+    meetingPresentView.hidden = !isPresenting;
+    meetingDraftsSection.hidden = isPresenting;
+    if (isPresenting) {
+      presentIndex = 0;
+      renderPresentTopic();
+    }
+  });
+}
+
+function renderPresentTopic() {
+  const topics = (activeMeeting && activeMeeting.topics) || [];
+  if (!topics.length) {
+    meetingPresentEmpty.hidden = false;
+    meetingPresentContent.hidden = true;
+    meetingPresentPagerLabel.textContent = '';
+    meetingPresentPrevBtn.disabled = true;
+    meetingPresentNextBtn.disabled = true;
+    return;
+  }
+
+  presentIndex = Math.min(Math.max(presentIndex, 0), topics.length - 1);
+  const topic = topics[presentIndex];
+
+  meetingPresentEmpty.hidden = true;
+  meetingPresentContent.hidden = false;
+  meetingPresentTitle.textContent = topic.title;
+  meetingPresentContentText.textContent = topic.content || '';
+  meetingPresentDiscussion.value = topic.discussion || '';
+  meetingPresentDiscussionSaveBtn.disabled = true;
+  meetingPresentPagerLabel.textContent = `${presentIndex + 1} of ${topics.length}`;
+  meetingPresentPrevBtn.disabled = presentIndex === 0;
+  meetingPresentNextBtn.disabled = presentIndex === topics.length - 1;
+}
+
+if (meetingPresentPrevBtn) {
+  meetingPresentPrevBtn.addEventListener('click', () => {
+    presentIndex -= 1;
+    renderPresentTopic();
+  });
+}
+if (meetingPresentNextBtn) {
+  meetingPresentNextBtn.addEventListener('click', () => {
+    presentIndex += 1;
+    renderPresentTopic();
+  });
+}
+
+if (meetingPresentDiscussion) {
+  meetingPresentDiscussion.addEventListener('input', () => {
+    meetingPresentDiscussionSaveBtn.disabled = false;
+  });
+}
+if (meetingPresentDiscussionSaveBtn) {
+  meetingPresentDiscussionSaveBtn.addEventListener('click', async () => {
+    if (!activeMeeting) return;
+    const topic = activeMeeting.topics[presentIndex];
+    if (!topic) return;
+    meetingPresentDiscussionSaveBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/meetings/${activeMeeting.id}/topics/${topic.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discussion: meetingPresentDiscussion.value }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        activeMeeting.topics[presentIndex] = data.topic;
+        renderActiveTopics();
+      } else {
+        meetingPresentDiscussionSaveBtn.disabled = false;
+      }
+    } catch {
+      meetingPresentDiscussionSaveBtn.disabled = false;
+    }
+  });
+}
+
+/* ---- Quick-add an action item straight from presenting ------------ */
+if (meetingQuickTaskToggleBtn) {
+  meetingQuickTaskToggleBtn.addEventListener('click', () => {
+    const opening = meetingQuickTaskForm.hidden;
+    meetingQuickTaskForm.hidden = !opening;
+    meetingQuickTaskToggleBtn.textContent = opening ? 'Cancel' : '+ Add Action Item';
+    meetingQuickTaskSuccess.hidden = true;
+    if (opening) meetingQuickTaskName.focus();
+  });
+}
+
+if (meetingQuickTaskForm) {
+  meetingQuickTaskForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = meetingQuickTaskName.value.trim();
+    const priority = meetingQuickTaskPriority.value;
+    const owner = meetingQuickTaskOwnerSelect.getValue();
+    const dueDate = meetingQuickTaskDueDate.value || null;
+    if (!name || !owner) return;
+
+    const submitBtn = meetingQuickTaskForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, priority, owner, dueDate, property: 'beechwood' }),
+      });
+      if (res.ok) {
+        meetingQuickTaskForm.reset();
+        meetingQuickTaskOwnerSelect.reset();
+        meetingQuickTaskForm.hidden = true;
+        meetingQuickTaskToggleBtn.textContent = '+ Add Action Item';
+        meetingQuickTaskSuccess.hidden = false;
+        actionItemsLoaded = false;
+        setTimeout(() => {
+          meetingQuickTaskSuccess.hidden = true;
+        }, 3000);
+      }
+    } finally {
+      submitBtn.disabled = false;
     }
   });
 }
@@ -1245,65 +1450,65 @@ if (meetingEndConfirmConfirm) {
   });
 }
 
-/* ---- Archive: search + view + delete ----------------------------- */
-if (meetingArchiveFrom) meetingArchiveFrom.addEventListener('change', renderArchive);
-if (meetingArchiveTo) meetingArchiveTo.addEventListener('change', renderArchive);
+/* ---- Archive: button opens a swipe-through browser ---------------- */
+if (meetingArchiveBtn) meetingArchiveBtn.addEventListener('click', openArchiveModal);
+
+if (meetingArchiveFrom) {
+  meetingArchiveFrom.addEventListener('change', () => {
+    archiveIndex = 0;
+    renderArchiveModalEntry();
+  });
+}
+if (meetingArchiveTo) {
+  meetingArchiveTo.addEventListener('change', () => {
+    archiveIndex = 0;
+    renderArchiveModalEntry();
+  });
+}
 if (meetingArchiveClearBtn) {
   meetingArchiveClearBtn.addEventListener('click', () => {
     meetingArchiveFrom.value = '';
     meetingArchiveTo.value = '';
-    renderArchive();
+    archiveIndex = 0;
+    renderArchiveModalEntry();
   });
 }
 
-if (meetingArchiveList) {
-  meetingArchiveList.addEventListener('click', async (e) => {
-    const row = e.target.closest('.meeting-archive-row');
-    if (!row) return;
-    try {
-      const res = await fetch(`/api/meetings/${Number(row.dataset.id)}`);
-      if (res.ok) {
-        const data = await res.json();
-        openMeetingViewModal(data.meeting);
-      }
-    } catch {
-      // no-op
-    }
+if (meetingArchivePrevBtn) {
+  meetingArchivePrevBtn.addEventListener('click', () => {
+    archiveIndex -= 1;
+    renderArchiveModalEntry();
+  });
+}
+if (meetingArchiveNextBtn) {
+  meetingArchiveNextBtn.addEventListener('click', () => {
+    archiveIndex += 1;
+    renderArchiveModalEntry();
   });
 }
 
-function openMeetingViewModal(meeting) {
-  viewingMeeting = meeting;
-  meetingViewDate.textContent = formatMeetingDate(meeting.meeting_date);
-  meetingViewAttendees.innerHTML = meeting.attendees
-    ? ownerTagsHtml(meeting.attendees)
-    : '<span class="meeting-archive-row-attendees">No attendance recorded</span>';
-  renderTopicsInto(meetingViewTopics, meeting.topics, { editable: false });
-  meetingViewNotes.textContent = meeting.notes || 'No notes recorded.';
-  meetingViewModal.hidden = false;
+function closeArchiveModal() {
+  meetingArchiveModal.hidden = true;
+  viewingMeeting = null;
 }
 
-if (meetingViewClose) {
-  meetingViewClose.addEventListener('click', () => {
-    meetingViewModal.hidden = true;
-    viewingMeeting = null;
+if (meetingArchiveModal) {
+  meetingArchiveModal.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' && !meetingArchivePrevBtn.disabled) meetingArchivePrevBtn.click();
+    if (e.key === 'ArrowRight' && !meetingArchiveNextBtn.disabled) meetingArchiveNextBtn.click();
+  });
+  meetingArchiveModal.addEventListener('click', (e) => {
+    if (e.target === meetingArchiveModal) closeArchiveModal();
   });
 }
-if (meetingViewModal) {
-  meetingViewModal.addEventListener('click', (e) => {
-    if (e.target === meetingViewModal) {
-      meetingViewModal.hidden = true;
-      viewingMeeting = null;
-    }
-  });
-}
+if (meetingViewClose) meetingViewClose.addEventListener('click', closeArchiveModal);
 
 if (meetingViewDeleteBtn) {
   meetingViewDeleteBtn.addEventListener('click', () => {
     if (!viewingMeeting) return;
     pendingDeleteMeetingId = viewingMeeting.id;
     pendingDeleteFrom = 'archive';
-    meetingViewModal.hidden = true;
+    meetingArchiveModal.hidden = true;
     meetingDeleteConfirmModal.hidden = false;
   });
 }
@@ -1339,7 +1544,9 @@ if (meetingDeleteConfirmConfirm) {
           renderDrafts();
         } else {
           archivedMeetings = archivedMeetings.filter((m) => m.id !== id);
-          renderArchive();
+          archiveDetailCache.delete(id);
+          meetingArchiveModal.hidden = false;
+          renderArchiveModalEntry();
         }
       }
     } catch {

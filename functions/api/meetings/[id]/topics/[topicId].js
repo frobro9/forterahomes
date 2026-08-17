@@ -33,12 +33,18 @@ export async function onRequestPatch(context) {
     updates.push('content = ?');
     values.push(content);
   }
+  if (body.discussion !== undefined) {
+    const discussion = typeof body.discussion === 'string' ? body.discussion.trim() : '';
+    if (discussion.length > 5000) return badRequest('Discussion is too long (max 5000 characters).');
+    updates.push('discussion = ?');
+    values.push(discussion);
+  }
 
   if (!updates.length) return badRequest('No fields to update.');
 
   values.push(topicId);
   const row = await env.DB.prepare(
-    `UPDATE meeting_topics SET ${updates.join(', ')} WHERE id = ? RETURNING id, meeting_id, title, content, sort_order, created_at`
+    `UPDATE meeting_topics SET ${updates.join(', ')} WHERE id = ? RETURNING id, meeting_id, title, content, discussion, sort_order, created_at`
   )
     .bind(...values)
     .first();

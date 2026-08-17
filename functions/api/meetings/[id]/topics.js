@@ -28,7 +28,7 @@ export async function onRequestPost(context) {
   const topic = await env.DB.prepare(
     `INSERT INTO meeting_topics (meeting_id, title, content, sort_order)
      VALUES (?1, ?2, ?3, ?4)
-     RETURNING id, meeting_id, title, content, sort_order, created_at`
+     RETURNING id, meeting_id, title, content, discussion, sort_order, created_at`
   )
     .bind(meetingId, title, content, count)
     .first();

@@ -1748,6 +1748,8 @@ html:has(.portal-body) { overflow-x: hidden; }
 .portal-modal-error { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: #b9483f; margin-bottom: 1rem; display: none; }
 
 /* --- Team Meetings -------------------------------------------- */
+.meeting-header-actions { display: flex; align-items: center; gap: 0.75rem; }
+
 .meeting-active {
   background: var(--white);
   box-shadow: 0 2px 12px rgba(0,0,0,0.04);
@@ -1813,6 +1815,17 @@ html:has(.portal-body) { overflow-x: hidden; }
 .meeting-topic-row-main { flex: 1; min-width: 0; }
 .meeting-topic-row-title { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.25rem; }
 .meeting-topic-row-content { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.6); line-height: 1.5; white-space: pre-wrap; }
+.meeting-topic-row-discussion {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(28,26,24,0.12);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.76rem;
+  font-style: italic;
+  color: rgba(28,26,24,0.55);
+  white-space: pre-wrap;
+}
+.meeting-topic-row-discussion strong { font-style: normal; font-weight: 600; color: rgba(28,26,24,0.7); }
 .meeting-topic-row-actions { display: flex; align-items: center; gap: 0.15rem; flex-shrink: 0; }
 .meeting-topic-row-edit,
 .meeting-topic-row-delete {
@@ -1837,6 +1850,132 @@ html:has(.portal-body) { overflow-x: hidden; }
 .meeting-topic-textarea { flex: 2 1 320px; resize: vertical; min-height: 42px; font-family: 'Montserrat', sans-serif; }
 
 .meeting-notes-textarea { width: 100%; resize: vertical; min-height: 100px; font-family: 'Montserrat', sans-serif; margin-bottom: 0.85rem; }
+
+/* Present mode: a distinct dark "stage" for going through topics live */
+.meeting-present {
+  background: var(--charcoal);
+  color: var(--white);
+  margin: 0 -2rem -2rem;
+  padding: 2.25rem 2rem 2rem;
+}
+.meeting-present .portal-btn-outline { color: var(--white); border-color: rgba(255,255,255,0.3); }
+.meeting-present .portal-btn-outline:hover { border-color: var(--bronze-light); color: var(--bronze-light); }
+.meeting-present .portal-btn-outline:disabled { opacity: 0.35; cursor: default; }
+.meeting-present .portal-btn-outline:disabled:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+.meeting-present-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bronze-light);
+  margin-bottom: 1.5rem;
+}
+.meeting-present-badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4a8f5c;
+  box-shadow: 0 0 0 4px rgba(74,143,92,0.25);
+}
+
+.meeting-present-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+}
+
+.meeting-present-topic-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 0.85rem;
+}
+.meeting-present-topic-content {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 1.75rem;
+  white-space: pre-wrap;
+}
+.meeting-present-topic-content:empty { display: none; }
+
+.meeting-present-discussion-label {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.65rem;
+}
+.meeting-present-discussion-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: var(--white);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.85rem;
+  resize: vertical;
+  min-height: 90px;
+  margin-bottom: 0.75rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.meeting-present-discussion-textarea::placeholder { color: rgba(255,255,255,0.35); }
+.meeting-present-discussion-textarea:focus { border-color: var(--bronze-light); }
+
+.meeting-present-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2rem 0 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+.meeting-present-pager-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.5);
+}
+
+.meeting-present-quickadd { border-top: 1px solid rgba(255,255,255,0.12); padding-top: 1.5rem; }
+.meeting-quickadd-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--white);
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+.meeting-quickadd-form[hidden] { display: none; }
+.meeting-quickadd-form .portal-field-input[type="text"] { flex: 2 1 200px; }
+.meeting-quickadd-form .portal-field-select { flex: 1 1 120px; }
+.meeting-quickadd-form .portal-multiselect { flex: 1 1 160px; }
+.meeting-quickadd-form input[type="date"] { flex: 1 1 140px; }
+.meeting-quickadd-success {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4a8f5c;
+}
+
+@media (max-width: 640px) {
+  .meeting-present { margin: 0 -1.5rem -1.5rem; padding: 2rem 1.5rem 1.5rem; }
+}
 
 .meeting-section { margin-top: 2.75rem; }
 .meeting-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }
@@ -1878,13 +2017,13 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .meeting-draft-delete:hover { color: #b9483f; }
 
-/* Archive */
+/* Archive: swipe-through modal */
 .meeting-archive-search {
   display: flex;
   align-items: flex-end;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 .meeting-archive-search-field {
   display: flex;
@@ -1897,21 +2036,38 @@ html:has(.portal-body) { overflow-x: hidden; }
   text-transform: uppercase;
   color: rgba(28,26,24,0.5);
 }
-.meeting-archive-list { display: flex; flex-direction: column; gap: 0.6rem; }
-.meeting-archive-row {
+.meeting-archive-row-attendees { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.55); }
+
+.meeting-archive-pager {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  background: var(--white);
-  padding: 0.9rem 1.25rem;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-  cursor: pointer;
-  transition: box-shadow 0.2s ease;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(28,26,24,0.08);
 }
-.meeting-archive-row:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.09); }
-.meeting-archive-row-date { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); width: 130px; flex-shrink: 0; }
-.meeting-archive-row-attendees { flex: 1; font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.55); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.meeting-archive-row-topics { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: var(--bronze); font-weight: 600; flex-shrink: 0; }
+.meeting-archive-pager-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: rgba(28,26,24,0.45);
+}
+.meeting-archive-pager-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  padding: 0.5rem 0.9rem;
+  border: 1px solid rgba(28,26,24,0.15);
+  border-radius: 50px;
+  transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+.meeting-archive-pager-btn:hover { border-color: var(--bronze); color: var(--bronze); }
+.meeting-archive-pager-btn:disabled { opacity: 0.35; cursor: default; }
+.meeting-archive-pager-btn:disabled:hover { border-color: rgba(28,26,24,0.15); color: var(--charcoal); }
 
 /* View archived meeting modal */
 .meeting-view-card { width: 560px; max-height: 85vh; overflow-y: auto; }
@@ -1921,8 +2077,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 
 @media (max-width: 640px) {
   .meeting-active { padding: 1.5rem; }
-  .meeting-archive-row { flex-wrap: wrap; row-gap: 0.5rem; }
-  .meeting-archive-row-date { width: auto; }
+  .meeting-archive-pager { flex-wrap: wrap; }
 }
 
 @media (max-width: 960px) {
