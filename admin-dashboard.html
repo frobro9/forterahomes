@@ -160,8 +160,20 @@
             </div>
 
             <div class="meeting-field-block">
-              <label class="meeting-field-label" for="meetingNotes">Notes &amp; Discussion</label>
-              <textarea class="portal-field-input meeting-notes-textarea" id="meetingNotes" placeholder="Closing notes or discussion points..." rows="4"></textarea>
+              <label class="meeting-field-label">Notes &amp; Discussion</label>
+              <div class="rich-editor-toolbar" id="meetingNotesToolbar">
+                <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
+                <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
+                <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
+                <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
+                <select class="rich-editor-fontsize" aria-label="Font size">
+                  <option value="">Size</option>
+                  <option value="2">Small</option>
+                  <option value="3">Normal</option>
+                  <option value="5">Large</option>
+                </select>
+              </div>
+              <div class="rich-editor" id="meetingNotes" contenteditable="true" data-placeholder="Closing notes or discussion points..."></div>
               <button type="button" class="portal-btn-outline" id="meetingNotesSaveBtn" disabled>Save Notes</button>
             </div>
           </div>
@@ -177,7 +189,7 @@
               <!-- Slide: Welcome / attendees -->
               <div id="meetingSlideWelcome" class="meeting-present-titleslide" hidden>
                 <h2 class="meeting-present-slide-title">Welcome</h2>
-                <p class="meeting-present-slide-body" id="meetingSlideWelcomeBody"></p>
+                <div class="meeting-welcome-attendees" id="meetingSlideWelcomeBody"></div>
               </div>
 
               <!-- Slide: Segue (reused for Action Items / Calendar / Topics intro) -->
@@ -222,8 +234,20 @@
                 <h3 class="meeting-present-topic-title" id="meetingPresentTitle"></h3>
                 <p class="meeting-present-topic-content" id="meetingPresentContentText"></p>
 
-                <label class="meeting-present-discussion-label" for="meetingPresentDiscussion">Discussion</label>
-                <textarea class="meeting-present-discussion-textarea" id="meetingPresentDiscussion" rows="3" placeholder="Questions, answers, decisions..."></textarea>
+                <span class="meeting-present-discussion-label">Discussion</span>
+                <div class="rich-editor-toolbar" id="meetingPresentDiscussionToolbar">
+                  <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
+                  <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
+                  <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
+                  <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
+                  <select class="rich-editor-fontsize" aria-label="Font size">
+                    <option value="">Size</option>
+                    <option value="2">Small</option>
+                    <option value="3">Normal</option>
+                    <option value="5">Large</option>
+                  </select>
+                </div>
+                <div class="rich-editor" id="meetingPresentDiscussion" contenteditable="true" data-placeholder="Questions, answers, decisions..."></div>
                 <button type="button" class="portal-btn-outline" id="meetingPresentDiscussionSaveBtn" disabled>Save</button>
               </div>
 
@@ -231,13 +255,25 @@
               <div id="meetingSlideNotes" hidden>
                 <h2 class="meeting-present-slide-title">Notes &amp; Discussion</h2>
                 <p class="meeting-present-slide-body">Any final notes or discussion points?</p>
-                <textarea class="meeting-present-discussion-textarea" id="meetingPresentNotes" rows="4" placeholder="Closing notes or discussion points..."></textarea>
+                <div class="rich-editor-toolbar" id="meetingPresentNotesToolbar">
+                  <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
+                  <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
+                  <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
+                  <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
+                  <select class="rich-editor-fontsize" aria-label="Font size">
+                    <option value="">Size</option>
+                    <option value="2">Small</option>
+                    <option value="3">Normal</option>
+                    <option value="5">Large</option>
+                  </select>
+                </div>
+                <div class="rich-editor" id="meetingPresentNotes" contenteditable="true" data-placeholder="Closing notes or discussion points..."></div>
                 <button type="button" class="portal-btn-outline" id="meetingPresentNotesSaveBtn" disabled>Save</button>
               </div>
 
               <!-- Slide: presentation complete -->
               <div id="meetingSlideComplete" class="meeting-present-titleslide" hidden>
-                <h2 class="meeting-present-slide-title">Presentation Complete</h2>
+                <h2 class="meeting-present-slide-title">Meeting Complete</h2>
                 <p class="meeting-present-slide-body">Nice work — ready to wrap up?</p>
                 <div class="meeting-present-complete-actions">
                   <button type="button" class="portal-btn-outline" id="meetingStopPresentingBtn">Stop Presenting</button>

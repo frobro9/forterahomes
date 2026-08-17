@@ -35,7 +35,7 @@ export async function onRequestPatch(context) {
   }
   if (body.discussion !== undefined) {
     const discussion = typeof body.discussion === 'string' ? body.discussion.trim() : '';
-    if (discussion.length > 5000) return badRequest('Discussion is too long (max 5000 characters).');
+    if (discussion.length > 8000) return badRequest('Discussion is too long (max 8000 characters).');
     updates.push('discussion = ?');
     values.push(discussion);
   }

@@ -10,6 +10,102 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+/* ---- Rich text editor (Discussion / Notes & Discussion fields) ----
+   A small contenteditable-based editor: Bold/Italic/Underline/bullet
+   list/font size via document.execCommand, paste forced to plain text
+   to keep the produced markup predictable, and a DOM-walking sanitizer
+   that only allows the tags/attributes the toolbar can actually
+   produce — run on every load of saved HTML back into the page,
+   whether editable or read-only. */
+const RICH_HTML_ALLOWED_TAGS = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'BR', 'DIV', 'SPAN', 'P', 'FONT']);
+
+function sanitizeRichHtml(html) {
+  if (!html) return '';
+  // Parse into a fully inert document (no browsing context) rather than a
+  // live <div> — a live element starts loading resources and can fire
+  // inline handlers like onerror/onload the instant innerHTML is parsed,
+  // before this function ever gets to strip them. An inert document has
+  // no window to run scripts or fetch resources in, so parsing here can't
+  // execute anything no matter what the input contains.
+  const container = document.implementation.createHTMLDocument('').body;
+  container.innerHTML = html;
+
+  function walk(node) {
+    Array.from(node.childNodes).forEach((child) => {
+      if (child.nodeType === Node.ELEMENT_NODE) {
+        if (!RICH_HTML_ALLOWED_TAGS.has(child.tagName)) {
+          while (child.firstChild) node.insertBefore(child.firstChild, child);
+          node.removeChild(child);
+          return;
+        }
+        Array.from(child.attributes).forEach((attr) => {
+          if (child.tagName === 'FONT' && attr.name === 'size') {
+            if (!/^[1-7]$/.test(attr.value)) child.removeAttribute('size');
+          } else if (child.tagName === 'SPAN' && attr.name === 'style') {
+            const match = attr.value.match(/font-size:\s*[\w.%-]+/i);
+            if (match) child.setAttribute('style', match[0]);
+            else child.removeAttribute('style');
+          } else {
+            child.removeAttribute(attr.name);
+          }
+        });
+        walk(child);
+      } else if (child.nodeType !== Node.TEXT_NODE) {
+        node.removeChild(child);
+      }
+    });
+  }
+
+  walk(container);
+  return container.innerHTML;
+}
+
+function initRichEditor(toolbarEl, editorEl) {
+  if (!toolbarEl || !editorEl) return;
+
+  function updateToolbarState() {
+    toolbarEl.querySelectorAll('[data-cmd]').forEach((btn) => {
+      try {
+        btn.classList.toggle('is-active', document.queryCommandState(btn.dataset.cmd));
+      } catch {
+        // command state not queryable in this browser; leave as-is
+      }
+    });
+  }
+
+  toolbarEl.querySelectorAll('[data-cmd]').forEach((btn) => {
+    btn.addEventListener('mousedown', (e) => e.preventDefault());
+    btn.addEventListener('click', () => {
+      editorEl.focus();
+      document.execCommand(btn.dataset.cmd, false, null);
+      editorEl.dispatchEvent(new Event('input', { bubbles: true }));
+      updateToolbarState();
+    });
+  });
+
+  const fontSizeSelect = toolbarEl.querySelector('.rich-editor-fontsize');
+  if (fontSizeSelect) {
+    fontSizeSelect.addEventListener('mousedown', (e) => e.stopPropagation());
+    fontSizeSelect.addEventListener('change', () => {
+      if (!fontSizeSelect.value) return;
+      editorEl.focus();
+      document.execCommand('fontSize', false, fontSizeSelect.value);
+      editorEl.dispatchEvent(new Event('input', { bubbles: true }));
+      fontSizeSelect.value = '';
+    });
+  }
+
+  editorEl.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, text);
+  });
+
+  editorEl.addEventListener('keyup', updateToolbarState);
+  editorEl.addEventListener('mouseup', updateToolbarState);
+  editorEl.addEventListener('focus', updateToolbarState);
+}
+
 /* ---- Sidebar nav: expand/collapse + page switching --------- */
 const navParents = document.querySelectorAll('.portal-nav-parent');
 navParents.forEach((btn) => {
@@ -780,6 +876,10 @@ const meetingPresentNotes = document.getElementById('meetingPresentNotes');
 const meetingPresentNotesSaveBtn = document.getElementById('meetingPresentNotesSaveBtn');
 const meetingSlideComplete = document.getElementById('meetingSlideComplete');
 
+initRichEditor(document.getElementById('meetingNotesToolbar'), meetingNotes);
+initRichEditor(document.getElementById('meetingPresentDiscussionToolbar'), meetingPresentDiscussion);
+initRichEditor(document.getElementById('meetingPresentNotesToolbar'), meetingPresentNotes);
+
 const meetingQuickTaskToggleBtn = document.getElementById('meetingQuickTaskToggleBtn');
 const meetingQuickTaskForm = document.getElementById('meetingQuickTaskForm');
 const meetingQuickTaskName = document.getElementById('meetingQuickTaskName');
@@ -877,7 +977,7 @@ function renderMeetings() {
   if (activeMeeting) {
     meetingActiveDate.textContent = formatMeetingDate(activeMeeting.meeting_date);
     meetingAttendeesSelect.setValue(activeMeeting.attendees);
-    meetingNotes.value = activeMeeting.notes || '';
+    meetingNotes.innerHTML = sanitizeRichHtml(activeMeeting.notes);
     meetingNotesSaveBtn.disabled = true;
     renderActiveTopics();
     if (isPresenting) renderPresentSlide();
@@ -904,7 +1004,7 @@ function renderTopicsInto(listEl, topics, { editable }) {
       <div class="meeting-topic-row-main">
         <div class="meeting-topic-row-title">${escapeHtml(t.title)}</div>
         ${t.content ? `<div class="meeting-topic-row-content">${escapeHtml(t.content)}</div>` : ''}
-        ${t.discussion ? `<div class="meeting-topic-row-discussion"><strong>Discussion:</strong> ${escapeHtml(t.discussion)}</div>` : ''}
+        ${t.discussion ? `<div class="meeting-topic-row-discussion"><strong>Discussion:</strong> ${sanitizeRichHtml(t.discussion)}</div>` : ''}
       </div>
       ${
         editable
@@ -1029,7 +1129,7 @@ function fillArchiveModalContent(meeting) {
     ? ownerTagsHtml(meeting.attendees)
     : '<span class="meeting-archive-row-attendees">No attendance recorded</span>';
   renderTopicsInto(meetingViewTopics, meeting.topics, { editable: false });
-  meetingViewNotes.textContent = meeting.notes || 'No notes recorded.';
+  meetingViewNotes.innerHTML = meeting.notes ? sanitizeRichHtml(meeting.notes) : 'No notes recorded.';
 }
 
 /* ---- Start a new draft ----------------------------------------- */
@@ -1086,7 +1186,7 @@ if (meetingNotesSaveBtn) {
       const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: meetingNotes.value }),
+        body: JSON.stringify({ notes: meetingNotes.innerHTML }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -1183,7 +1283,10 @@ function renderPresentSlide() {
 
   if (slide.type === 'welcome') {
     meetingSlideWelcome.hidden = false;
-    meetingSlideWelcomeBody.textContent = activeMeeting.attendees || 'No attendance recorded yet.';
+    const attendeeNames = activeMeeting.attendees ? activeMeeting.attendees.split(', ') : [];
+    meetingSlideWelcomeBody.innerHTML = attendeeNames.length
+      ? attendeeNames.map((n) => `<span class="meeting-welcome-chip">${escapeHtml(n)}</span>`).join('')
+      : '<p class="meeting-present-slide-body">No attendance recorded yet.</p>';
   } else if (slide.type === 'segue') {
     meetingSlideSegue.hidden = false;
     meetingSlideSegueTitle.textContent = slide.title;
@@ -1196,11 +1299,11 @@ function renderPresentSlide() {
     meetingSlideTopic.hidden = false;
     meetingPresentTitle.textContent = topic.title;
     meetingPresentContentText.textContent = topic.content || '';
-    meetingPresentDiscussion.value = topic.discussion || '';
+    meetingPresentDiscussion.innerHTML = sanitizeRichHtml(topic.discussion);
     meetingPresentDiscussionSaveBtn.disabled = true;
   } else if (slide.type === 'notes') {
     meetingSlideNotes.hidden = false;
-    meetingPresentNotes.value = activeMeeting.notes || '';
+    meetingPresentNotes.innerHTML = sanitizeRichHtml(activeMeeting.notes);
     meetingPresentNotesSaveBtn.disabled = true;
   } else if (slide.type === 'complete') {
     meetingSlideComplete.hidden = false;
@@ -1236,7 +1339,7 @@ if (meetingPresentDiscussionSaveBtn) {
       const res = await fetch(`/api/meetings/${activeMeeting.id}/topics/${topic.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ discussion: meetingPresentDiscussion.value }),
+        body: JSON.stringify({ discussion: meetingPresentDiscussion.innerHTML }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -1265,12 +1368,12 @@ if (meetingPresentNotesSaveBtn) {
       const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: meetingPresentNotes.value }),
+        body: JSON.stringify({ notes: meetingPresentNotes.innerHTML }),
       });
       if (res.ok) {
         const data = await res.json();
         activeMeeting.notes = data.meeting.notes;
-        meetingNotes.value = data.meeting.notes;
+        meetingNotes.innerHTML = sanitizeRichHtml(data.meeting.notes);
         meetingNotesSaveBtn.disabled = true;
       } else {
         meetingPresentNotesSaveBtn.disabled = false;

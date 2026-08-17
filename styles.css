@@ -1850,8 +1850,6 @@ html:has(.portal-body) { overflow-x: hidden; }
 .meeting-topic-add-form input { flex: 1 1 220px; }
 .meeting-topic-textarea { flex: 2 1 320px; resize: vertical; min-height: 42px; font-family: 'Montserrat', sans-serif; }
 
-.meeting-notes-textarea { width: 100%; resize: vertical; min-height: 100px; font-family: 'Montserrat', sans-serif; margin-bottom: 0.85rem; }
-
 /* Present mode: a fixed slide deck you swipe through, like presenter mode */
 .meeting-present {
   background: var(--charcoal);
@@ -1905,7 +1903,23 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .meeting-present-exit:hover { color: var(--white); border-color: rgba(255,255,255,0.4); }
 
-.meeting-present-stage { min-height: 340px; display: flex; flex-direction: column; justify-content: center; }
+.meeting-present-stage { min-height: 62vh; display: flex; flex-direction: column; justify-content: center; }
+
+.meeting-welcome-attendees {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+.meeting-welcome-chip {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--white);
+  border: 1px solid var(--bronze-light);
+  padding: 0.9rem 1.75rem;
+  background: rgba(255,255,255,0.03);
+}
 
 .meeting-present-titleslide {
   text-align: center;
@@ -1969,22 +1983,83 @@ html:has(.portal-body) { overflow-x: hidden; }
   color: rgba(255,255,255,0.5);
   margin-bottom: 0.65rem;
 }
-.meeting-present-discussion-textarea {
-  width: 100%;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: var(--white);
+/* Rich text editor (Discussion / Notes & Discussion) */
+.rich-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+.rich-editor-btn {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  padding: 0.85rem;
-  resize: vertical;
+  font-size: 0.75rem;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(28,26,24,0.15);
+  border-radius: 4px;
+  color: var(--charcoal);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.rich-editor-btn:hover { border-color: var(--bronze); }
+.rich-editor-btn.is-active { background: var(--bronze); color: var(--white); border-color: var(--bronze); }
+.rich-editor-btn--list { width: auto; padding: 0 0.6rem; }
+.rich-editor-fontsize {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  border: 1px solid rgba(28,26,24,0.15);
+  border-radius: 4px;
+  padding: 0.3rem 0.4rem;
+  color: var(--charcoal);
+  background: var(--white);
+}
+
+.rich-editor {
+  width: 100%;
   min-height: 90px;
-  margin-bottom: 0.75rem;
+  max-height: 260px;
+  background: var(--cream);
+  border: 1px solid rgba(28,26,24,0.14);
+  color: var(--charcoal);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  padding: 0.7rem 0.85rem;
   outline: none;
+  overflow-y: auto;
+  margin-bottom: 0.75rem;
   transition: border-color 0.2s ease;
 }
-.meeting-present-discussion-textarea::placeholder { color: rgba(255,255,255,0.35); }
-.meeting-present-discussion-textarea:focus { border-color: var(--bronze-light); }
+.rich-editor:focus { border-color: var(--bronze); }
+.rich-editor:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(28,26,24,0.35);
+  pointer-events: none;
+}
+.rich-editor ul { padding-left: 1.25rem; margin: 0.4rem 0; }
+.rich-editor li { margin-bottom: 0.2rem; }
+.rich-editor font[size="2"] { font-size: 0.72rem; }
+.rich-editor font[size="3"] { font-size: 0.85rem; }
+.rich-editor font[size="5"] { font-size: 1.15rem; }
+
+/* Dark-mode overrides for present mode */
+.meeting-present .rich-editor-btn,
+.meeting-present .rich-editor-fontsize {
+  color: var(--white);
+  border-color: rgba(255,255,255,0.25);
+  background: transparent;
+}
+.meeting-present .rich-editor-fontsize { background: rgba(255,255,255,0.06); }
+.meeting-present .rich-editor-fontsize option { color: var(--charcoal); }
+.meeting-present .rich-editor-btn:hover { border-color: var(--bronze-light); }
+.meeting-present .rich-editor-btn.is-active { background: var(--bronze); border-color: var(--bronze); color: var(--white); }
+.meeting-present .rich-editor {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.18);
+  color: var(--white);
+}
+.meeting-present .rich-editor:focus { border-color: var(--bronze-light); }
+.meeting-present .rich-editor:empty::before { color: rgba(255,255,255,0.35); }
 
 .meeting-present-pager {
   display: flex;
@@ -2026,7 +2101,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 
 @media (max-width: 640px) {
   .meeting-present { margin: -1.5rem; padding: 1.25rem 1.5rem 1.5rem; }
-  .meeting-present-stage { min-height: 260px; }
+  .meeting-present-stage { min-height: 50vh; }
 }
 
 .meeting-section { margin-top: 2.75rem; }
