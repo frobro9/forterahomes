@@ -32,6 +32,7 @@ function showPage(pageKey) {
   history.replaceState(null, '', `#${pageKey}`);
   if (pageKey === 'action-items' && !actionItemsLoaded) loadActionItems();
   if (pageKey === 'calendar' && !calendarLoaded) loadCalendar();
+  if (pageKey === 'meetings' && !meetingsLoaded) loadMeetings();
 }
 
 navLeaves.forEach((btn) => {
@@ -81,7 +82,7 @@ const deleteConfirmCancel = document.getElementById('deleteConfirmCancel');
 const deleteConfirmConfirm = document.getElementById('deleteConfirmConfirm');
 
 /* ---- Owner multi-select (reused by the add form and edit modal) --- */
-function initOwnerMultiselect(fieldEl, triggerEl, labelEl, panelEl) {
+function initOwnerMultiselect(fieldEl, triggerEl, labelEl, panelEl, placeholder = 'Assign to', onChange) {
   const checkboxes = panelEl ? Array.from(panelEl.querySelectorAll('input[type="checkbox"]')) : [];
   const allCheckbox = panelEl ? panelEl.querySelector('input[value="All"]') : null;
 
@@ -92,7 +93,7 @@ function initOwnerMultiselect(fieldEl, triggerEl, labelEl, panelEl) {
     } else if (selected.length) {
       labelEl.textContent = selected.join(', ');
     } else {
-      labelEl.textContent = 'Assign to';
+      labelEl.textContent = placeholder;
     }
   }
 
@@ -137,6 +138,7 @@ function initOwnerMultiselect(fieldEl, triggerEl, labelEl, panelEl) {
           allCheckbox.checked = false;
         }
         updateLabel();
+        if (onChange) onChange();
       });
     });
 
@@ -716,6 +718,632 @@ if (calSummaryList) {
       }
     } catch {
       // leave list as-is; user can retry
+    }
+  });
+}
+
+/* ================================================================
+   TEAM MEETINGS
+   ================================================================ */
+let meetingsLoaded = false;
+let activeMeeting = null;
+let draftMeetings = [];
+let archivedMeetings = [];
+let editingTopicMeeting = null;
+let editingTopicId = null;
+let viewingMeeting = null;
+let pendingDeleteMeetingId = null;
+let pendingDeleteFrom = null; // 'draft' | 'archive'
+
+const meetingNewDraftBtn = document.getElementById('meetingNewDraftBtn');
+const meetingActiveEl = document.getElementById('meetingActive');
+const meetingActiveDate = document.getElementById('meetingActiveDate');
+const meetingEndBtn = document.getElementById('meetingEndBtn');
+const meetingActiveTopicsList = document.getElementById('meetingActiveTopicsList');
+const meetingActiveTopicForm = document.getElementById('meetingActiveTopicForm');
+const meetingNotes = document.getElementById('meetingNotes');
+const meetingNotesSaveBtn = document.getElementById('meetingNotesSaveBtn');
+const meetingDraftsList = document.getElementById('meetingDraftsList');
+const meetingArchiveFrom = document.getElementById('meetingArchiveFrom');
+const meetingArchiveTo = document.getElementById('meetingArchiveTo');
+const meetingArchiveClearBtn = document.getElementById('meetingArchiveClearBtn');
+const meetingArchiveList = document.getElementById('meetingArchiveList');
+
+const meetingTopicEditModal = document.getElementById('meetingTopicEditModal');
+const meetingTopicEditForm = document.getElementById('meetingTopicEditForm');
+const meetingTopicEditTitle = document.getElementById('meetingTopicEditTitle');
+const meetingTopicEditContent = document.getElementById('meetingTopicEditContent');
+const meetingTopicEditCancel = document.getElementById('meetingTopicEditCancel');
+const meetingTopicEditError = document.getElementById('meetingTopicEditError');
+
+const meetingEndConfirmModal = document.getElementById('meetingEndConfirmModal');
+const meetingEndConfirmCancel = document.getElementById('meetingEndConfirmCancel');
+const meetingEndConfirmConfirm = document.getElementById('meetingEndConfirmConfirm');
+
+const meetingDeleteConfirmModal = document.getElementById('meetingDeleteConfirmModal');
+const meetingDeleteConfirmCancel = document.getElementById('meetingDeleteConfirmCancel');
+const meetingDeleteConfirmConfirm = document.getElementById('meetingDeleteConfirmConfirm');
+
+const meetingViewModal = document.getElementById('meetingViewModal');
+const meetingViewDate = document.getElementById('meetingViewDate');
+const meetingViewAttendees = document.getElementById('meetingViewAttendees');
+const meetingViewTopics = document.getElementById('meetingViewTopics');
+const meetingViewNotes = document.getElementById('meetingViewNotes');
+const meetingViewClose = document.getElementById('meetingViewClose');
+const meetingViewDeleteBtn = document.getElementById('meetingViewDeleteBtn');
+
+const meetingAttendeesSelect = initOwnerMultiselect(
+  document.getElementById('meetingAttendeesField'),
+  document.getElementById('meetingAttendeesTrigger'),
+  document.getElementById('meetingAttendeesLabel'),
+  document.getElementById('meetingAttendeesPanel'),
+  'Who attended?',
+  saveMeetingAttendees
+);
+
+function todayDateStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function formatMeetingDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function attendeesSummary(attendees) {
+  return attendees ? attendees : 'No attendance recorded';
+}
+
+async function loadMeetings() {
+  meetingsLoaded = true;
+  try {
+    const [openRes, draftRes, endedRes] = await Promise.all([
+      fetch('/api/meetings?property=beechwood&status=open'),
+      fetch('/api/meetings?property=beechwood&status=draft'),
+      fetch('/api/meetings?property=beechwood&status=ended'),
+    ]);
+    const openData = await openRes.json();
+    const draftData = await draftRes.json();
+    const endedData = await endedRes.json();
+    activeMeeting = (openData.meetings || [])[0] || null;
+    draftMeetings = draftData.meetings || [];
+    archivedMeetings = endedData.meetings || [];
+  } catch {
+    activeMeeting = null;
+    draftMeetings = [];
+    archivedMeetings = [];
+  }
+  renderMeetings();
+}
+
+function renderMeetings() {
+  meetingActiveEl.hidden = !activeMeeting;
+  if (activeMeeting) {
+    meetingActiveDate.textContent = formatMeetingDate(activeMeeting.meeting_date);
+    meetingAttendeesSelect.setValue(activeMeeting.attendees);
+    meetingNotes.value = activeMeeting.notes || '';
+    meetingNotesSaveBtn.disabled = true;
+    renderActiveTopics();
+  }
+  renderDrafts();
+  renderArchive();
+}
+
+function renderTopicsInto(listEl, topics, { editable }) {
+  if (!topics || !topics.length) {
+    listEl.innerHTML = editable ? '' : '<li class="action-items-empty">No topics recorded.</li>';
+    return;
+  }
+  listEl.innerHTML = topics
+    .map(
+      (t, i) => `
+    <li class="meeting-topic-row" data-id="${t.id}">
+      <span class="meeting-topic-row-num">${i + 1}</span>
+      <div class="meeting-topic-row-main">
+        <div class="meeting-topic-row-title">${escapeHtml(t.title)}</div>
+        ${t.content ? `<div class="meeting-topic-row-content">${escapeHtml(t.content)}</div>` : ''}
+      </div>
+      ${
+        editable
+          ? `<div class="meeting-topic-row-actions">
+        <button type="button" class="meeting-topic-row-edit" aria-label="Edit topic" data-id="${t.id}">&#9998;</button>
+        <button type="button" class="meeting-topic-row-delete" aria-label="Delete topic" data-id="${t.id}">&times;</button>
+      </div>`
+          : ''
+      }
+    </li>`
+    )
+    .join('');
+}
+
+function renderActiveTopics() {
+  renderTopicsInto(meetingActiveTopicsList, activeMeeting.topics, { editable: true });
+}
+
+function renderDraftMeta(meeting) {
+  const card = meetingDraftsList.querySelector(`.meeting-draft-card[data-id="${meeting.id}"]`);
+  if (!card) return;
+  const countEl = card.querySelector('.meeting-draft-topic-count');
+  if (countEl) countEl.textContent = `${meeting.topics.length} topic${meeting.topics.length === 1 ? '' : 's'}`;
+  const listEl = card.querySelector('.meeting-topics-list');
+  if (listEl) renderTopicsInto(listEl, meeting.topics, { editable: true });
+}
+
+function renderDrafts() {
+  if (!draftMeetings.length) {
+    meetingDraftsList.innerHTML = '<div class="meeting-empty">No drafts queued — start prepping next week’s meeting above.</div>';
+    return;
+  }
+  meetingDraftsList.innerHTML = draftMeetings
+    .map(
+      (m) => `
+    <div class="meeting-draft-card" data-id="${m.id}">
+      <div class="meeting-draft-header">
+        <input class="portal-field-input meeting-draft-date" type="date" value="${m.meeting_date}" data-id="${m.id}">
+        <span class="meeting-draft-topic-count">${m.topics.length} topic${m.topics.length === 1 ? '' : 's'}</span>
+        <div class="meeting-draft-actions">
+          <button type="button" class="portal-btn meeting-draft-start" data-id="${m.id}" ${activeMeeting ? 'disabled' : ''}>Start Meeting</button>
+          <button type="button" class="meeting-draft-delete" aria-label="Delete draft" data-id="${m.id}">&times;</button>
+        </div>
+      </div>
+      <ul class="meeting-topics-list" data-meeting-id="${m.id}"></ul>
+      <form class="meeting-topic-add-form" data-meeting-id="${m.id}" novalidate>
+        <input class="portal-field-input" type="text" name="title" placeholder="Topic title" maxlength="200" required>
+        <textarea class="portal-field-input meeting-topic-textarea" name="content" placeholder="Notes for this topic (optional)" rows="2"></textarea>
+        <button type="submit" class="portal-btn">+ Add Topic</button>
+      </form>
+    </div>`
+    )
+    .join('');
+
+  draftMeetings.forEach((m) => {
+    const listEl = meetingDraftsList.querySelector(`.meeting-topics-list[data-meeting-id="${m.id}"]`);
+    if (listEl) renderTopicsInto(listEl, m.topics, { editable: true });
+  });
+}
+
+function archiveDateFilter() {
+  const from = meetingArchiveFrom.value;
+  const to = meetingArchiveTo.value;
+  return archivedMeetings.filter((m) => {
+    if (from && m.meeting_date < from) return false;
+    if (to && m.meeting_date > to) return false;
+    return true;
+  });
+}
+
+function renderArchive() {
+  const filtered = archiveDateFilter();
+  if (!filtered.length) {
+    meetingArchiveList.innerHTML = `<div class="meeting-empty">${
+      archivedMeetings.length ? 'No meetings match that date range.' : 'No past meetings yet.'
+    }</div>`;
+    return;
+  }
+  meetingArchiveList.innerHTML = filtered
+    .map(
+      (m) => `
+    <div class="meeting-archive-row" data-id="${m.id}">
+      <span class="meeting-archive-row-date">${formatShortDate(m.meeting_date)}</span>
+      <span class="meeting-archive-row-attendees">${escapeHtml(attendeesSummary(m.attendees))}</span>
+      <span class="meeting-archive-row-topics">${m.topic_count} topic${m.topic_count === 1 ? '' : 's'}</span>
+    </div>`
+    )
+    .join('');
+}
+
+/* ---- Start a new draft ----------------------------------------- */
+if (meetingNewDraftBtn) {
+  meetingNewDraftBtn.addEventListener('click', async () => {
+    meetingNewDraftBtn.disabled = true;
+    try {
+      const res = await fetch('/api/meetings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ meetingDate: todayDateStr(), property: 'beechwood' }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        draftMeetings.unshift(data.meeting);
+        renderDrafts();
+      }
+    } finally {
+      meetingNewDraftBtn.disabled = false;
+    }
+  });
+}
+
+/* ---- Attendance (in-progress meeting only) --------------------- */
+async function saveMeetingAttendees() {
+  if (!activeMeeting) return;
+  const attendees = meetingAttendeesSelect.getValue();
+  try {
+    const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ attendees }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      activeMeeting.attendees = data.meeting.attendees;
+    }
+  } catch {
+    // leave selection as-is; user can retoggle to retry
+  }
+}
+
+/* ---- Notes (in-progress meeting only) --------------------------- */
+if (meetingNotes) {
+  meetingNotes.addEventListener('input', () => {
+    meetingNotesSaveBtn.disabled = false;
+  });
+}
+if (meetingNotesSaveBtn) {
+  meetingNotesSaveBtn.addEventListener('click', async () => {
+    if (!activeMeeting) return;
+    meetingNotesSaveBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: meetingNotes.value }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        activeMeeting.notes = data.meeting.notes;
+      } else {
+        meetingNotesSaveBtn.disabled = false;
+      }
+    } catch {
+      meetingNotesSaveBtn.disabled = false;
+    }
+  });
+}
+
+/* ---- Topics: shared add/delete helpers -------------------------- */
+async function addTopic(meeting, formEl, onDone) {
+  const title = formEl.elements.title.value.trim();
+  const content = formEl.elements.content.value.trim();
+  if (!title) return;
+  const submitBtn = formEl.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  try {
+    const res = await fetch(`/api/meetings/${meeting.id}/topics`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, content }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      meeting.topics.push(data.topic);
+      formEl.reset();
+      onDone();
+    }
+  } finally {
+    submitBtn.disabled = false;
+  }
+}
+
+async function deleteTopic(meeting, topicId, onDone) {
+  try {
+    const res = await fetch(`/api/meetings/${meeting.id}/topics/${topicId}`, { method: 'DELETE' });
+    if (res.ok) {
+      meeting.topics = meeting.topics.filter((t) => t.id !== topicId);
+      onDone();
+    }
+  } catch {
+    // leave as-is; user can retry
+  }
+}
+
+if (meetingActiveTopicForm) {
+  meetingActiveTopicForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!activeMeeting) return;
+    await addTopic(activeMeeting, meetingActiveTopicForm, renderActiveTopics);
+  });
+}
+
+if (meetingActiveTopicsList) {
+  meetingActiveTopicsList.addEventListener('click', async (e) => {
+    if (!activeMeeting) return;
+    const editBtn = e.target.closest('.meeting-topic-row-edit');
+    if (editBtn) {
+      openTopicEditModal(activeMeeting, Number(editBtn.dataset.id));
+      return;
+    }
+    const deleteBtn = e.target.closest('.meeting-topic-row-delete');
+    if (deleteBtn) await deleteTopic(activeMeeting, Number(deleteBtn.dataset.id), renderActiveTopics);
+  });
+}
+
+/* ---- Drafts: delegated add/edit/delete/start/date-edit ---------- */
+if (meetingDraftsList) {
+  meetingDraftsList.addEventListener('submit', async (e) => {
+    const form = e.target.closest('.meeting-topic-add-form');
+    if (!form) return;
+    e.preventDefault();
+    const meeting = draftMeetings.find((m) => m.id === Number(form.dataset.meetingId));
+    if (!meeting) return;
+    await addTopic(meeting, form, () => renderDraftMeta(meeting));
+  });
+
+  meetingDraftsList.addEventListener('click', async (e) => {
+    const startBtn = e.target.closest('.meeting-draft-start');
+    if (startBtn) {
+      await startDraftMeeting(Number(startBtn.dataset.id));
+      return;
+    }
+    const draftDeleteBtn = e.target.closest('.meeting-draft-delete');
+    if (draftDeleteBtn) {
+      pendingDeleteMeetingId = Number(draftDeleteBtn.dataset.id);
+      pendingDeleteFrom = 'draft';
+      meetingDeleteConfirmModal.hidden = false;
+      return;
+    }
+    const card = e.target.closest('.meeting-draft-card');
+    if (!card) return;
+    const meeting = draftMeetings.find((m) => m.id === Number(card.dataset.id));
+    if (!meeting) return;
+
+    const editTopicBtn = e.target.closest('.meeting-topic-row-edit');
+    if (editTopicBtn) {
+      openTopicEditModal(meeting, Number(editTopicBtn.dataset.id));
+      return;
+    }
+    const deleteTopicBtn = e.target.closest('.meeting-topic-row-delete');
+    if (deleteTopicBtn) await deleteTopic(meeting, Number(deleteTopicBtn.dataset.id), () => renderDraftMeta(meeting));
+  });
+
+  meetingDraftsList.addEventListener('change', async (e) => {
+    const input = e.target.closest('.meeting-draft-date');
+    if (!input) return;
+    const meeting = draftMeetings.find((m) => m.id === Number(input.dataset.id));
+    if (!meeting) return;
+    try {
+      const res = await fetch(`/api/meetings/${meeting.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ meetingDate: input.value }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        meeting.meeting_date = data.meeting.meeting_date;
+      } else {
+        input.value = meeting.meeting_date;
+      }
+    } catch {
+      input.value = meeting.meeting_date;
+    }
+  });
+}
+
+async function startDraftMeeting(id) {
+  if (activeMeeting) return;
+  try {
+    const res = await fetch(`/api/meetings/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'open' }),
+    });
+    if (res.ok) await loadMeetings();
+  } catch {
+    // no-op; user can retry
+  }
+}
+
+/* ---- Topic edit modal (shared by active + draft topics) --------- */
+function openTopicEditModal(meeting, topicId) {
+  const topic = meeting.topics.find((t) => t.id === topicId);
+  if (!topic || !meetingTopicEditModal) return;
+  editingTopicMeeting = meeting;
+  editingTopicId = topicId;
+  meetingTopicEditTitle.value = topic.title;
+  meetingTopicEditContent.value = topic.content || '';
+  meetingTopicEditError.style.display = 'none';
+  meetingTopicEditModal.hidden = false;
+}
+
+function closeTopicEditModal() {
+  if (meetingTopicEditModal) meetingTopicEditModal.hidden = true;
+  editingTopicMeeting = null;
+  editingTopicId = null;
+}
+
+if (meetingTopicEditCancel) meetingTopicEditCancel.addEventListener('click', closeTopicEditModal);
+if (meetingTopicEditModal) {
+  meetingTopicEditModal.addEventListener('click', (e) => {
+    if (e.target === meetingTopicEditModal) closeTopicEditModal();
+  });
+}
+
+if (meetingTopicEditForm) {
+  meetingTopicEditForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!editingTopicMeeting || editingTopicId === null) return;
+    const title = meetingTopicEditTitle.value.trim();
+    const content = meetingTopicEditContent.value.trim();
+    meetingTopicEditError.style.display = 'none';
+
+    if (!title) {
+      meetingTopicEditError.textContent = 'Title is required.';
+      meetingTopicEditError.style.display = 'block';
+      return;
+    }
+
+    const submitBtn = meetingTopicEditForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/meetings/${editingTopicMeeting.id}/topics/${editingTopicId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const idx = editingTopicMeeting.topics.findIndex((t) => t.id === editingTopicId);
+        if (idx !== -1) editingTopicMeeting.topics[idx] = data.topic;
+        if (editingTopicMeeting === activeMeeting) {
+          renderActiveTopics();
+        } else {
+          renderDraftMeta(editingTopicMeeting);
+        }
+        closeTopicEditModal();
+      } else {
+        meetingTopicEditError.textContent = 'Something went wrong. Please try again.';
+        meetingTopicEditError.style.display = 'block';
+      }
+    } catch {
+      meetingTopicEditError.textContent = 'Something went wrong. Please try again.';
+      meetingTopicEditError.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+}
+
+/* ---- End meeting -------------------------------------------------- */
+if (meetingEndBtn) {
+  meetingEndBtn.addEventListener('click', () => {
+    meetingEndConfirmModal.hidden = false;
+  });
+}
+if (meetingEndConfirmCancel) {
+  meetingEndConfirmCancel.addEventListener('click', () => {
+    meetingEndConfirmModal.hidden = true;
+  });
+}
+if (meetingEndConfirmModal) {
+  meetingEndConfirmModal.addEventListener('click', (e) => {
+    if (e.target === meetingEndConfirmModal) meetingEndConfirmModal.hidden = true;
+  });
+}
+if (meetingEndConfirmConfirm) {
+  meetingEndConfirmConfirm.addEventListener('click', async () => {
+    if (!activeMeeting) return;
+    meetingEndConfirmConfirm.disabled = true;
+    try {
+      const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'ended' }),
+      });
+      if (res.ok) {
+        meetingEndConfirmModal.hidden = true;
+        await loadMeetings();
+      }
+    } finally {
+      meetingEndConfirmConfirm.disabled = false;
+    }
+  });
+}
+
+/* ---- Archive: search + view + delete ----------------------------- */
+if (meetingArchiveFrom) meetingArchiveFrom.addEventListener('change', renderArchive);
+if (meetingArchiveTo) meetingArchiveTo.addEventListener('change', renderArchive);
+if (meetingArchiveClearBtn) {
+  meetingArchiveClearBtn.addEventListener('click', () => {
+    meetingArchiveFrom.value = '';
+    meetingArchiveTo.value = '';
+    renderArchive();
+  });
+}
+
+if (meetingArchiveList) {
+  meetingArchiveList.addEventListener('click', async (e) => {
+    const row = e.target.closest('.meeting-archive-row');
+    if (!row) return;
+    try {
+      const res = await fetch(`/api/meetings/${Number(row.dataset.id)}`);
+      if (res.ok) {
+        const data = await res.json();
+        openMeetingViewModal(data.meeting);
+      }
+    } catch {
+      // no-op
+    }
+  });
+}
+
+function openMeetingViewModal(meeting) {
+  viewingMeeting = meeting;
+  meetingViewDate.textContent = formatMeetingDate(meeting.meeting_date);
+  meetingViewAttendees.innerHTML = meeting.attendees
+    ? ownerTagsHtml(meeting.attendees)
+    : '<span class="meeting-archive-row-attendees">No attendance recorded</span>';
+  renderTopicsInto(meetingViewTopics, meeting.topics, { editable: false });
+  meetingViewNotes.textContent = meeting.notes || 'No notes recorded.';
+  meetingViewModal.hidden = false;
+}
+
+if (meetingViewClose) {
+  meetingViewClose.addEventListener('click', () => {
+    meetingViewModal.hidden = true;
+    viewingMeeting = null;
+  });
+}
+if (meetingViewModal) {
+  meetingViewModal.addEventListener('click', (e) => {
+    if (e.target === meetingViewModal) {
+      meetingViewModal.hidden = true;
+      viewingMeeting = null;
+    }
+  });
+}
+
+if (meetingViewDeleteBtn) {
+  meetingViewDeleteBtn.addEventListener('click', () => {
+    if (!viewingMeeting) return;
+    pendingDeleteMeetingId = viewingMeeting.id;
+    pendingDeleteFrom = 'archive';
+    meetingViewModal.hidden = true;
+    meetingDeleteConfirmModal.hidden = false;
+  });
+}
+if (meetingDeleteConfirmCancel) {
+  meetingDeleteConfirmCancel.addEventListener('click', () => {
+    pendingDeleteMeetingId = null;
+    pendingDeleteFrom = null;
+    meetingDeleteConfirmModal.hidden = true;
+  });
+}
+if (meetingDeleteConfirmModal) {
+  meetingDeleteConfirmModal.addEventListener('click', (e) => {
+    if (e.target === meetingDeleteConfirmModal) {
+      pendingDeleteMeetingId = null;
+      pendingDeleteFrom = null;
+      meetingDeleteConfirmModal.hidden = true;
+    }
+  });
+}
+if (meetingDeleteConfirmConfirm) {
+  meetingDeleteConfirmConfirm.addEventListener('click', async () => {
+    if (pendingDeleteMeetingId === null) return;
+    const id = pendingDeleteMeetingId;
+    const from = pendingDeleteFrom;
+    meetingDeleteConfirmModal.hidden = true;
+    pendingDeleteMeetingId = null;
+    pendingDeleteFrom = null;
+    try {
+      const res = await fetch(`/api/meetings/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        if (from === 'draft') {
+          draftMeetings = draftMeetings.filter((m) => m.id !== id);
+          renderDrafts();
+        } else {
+          archivedMeetings = archivedMeetings.filter((m) => m.id !== id);
+          renderArchive();
+        }
+      }
+    } catch {
+      // no-op; row remains, user can retry
     }
   });
 }
