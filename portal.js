@@ -738,10 +738,12 @@ let archiveIndex = 0;
 const archiveDetailCache = new Map();
 let isPresenting = false;
 let presentIndex = 0;
+let presentSlides = [];
 
 const meetingArchiveBtn = document.getElementById('meetingArchiveBtn');
 const meetingNewDraftBtn = document.getElementById('meetingNewDraftBtn');
 const meetingActiveEl = document.getElementById('meetingActive');
+const meetingActiveHeader = document.getElementById('meetingActiveHeader');
 const meetingActiveDate = document.getElementById('meetingActiveDate');
 const meetingEndBtn = document.getElementById('meetingEndBtn');
 const meetingActiveTopicsList = document.getElementById('meetingActiveTopicsList');
@@ -752,17 +754,31 @@ const meetingDraftsList = document.getElementById('meetingDraftsList');
 const meetingDraftsSection = document.getElementById('meetingDraftsSection');
 
 const meetingPresentToggleBtn = document.getElementById('meetingPresentToggleBtn');
+const meetingPresentExitBtn = document.getElementById('meetingPresentExitBtn');
+const meetingStopPresentingBtn = document.getElementById('meetingStopPresentingBtn');
+const meetingPresentEndBtn = document.getElementById('meetingPresentEndBtn');
 const meetingPrepView = document.getElementById('meetingPrepView');
 const meetingPresentView = document.getElementById('meetingPresentView');
-const meetingPresentEmpty = document.getElementById('meetingPresentEmpty');
-const meetingPresentContent = document.getElementById('meetingPresentContent');
+const meetingPresentPagerLabel = document.getElementById('meetingPresentPagerLabel');
+const meetingPresentPrevBtn = document.getElementById('meetingPresentPrevBtn');
+const meetingPresentNextBtn = document.getElementById('meetingPresentNextBtn');
+
+const meetingSlideWelcome = document.getElementById('meetingSlideWelcome');
+const meetingSlideWelcomeBody = document.getElementById('meetingSlideWelcomeBody');
+const meetingSlideSegue = document.getElementById('meetingSlideSegue');
+const meetingSlideSegueTitle = document.getElementById('meetingSlideSegueTitle');
+const meetingSlideSegueBody = document.getElementById('meetingSlideSegueBody');
+const meetingSlideSegueHint = document.getElementById('meetingSlideSegueHint');
+const meetingSlideSegueQuickAdd = document.getElementById('meetingSlideSegueQuickAdd');
+const meetingSlideTopic = document.getElementById('meetingSlideTopic');
 const meetingPresentTitle = document.getElementById('meetingPresentTitle');
 const meetingPresentContentText = document.getElementById('meetingPresentContentText');
 const meetingPresentDiscussion = document.getElementById('meetingPresentDiscussion');
 const meetingPresentDiscussionSaveBtn = document.getElementById('meetingPresentDiscussionSaveBtn');
-const meetingPresentPagerLabel = document.getElementById('meetingPresentPagerLabel');
-const meetingPresentPrevBtn = document.getElementById('meetingPresentPrevBtn');
-const meetingPresentNextBtn = document.getElementById('meetingPresentNextBtn');
+const meetingSlideNotes = document.getElementById('meetingSlideNotes');
+const meetingPresentNotes = document.getElementById('meetingPresentNotes');
+const meetingPresentNotesSaveBtn = document.getElementById('meetingPresentNotesSaveBtn');
+const meetingSlideComplete = document.getElementById('meetingSlideComplete');
 
 const meetingQuickTaskToggleBtn = document.getElementById('meetingQuickTaskToggleBtn');
 const meetingQuickTaskForm = document.getElementById('meetingQuickTaskForm');
@@ -864,10 +880,10 @@ function renderMeetings() {
     meetingNotes.value = activeMeeting.notes || '';
     meetingNotesSaveBtn.disabled = true;
     renderActiveTopics();
-    if (isPresenting) renderPresentTopic();
+    if (isPresenting) renderPresentSlide();
   } else {
     isPresenting = false;
-    meetingPresentToggleBtn.textContent = 'Present';
+    meetingActiveHeader.hidden = false;
     meetingPrepView.hidden = false;
     meetingPresentView.hidden = true;
   }
@@ -1084,56 +1100,123 @@ if (meetingNotesSaveBtn) {
   });
 }
 
-/* ---- Present mode: page through topics one at a time -------------- */
-if (meetingPresentToggleBtn) {
-  meetingPresentToggleBtn.addEventListener('click', () => {
-    isPresenting = !isPresenting;
-    meetingPresentToggleBtn.textContent = isPresenting ? 'Exit Presenting' : 'Present';
-    meetingPrepView.hidden = isPresenting;
-    meetingPresentView.hidden = !isPresenting;
-    meetingDraftsSection.hidden = isPresenting;
-    if (isPresenting) {
-      presentIndex = 0;
-      renderPresentTopic();
-    }
-  });
+/* ---- Present mode: a fixed slide deck you swipe through ----------- */
+const SEGUE_SLIDES = [
+  {
+    type: 'segue',
+    title: 'Action Items',
+    body: "Let's review our action items.",
+    hint: 'Switch to the Action Items tab to go through them together.',
+    quickAdd: true,
+  },
+  {
+    type: 'segue',
+    title: 'Calendar',
+    body: "Let's review the calendar.",
+    hint: 'Switch to the Calendar tab to walk through key dates.',
+  },
+  {
+    type: 'segue',
+    title: 'Topics',
+    body: "Now, let's get into today's topics.",
+    hint: '',
+  },
+];
+
+function buildPresentSlides() {
+  const topics = (activeMeeting && activeMeeting.topics) || [];
+  const slides = [{ type: 'welcome' }, ...SEGUE_SLIDES];
+  topics.forEach((t) => slides.push({ type: 'topic', topicId: t.id }));
+  slides.push({ type: 'notes' });
+  slides.push({ type: 'complete' });
+  return slides;
 }
 
-function renderPresentTopic() {
-  const topics = (activeMeeting && activeMeeting.topics) || [];
-  if (!topics.length) {
-    meetingPresentEmpty.hidden = false;
-    meetingPresentContent.hidden = true;
-    meetingPresentPagerLabel.textContent = '';
-    meetingPresentPrevBtn.disabled = true;
-    meetingPresentNextBtn.disabled = true;
-    return;
+function enterPresentMode() {
+  if (!activeMeeting) return;
+  isPresenting = true;
+  presentSlides = buildPresentSlides();
+  presentIndex = 0;
+  meetingActiveHeader.hidden = true;
+  meetingPrepView.hidden = true;
+  meetingPresentView.hidden = false;
+  meetingDraftsSection.hidden = true;
+  renderPresentSlide();
+}
+
+function exitPresentMode() {
+  isPresenting = false;
+  meetingActiveHeader.hidden = false;
+  meetingPrepView.hidden = false;
+  meetingPresentView.hidden = true;
+  meetingDraftsSection.hidden = false;
+}
+
+if (meetingPresentToggleBtn) meetingPresentToggleBtn.addEventListener('click', enterPresentMode);
+if (meetingPresentExitBtn) meetingPresentExitBtn.addEventListener('click', exitPresentMode);
+if (meetingStopPresentingBtn) meetingStopPresentingBtn.addEventListener('click', exitPresentMode);
+
+document.addEventListener('keydown', (e) => {
+  if (!isPresenting) return;
+  if (e.key === 'Escape') {
+    exitPresentMode();
+  } else if (e.key === 'ArrowLeft' && !meetingPresentPrevBtn.disabled) {
+    meetingPresentPrevBtn.click();
+  } else if (e.key === 'ArrowRight' && !meetingPresentNextBtn.disabled) {
+    meetingPresentNextBtn.click();
   }
+});
 
-  presentIndex = Math.min(Math.max(presentIndex, 0), topics.length - 1);
-  const topic = topics[presentIndex];
+function renderPresentSlide() {
+  meetingSlideWelcome.hidden = true;
+  meetingSlideSegue.hidden = true;
+  meetingSlideTopic.hidden = true;
+  meetingSlideNotes.hidden = true;
+  meetingSlideComplete.hidden = true;
 
-  meetingPresentEmpty.hidden = true;
-  meetingPresentContent.hidden = false;
-  meetingPresentTitle.textContent = topic.title;
-  meetingPresentContentText.textContent = topic.content || '';
-  meetingPresentDiscussion.value = topic.discussion || '';
-  meetingPresentDiscussionSaveBtn.disabled = true;
-  meetingPresentPagerLabel.textContent = `${presentIndex + 1} of ${topics.length}`;
+  const slide = presentSlides[presentIndex];
+  meetingPresentPagerLabel.textContent = presentSlides.length ? `${presentIndex + 1} of ${presentSlides.length}` : '';
   meetingPresentPrevBtn.disabled = presentIndex === 0;
-  meetingPresentNextBtn.disabled = presentIndex === topics.length - 1;
+  meetingPresentNextBtn.disabled = presentIndex === presentSlides.length - 1;
+
+  if (!slide) return;
+
+  if (slide.type === 'welcome') {
+    meetingSlideWelcome.hidden = false;
+    meetingSlideWelcomeBody.textContent = activeMeeting.attendees || 'No attendance recorded yet.';
+  } else if (slide.type === 'segue') {
+    meetingSlideSegue.hidden = false;
+    meetingSlideSegueTitle.textContent = slide.title;
+    meetingSlideSegueBody.textContent = slide.body;
+    meetingSlideSegueHint.textContent = slide.hint || '';
+    meetingSlideSegueQuickAdd.hidden = !slide.quickAdd;
+  } else if (slide.type === 'topic') {
+    const topic = activeMeeting.topics.find((t) => t.id === slide.topicId);
+    if (!topic) return;
+    meetingSlideTopic.hidden = false;
+    meetingPresentTitle.textContent = topic.title;
+    meetingPresentContentText.textContent = topic.content || '';
+    meetingPresentDiscussion.value = topic.discussion || '';
+    meetingPresentDiscussionSaveBtn.disabled = true;
+  } else if (slide.type === 'notes') {
+    meetingSlideNotes.hidden = false;
+    meetingPresentNotes.value = activeMeeting.notes || '';
+    meetingPresentNotesSaveBtn.disabled = true;
+  } else if (slide.type === 'complete') {
+    meetingSlideComplete.hidden = false;
+  }
 }
 
 if (meetingPresentPrevBtn) {
   meetingPresentPrevBtn.addEventListener('click', () => {
     presentIndex -= 1;
-    renderPresentTopic();
+    renderPresentSlide();
   });
 }
 if (meetingPresentNextBtn) {
   meetingPresentNextBtn.addEventListener('click', () => {
     presentIndex += 1;
-    renderPresentTopic();
+    renderPresentSlide();
   });
 }
 
@@ -1144,8 +1227,9 @@ if (meetingPresentDiscussion) {
 }
 if (meetingPresentDiscussionSaveBtn) {
   meetingPresentDiscussionSaveBtn.addEventListener('click', async () => {
-    if (!activeMeeting) return;
-    const topic = activeMeeting.topics[presentIndex];
+    const slide = presentSlides[presentIndex];
+    if (!activeMeeting || !slide || slide.type !== 'topic') return;
+    const topic = activeMeeting.topics.find((t) => t.id === slide.topicId);
     if (!topic) return;
     meetingPresentDiscussionSaveBtn.disabled = true;
     try {
@@ -1156,13 +1240,43 @@ if (meetingPresentDiscussionSaveBtn) {
       });
       if (res.ok) {
         const data = await res.json();
-        activeMeeting.topics[presentIndex] = data.topic;
+        const idx = activeMeeting.topics.findIndex((t) => t.id === topic.id);
+        if (idx !== -1) activeMeeting.topics[idx] = data.topic;
         renderActiveTopics();
       } else {
         meetingPresentDiscussionSaveBtn.disabled = false;
       }
     } catch {
       meetingPresentDiscussionSaveBtn.disabled = false;
+    }
+  });
+}
+
+if (meetingPresentNotes) {
+  meetingPresentNotes.addEventListener('input', () => {
+    meetingPresentNotesSaveBtn.disabled = false;
+  });
+}
+if (meetingPresentNotesSaveBtn) {
+  meetingPresentNotesSaveBtn.addEventListener('click', async () => {
+    if (!activeMeeting) return;
+    meetingPresentNotesSaveBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/meetings/${activeMeeting.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes: meetingPresentNotes.value }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        activeMeeting.notes = data.meeting.notes;
+        meetingNotes.value = data.meeting.notes;
+        meetingNotesSaveBtn.disabled = true;
+      } else {
+        meetingPresentNotesSaveBtn.disabled = false;
+      }
+    } catch {
+      meetingPresentNotesSaveBtn.disabled = false;
     }
   });
 }
@@ -1415,11 +1529,11 @@ if (meetingTopicEditForm) {
 }
 
 /* ---- End meeting -------------------------------------------------- */
-if (meetingEndBtn) {
-  meetingEndBtn.addEventListener('click', () => {
-    meetingEndConfirmModal.hidden = false;
-  });
+function openEndMeetingConfirm() {
+  meetingEndConfirmModal.hidden = false;
 }
+if (meetingEndBtn) meetingEndBtn.addEventListener('click', openEndMeetingConfirm);
+if (meetingPresentEndBtn) meetingPresentEndBtn.addEventListener('click', openEndMeetingConfirm);
 if (meetingEndConfirmCancel) {
   meetingEndConfirmCancel.addEventListener('click', () => {
     meetingEndConfirmModal.hidden = true;
