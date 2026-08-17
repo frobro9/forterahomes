@@ -54,7 +54,7 @@ export async function onRequestPatch(context) {
   }
   if (body.notes !== undefined) {
     const notes = typeof body.notes === 'string' ? body.notes : '';
-    if (notes.length > 5000) return badRequest('Notes are too long (max 5000 characters).');
+    if (notes.length > 8000) return badRequest('Notes are too long (max 8000 characters).');
     updates.push('notes = ?');
     values.push(notes);
   }
