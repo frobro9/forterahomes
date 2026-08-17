@@ -1766,6 +1766,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(28,26,24,0.08);
 }
+.meeting-active-header[hidden] { display: none; }
 .meeting-active-label {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.6rem;
@@ -1851,17 +1852,24 @@ html:has(.portal-body) { overflow-x: hidden; }
 
 .meeting-notes-textarea { width: 100%; resize: vertical; min-height: 100px; font-family: 'Montserrat', sans-serif; margin-bottom: 0.85rem; }
 
-/* Present mode: a distinct dark "stage" for going through topics live */
+/* Present mode: a fixed slide deck you swipe through, like presenter mode */
 .meeting-present {
   background: var(--charcoal);
   color: var(--white);
-  margin: 0 -2rem -2rem;
-  padding: 2.25rem 2rem 2rem;
+  margin: -2rem;
+  padding: 1.5rem 2rem 2rem;
 }
 .meeting-present .portal-btn-outline { color: var(--white); border-color: rgba(255,255,255,0.3); }
 .meeting-present .portal-btn-outline:hover { border-color: var(--bronze-light); color: var(--bronze-light); }
 .meeting-present .portal-btn-outline:disabled { opacity: 0.35; cursor: default; }
 .meeting-present .portal-btn-outline:disabled:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+.meeting-present-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
 
 .meeting-present-badge {
   display: inline-flex;
@@ -1873,7 +1881,6 @@ html:has(.portal-body) { overflow-x: hidden; }
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--bronze-light);
-  margin-bottom: 1.5rem;
 }
 .meeting-present-badge::before {
   content: '';
@@ -1884,12 +1891,56 @@ html:has(.portal-body) { overflow-x: hidden; }
   box-shadow: 0 0 0 4px rgba(74,143,92,0.25);
 }
 
-.meeting-present-empty {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: rgba(255,255,255,0.5);
+.meeting-present-exit {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.meeting-present-exit:hover { color: var(--white); border-color: rgba(255,255,255,0.4); }
+
+.meeting-present-stage { min-height: 340px; display: flex; flex-direction: column; justify-content: center; }
+
+.meeting-present-titleslide {
+  text-align: center;
+  max-width: 460px;
+  margin: 0 auto;
+}
+.meeting-present-titleslide .meeting-present-quickadd { text-align: left; margin-top: 2rem; }
+.meeting-present-titleslide .meeting-quickadd-form { text-align: left; }
+
+.meeting-present-slide-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 1rem;
+}
+.meeting-present-slide-body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.8);
+}
+.meeting-present-slide-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.45);
+  margin-top: 0.75rem;
+}
+.meeting-present-slide-hint:empty { display: none; }
+
+.meeting-present-complete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
 }
 
 .meeting-present-topic-title {
@@ -1940,7 +1991,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin: 2rem 0 1.75rem;
+  margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255,255,255,0.12);
 }
@@ -1974,7 +2025,8 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 
 @media (max-width: 640px) {
-  .meeting-present { margin: 0 -1.5rem -1.5rem; padding: 2rem 1.5rem 1.5rem; }
+  .meeting-present { margin: -1.5rem; padding: 1.25rem 1.5rem 1.5rem; }
+  .meeting-present-stage { min-height: 260px; }
 }
 
 .meeting-section { margin-top: 2.75rem; }

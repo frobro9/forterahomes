@@ -120,9 +120,9 @@
 
         <!-- In progress -->
         <div class="meeting-active" id="meetingActive" hidden>
-          <div class="meeting-active-header">
+          <div class="meeting-active-header" id="meetingActiveHeader">
             <div>
-              <span class="meeting-active-label">In Progress</span>
+              <span class="meeting-active-label">Preparation</span>
               <h2 class="meeting-active-date" id="meetingActiveDate"></h2>
             </div>
             <div class="meeting-header-actions">
@@ -140,13 +140,11 @@
                   <span id="meetingAttendeesLabel">Who attended?</span>
                 </button>
                 <div class="portal-multiselect-panel" id="meetingAttendeesPanel" hidden>
-                  <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
                   <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
                   <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
                   <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
                   <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
                   <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
-                  <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
                 </div>
               </div>
             </div>
@@ -168,55 +166,90 @@
             </div>
           </div>
 
-          <!-- Present view: one topic at a time -->
+          <!-- Present view: a fixed slide deck you swipe through -->
           <div id="meetingPresentView" class="meeting-present" hidden>
-            <div class="meeting-present-badge">Presenting</div>
+            <div class="meeting-present-topbar">
+              <span class="meeting-present-badge">Presenting</span>
+              <button type="button" class="meeting-present-exit" id="meetingPresentExitBtn">Exit</button>
+            </div>
 
-            <div id="meetingPresentEmpty" class="meeting-present-empty" hidden>No topics to present yet — exit and add some below.</div>
+            <div class="meeting-present-stage">
+              <!-- Slide: Welcome / attendees -->
+              <div id="meetingSlideWelcome" class="meeting-present-titleslide" hidden>
+                <h2 class="meeting-present-slide-title">Welcome</h2>
+                <p class="meeting-present-slide-body" id="meetingSlideWelcomeBody"></p>
+              </div>
 
-            <div id="meetingPresentContent">
-              <h3 class="meeting-present-topic-title" id="meetingPresentTitle"></h3>
-              <p class="meeting-present-topic-content" id="meetingPresentContentText"></p>
+              <!-- Slide: Segue (reused for Action Items / Calendar / Topics intro) -->
+              <div id="meetingSlideSegue" class="meeting-present-titleslide" hidden>
+                <h2 class="meeting-present-slide-title" id="meetingSlideSegueTitle"></h2>
+                <p class="meeting-present-slide-body" id="meetingSlideSegueBody"></p>
+                <p class="meeting-present-slide-hint" id="meetingSlideSegueHint"></p>
 
-              <label class="meeting-present-discussion-label" for="meetingPresentDiscussion">Discussion</label>
-              <textarea class="meeting-present-discussion-textarea" id="meetingPresentDiscussion" rows="3" placeholder="Questions, answers, decisions..."></textarea>
-              <button type="button" class="portal-btn-outline" id="meetingPresentDiscussionSaveBtn" disabled>Save</button>
+                <div class="meeting-present-quickadd" id="meetingSlideSegueQuickAdd" hidden>
+                  <button type="button" class="portal-btn-outline" id="meetingQuickTaskToggleBtn">+ Add Action Item</button>
+                  <form class="meeting-quickadd-form" id="meetingQuickTaskForm" novalidate hidden>
+                    <input class="portal-field-input" type="text" id="meetingQuickTaskName" placeholder="Task name" maxlength="200" required>
+                    <select class="portal-field-select" id="meetingQuickTaskPriority">
+                      <option value="high">High</option>
+                      <option value="medium" selected>Medium</option>
+                      <option value="low">Low</option>
+                      <option value="na">N/A</option>
+                    </select>
+                    <div class="portal-multiselect" id="meetingQuickTaskOwnerField">
+                      <button type="button" class="portal-field-select portal-multiselect-trigger" id="meetingQuickTaskOwnerTrigger" aria-haspopup="true" aria-expanded="false">
+                        <span id="meetingQuickTaskOwnerLabel">Assign to</span>
+                      </button>
+                      <div class="portal-multiselect-panel" id="meetingQuickTaskOwnerPanel" hidden>
+                        <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
+                        <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
+                        <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
+                        <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
+                        <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
+                        <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
+                        <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
+                      </div>
+                    </div>
+                    <input class="portal-field-input" type="date" id="meetingQuickTaskDueDate">
+                    <button type="submit" class="portal-btn">Add</button>
+                    <span class="meeting-quickadd-success" id="meetingQuickTaskSuccess" hidden>Added &#10003;</span>
+                  </form>
+                </div>
+              </div>
+
+              <!-- Slide: one per topic -->
+              <div id="meetingSlideTopic" hidden>
+                <h3 class="meeting-present-topic-title" id="meetingPresentTitle"></h3>
+                <p class="meeting-present-topic-content" id="meetingPresentContentText"></p>
+
+                <label class="meeting-present-discussion-label" for="meetingPresentDiscussion">Discussion</label>
+                <textarea class="meeting-present-discussion-textarea" id="meetingPresentDiscussion" rows="3" placeholder="Questions, answers, decisions..."></textarea>
+                <button type="button" class="portal-btn-outline" id="meetingPresentDiscussionSaveBtn" disabled>Save</button>
+              </div>
+
+              <!-- Slide: closing notes -->
+              <div id="meetingSlideNotes" hidden>
+                <h2 class="meeting-present-slide-title">Notes &amp; Discussion</h2>
+                <p class="meeting-present-slide-body">Any final notes or discussion points?</p>
+                <textarea class="meeting-present-discussion-textarea" id="meetingPresentNotes" rows="4" placeholder="Closing notes or discussion points..."></textarea>
+                <button type="button" class="portal-btn-outline" id="meetingPresentNotesSaveBtn" disabled>Save</button>
+              </div>
+
+              <!-- Slide: presentation complete -->
+              <div id="meetingSlideComplete" class="meeting-present-titleslide" hidden>
+                <h2 class="meeting-present-slide-title">Presentation Complete</h2>
+                <p class="meeting-present-slide-body">Nice work — ready to wrap up?</p>
+                <div class="meeting-present-complete-actions">
+                  <button type="button" class="portal-btn-outline" id="meetingStopPresentingBtn">Stop Presenting</button>
+                  <button type="button" class="portal-btn" id="meetingPresentEndBtn">End Meeting</button>
+                </div>
+              </div>
             </div>
 
             <div class="meeting-present-pager">
               <button type="button" class="portal-btn-outline" id="meetingPresentPrevBtn">&#8249; Prev</button>
               <span class="meeting-present-pager-label" id="meetingPresentPagerLabel"></span>
               <button type="button" class="portal-btn-outline" id="meetingPresentNextBtn">Next &#8250;</button>
-            </div>
-
-            <div class="meeting-present-quickadd">
-              <button type="button" class="portal-btn-outline" id="meetingQuickTaskToggleBtn">+ Add Action Item</button>
-              <form class="meeting-quickadd-form" id="meetingQuickTaskForm" novalidate hidden>
-                <input class="portal-field-input" type="text" id="meetingQuickTaskName" placeholder="Task name" maxlength="200" required>
-                <select class="portal-field-select" id="meetingQuickTaskPriority">
-                  <option value="high">High</option>
-                  <option value="medium" selected>Medium</option>
-                  <option value="low">Low</option>
-                  <option value="na">N/A</option>
-                </select>
-                <div class="portal-multiselect" id="meetingQuickTaskOwnerField">
-                  <button type="button" class="portal-field-select portal-multiselect-trigger" id="meetingQuickTaskOwnerTrigger" aria-haspopup="true" aria-expanded="false">
-                    <span id="meetingQuickTaskOwnerLabel">Assign to</span>
-                  </button>
-                  <div class="portal-multiselect-panel" id="meetingQuickTaskOwnerPanel" hidden>
-                    <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
-                    <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
-                    <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
-                    <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
-                    <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
-                    <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
-                    <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
-                  </div>
-                </div>
-                <input class="portal-field-input" type="date" id="meetingQuickTaskDueDate">
-                <button type="submit" class="portal-btn">Add</button>
-                <span class="meeting-quickadd-success" id="meetingQuickTaskSuccess" hidden>Added &#10003;</span>
-              </form>
             </div>
           </div>
         </div>
