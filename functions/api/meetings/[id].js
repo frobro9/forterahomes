@@ -14,7 +14,7 @@ export async function onRequestGet(context) {
   if (!meeting) return notFound();
 
   const { results: topics } = await env.DB.prepare(
-    'SELECT id, meeting_id, title, content, sort_order, created_at FROM meeting_topics WHERE meeting_id = ? ORDER BY sort_order ASC, id ASC'
+    'SELECT id, meeting_id, title, content, discussion, sort_order, created_at FROM meeting_topics WHERE meeting_id = ? ORDER BY sort_order ASC, id ASC'
   )
     .bind(id)
     .all();

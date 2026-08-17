@@ -736,6 +736,8 @@ let pendingDeleteMeetingId = null;
 let pendingDeleteFrom = null; // 'draft' | 'archive'
 let archiveIndex = 0;
 const archiveDetailCache = new Map();
+let isPresenting = false;
+let presentIndex = 0;
 
 const meetingArchiveBtn = document.getElementById('meetingArchiveBtn');
 const meetingNewDraftBtn = document.getElementById('meetingNewDraftBtn');
@@ -747,6 +749,34 @@ const meetingActiveTopicForm = document.getElementById('meetingActiveTopicForm')
 const meetingNotes = document.getElementById('meetingNotes');
 const meetingNotesSaveBtn = document.getElementById('meetingNotesSaveBtn');
 const meetingDraftsList = document.getElementById('meetingDraftsList');
+const meetingDraftsSection = document.getElementById('meetingDraftsSection');
+
+const meetingPresentToggleBtn = document.getElementById('meetingPresentToggleBtn');
+const meetingPrepView = document.getElementById('meetingPrepView');
+const meetingPresentView = document.getElementById('meetingPresentView');
+const meetingPresentEmpty = document.getElementById('meetingPresentEmpty');
+const meetingPresentContent = document.getElementById('meetingPresentContent');
+const meetingPresentTitle = document.getElementById('meetingPresentTitle');
+const meetingPresentContentText = document.getElementById('meetingPresentContentText');
+const meetingPresentDiscussion = document.getElementById('meetingPresentDiscussion');
+const meetingPresentDiscussionSaveBtn = document.getElementById('meetingPresentDiscussionSaveBtn');
+const meetingPresentPagerLabel = document.getElementById('meetingPresentPagerLabel');
+const meetingPresentPrevBtn = document.getElementById('meetingPresentPrevBtn');
+const meetingPresentNextBtn = document.getElementById('meetingPresentNextBtn');
+
+const meetingQuickTaskToggleBtn = document.getElementById('meetingQuickTaskToggleBtn');
+const meetingQuickTaskForm = document.getElementById('meetingQuickTaskForm');
+const meetingQuickTaskName = document.getElementById('meetingQuickTaskName');
+const meetingQuickTaskPriority = document.getElementById('meetingQuickTaskPriority');
+const meetingQuickTaskDueDate = document.getElementById('meetingQuickTaskDueDate');
+const meetingQuickTaskSuccess = document.getElementById('meetingQuickTaskSuccess');
+
+const meetingQuickTaskOwnerSelect = initOwnerMultiselect(
+  document.getElementById('meetingQuickTaskOwnerField'),
+  document.getElementById('meetingQuickTaskOwnerTrigger'),
+  document.getElementById('meetingQuickTaskOwnerLabel'),
+  document.getElementById('meetingQuickTaskOwnerPanel')
+);
 const meetingArchiveFrom = document.getElementById('meetingArchiveFrom');
 const meetingArchiveTo = document.getElementById('meetingArchiveTo');
 const meetingArchiveClearBtn = document.getElementById('meetingArchiveClearBtn');
@@ -834,7 +864,14 @@ function renderMeetings() {
     meetingNotes.value = activeMeeting.notes || '';
     meetingNotesSaveBtn.disabled = true;
     renderActiveTopics();
+    if (isPresenting) renderPresentTopic();
+  } else {
+    isPresenting = false;
+    meetingPresentToggleBtn.textContent = 'Present';
+    meetingPrepView.hidden = false;
+    meetingPresentView.hidden = true;
   }
+  meetingDraftsSection.hidden = isPresenting;
   renderDrafts();
 }
 
@@ -851,6 +888,7 @@ function renderTopicsInto(listEl, topics, { editable }) {
       <div class="meeting-topic-row-main">
         <div class="meeting-topic-row-title">${escapeHtml(t.title)}</div>
         ${t.content ? `<div class="meeting-topic-row-content">${escapeHtml(t.content)}</div>` : ''}
+        ${t.discussion ? `<div class="meeting-topic-row-discussion"><strong>Discussion:</strong> ${escapeHtml(t.discussion)}</div>` : ''}
       </div>
       ${
         editable
@@ -1042,6 +1080,134 @@ if (meetingNotesSaveBtn) {
       }
     } catch {
       meetingNotesSaveBtn.disabled = false;
+    }
+  });
+}
+
+/* ---- Present mode: page through topics one at a time -------------- */
+if (meetingPresentToggleBtn) {
+  meetingPresentToggleBtn.addEventListener('click', () => {
+    isPresenting = !isPresenting;
+    meetingPresentToggleBtn.textContent = isPresenting ? 'Exit Presenting' : 'Present';
+    meetingPrepView.hidden = isPresenting;
+    meetingPresentView.hidden = !isPresenting;
+    meetingDraftsSection.hidden = isPresenting;
+    if (isPresenting) {
+      presentIndex = 0;
+      renderPresentTopic();
+    }
+  });
+}
+
+function renderPresentTopic() {
+  const topics = (activeMeeting && activeMeeting.topics) || [];
+  if (!topics.length) {
+    meetingPresentEmpty.hidden = false;
+    meetingPresentContent.hidden = true;
+    meetingPresentPagerLabel.textContent = '';
+    meetingPresentPrevBtn.disabled = true;
+    meetingPresentNextBtn.disabled = true;
+    return;
+  }
+
+  presentIndex = Math.min(Math.max(presentIndex, 0), topics.length - 1);
+  const topic = topics[presentIndex];
+
+  meetingPresentEmpty.hidden = true;
+  meetingPresentContent.hidden = false;
+  meetingPresentTitle.textContent = topic.title;
+  meetingPresentContentText.textContent = topic.content || '';
+  meetingPresentDiscussion.value = topic.discussion || '';
+  meetingPresentDiscussionSaveBtn.disabled = true;
+  meetingPresentPagerLabel.textContent = `${presentIndex + 1} of ${topics.length}`;
+  meetingPresentPrevBtn.disabled = presentIndex === 0;
+  meetingPresentNextBtn.disabled = presentIndex === topics.length - 1;
+}
+
+if (meetingPresentPrevBtn) {
+  meetingPresentPrevBtn.addEventListener('click', () => {
+    presentIndex -= 1;
+    renderPresentTopic();
+  });
+}
+if (meetingPresentNextBtn) {
+  meetingPresentNextBtn.addEventListener('click', () => {
+    presentIndex += 1;
+    renderPresentTopic();
+  });
+}
+
+if (meetingPresentDiscussion) {
+  meetingPresentDiscussion.addEventListener('input', () => {
+    meetingPresentDiscussionSaveBtn.disabled = false;
+  });
+}
+if (meetingPresentDiscussionSaveBtn) {
+  meetingPresentDiscussionSaveBtn.addEventListener('click', async () => {
+    if (!activeMeeting) return;
+    const topic = activeMeeting.topics[presentIndex];
+    if (!topic) return;
+    meetingPresentDiscussionSaveBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/meetings/${activeMeeting.id}/topics/${topic.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discussion: meetingPresentDiscussion.value }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        activeMeeting.topics[presentIndex] = data.topic;
+        renderActiveTopics();
+      } else {
+        meetingPresentDiscussionSaveBtn.disabled = false;
+      }
+    } catch {
+      meetingPresentDiscussionSaveBtn.disabled = false;
+    }
+  });
+}
+
+/* ---- Quick-add an action item straight from presenting ------------ */
+if (meetingQuickTaskToggleBtn) {
+  meetingQuickTaskToggleBtn.addEventListener('click', () => {
+    const opening = meetingQuickTaskForm.hidden;
+    meetingQuickTaskForm.hidden = !opening;
+    meetingQuickTaskToggleBtn.textContent = opening ? 'Cancel' : '+ Add Action Item';
+    meetingQuickTaskSuccess.hidden = true;
+    if (opening) meetingQuickTaskName.focus();
+  });
+}
+
+if (meetingQuickTaskForm) {
+  meetingQuickTaskForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = meetingQuickTaskName.value.trim();
+    const priority = meetingQuickTaskPriority.value;
+    const owner = meetingQuickTaskOwnerSelect.getValue();
+    const dueDate = meetingQuickTaskDueDate.value || null;
+    if (!name || !owner) return;
+
+    const submitBtn = meetingQuickTaskForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, priority, owner, dueDate, property: 'beechwood' }),
+      });
+      if (res.ok) {
+        meetingQuickTaskForm.reset();
+        meetingQuickTaskOwnerSelect.reset();
+        meetingQuickTaskForm.hidden = true;
+        meetingQuickTaskToggleBtn.textContent = '+ Add Action Item';
+        meetingQuickTaskSuccess.hidden = false;
+        actionItemsLoaded = false;
+        setTimeout(() => {
+          meetingQuickTaskSuccess.hidden = true;
+        }, 3000);
+      }
+    } finally {
+      submitBtn.disabled = false;
     }
   });
 }

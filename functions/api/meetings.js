@@ -30,7 +30,7 @@ export async function onRequestGet(context) {
   const ids = results.map((m) => m.id);
   const placeholders = ids.map((_, i) => `?${i + 1}`).join(', ');
   const { results: topics } = await env.DB.prepare(
-    `SELECT id, meeting_id, title, content, sort_order, created_at FROM meeting_topics WHERE meeting_id IN (${placeholders}) ORDER BY sort_order ASC, id ASC`
+    `SELECT id, meeting_id, title, content, discussion, sort_order, created_at FROM meeting_topics WHERE meeting_id IN (${placeholders}) ORDER BY sort_order ASC, id ASC`
   )
     .bind(...ids)
     .all();

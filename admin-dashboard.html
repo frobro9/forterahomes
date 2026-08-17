@@ -36,13 +36,13 @@
               </button>
               <div class="portal-nav-children is-open" data-children="beechwood">
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="action-items">Action Items</button>
-                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="meetings">Team Meetings</button>
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="calendar">Calendar</button>
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="budget">Budget Tracker</button>
               </div>
             </div>
           </div>
 
+          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="meetings">Team Meetings</button>
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="finder">Property Finder Tool</button>
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="pm-portal">Property Management Portal</button>
         </nav>
@@ -110,7 +110,6 @@
       <section class="portal-page" data-page="meetings">
         <div class="portal-page-header">
           <div>
-            <span class="portal-page-label">BEECHWOOD COLLECTION</span>
             <h1 class="portal-page-title">Team Meetings</h1>
           </div>
           <div class="meeting-header-actions">
@@ -126,46 +125,104 @@
               <span class="meeting-active-label">In Progress</span>
               <h2 class="meeting-active-date" id="meetingActiveDate"></h2>
             </div>
-            <button type="button" class="portal-btn" id="meetingEndBtn">End Meeting</button>
-          </div>
-
-          <div class="meeting-field-block">
-            <label class="meeting-field-label">Attendance</label>
-            <div class="portal-multiselect" id="meetingAttendeesField">
-              <button type="button" class="portal-field-select portal-multiselect-trigger" id="meetingAttendeesTrigger" aria-haspopup="true" aria-expanded="false">
-                <span id="meetingAttendeesLabel">Who attended?</span>
-              </button>
-              <div class="portal-multiselect-panel" id="meetingAttendeesPanel" hidden>
-                <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
-                <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
-                <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
-                <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
-                <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
-                <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
-                <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
-              </div>
+            <div class="meeting-header-actions">
+              <button type="button" class="portal-btn-outline" id="meetingPresentToggleBtn">Present</button>
+              <button type="button" class="portal-btn" id="meetingEndBtn">End Meeting</button>
             </div>
           </div>
 
-          <div class="meeting-field-block">
-            <label class="meeting-field-label">Topics</label>
-            <ul class="meeting-topics-list" id="meetingActiveTopicsList"></ul>
-            <form class="meeting-topic-add-form" id="meetingActiveTopicForm" novalidate>
-              <input class="portal-field-input" type="text" name="title" placeholder="Topic title" maxlength="200" required>
-              <textarea class="portal-field-input meeting-topic-textarea" name="content" placeholder="Notes for this topic (optional)" rows="2"></textarea>
-              <button type="submit" class="portal-btn">+ Add Topic</button>
-            </form>
+          <!-- Prep view: attendance, topic prep, closing notes -->
+          <div id="meetingPrepView">
+            <div class="meeting-field-block">
+              <label class="meeting-field-label">Attendance</label>
+              <div class="portal-multiselect" id="meetingAttendeesField">
+                <button type="button" class="portal-field-select portal-multiselect-trigger" id="meetingAttendeesTrigger" aria-haspopup="true" aria-expanded="false">
+                  <span id="meetingAttendeesLabel">Who attended?</span>
+                </button>
+                <div class="portal-multiselect-panel" id="meetingAttendeesPanel" hidden>
+                  <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
+                  <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
+                  <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
+                  <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
+                  <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
+                  <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
+                  <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="meeting-field-block">
+              <label class="meeting-field-label">Topics</label>
+              <ul class="meeting-topics-list" id="meetingActiveTopicsList"></ul>
+              <form class="meeting-topic-add-form" id="meetingActiveTopicForm" novalidate>
+                <input class="portal-field-input" type="text" name="title" placeholder="Topic title" maxlength="200" required>
+                <textarea class="portal-field-input meeting-topic-textarea" name="content" placeholder="Notes for this topic (optional)" rows="2"></textarea>
+                <button type="submit" class="portal-btn">+ Add Topic</button>
+              </form>
+            </div>
+
+            <div class="meeting-field-block">
+              <label class="meeting-field-label" for="meetingNotes">Notes &amp; Discussion</label>
+              <textarea class="portal-field-input meeting-notes-textarea" id="meetingNotes" placeholder="Closing notes or discussion points..." rows="4"></textarea>
+              <button type="button" class="portal-btn-outline" id="meetingNotesSaveBtn" disabled>Save Notes</button>
+            </div>
           </div>
 
-          <div class="meeting-field-block">
-            <label class="meeting-field-label" for="meetingNotes">Notes &amp; Discussion</label>
-            <textarea class="portal-field-input meeting-notes-textarea" id="meetingNotes" placeholder="Closing notes or discussion points..." rows="4"></textarea>
-            <button type="button" class="portal-btn-outline" id="meetingNotesSaveBtn" disabled>Save Notes</button>
+          <!-- Present view: one topic at a time -->
+          <div id="meetingPresentView" class="meeting-present" hidden>
+            <div class="meeting-present-badge">Presenting</div>
+
+            <div id="meetingPresentEmpty" class="meeting-present-empty" hidden>No topics to present yet — exit and add some below.</div>
+
+            <div id="meetingPresentContent">
+              <h3 class="meeting-present-topic-title" id="meetingPresentTitle"></h3>
+              <p class="meeting-present-topic-content" id="meetingPresentContentText"></p>
+
+              <label class="meeting-present-discussion-label" for="meetingPresentDiscussion">Discussion</label>
+              <textarea class="meeting-present-discussion-textarea" id="meetingPresentDiscussion" rows="3" placeholder="Questions, answers, decisions..."></textarea>
+              <button type="button" class="portal-btn-outline" id="meetingPresentDiscussionSaveBtn" disabled>Save</button>
+            </div>
+
+            <div class="meeting-present-pager">
+              <button type="button" class="portal-btn-outline" id="meetingPresentPrevBtn">&#8249; Prev</button>
+              <span class="meeting-present-pager-label" id="meetingPresentPagerLabel"></span>
+              <button type="button" class="portal-btn-outline" id="meetingPresentNextBtn">Next &#8250;</button>
+            </div>
+
+            <div class="meeting-present-quickadd">
+              <button type="button" class="portal-btn-outline" id="meetingQuickTaskToggleBtn">+ Add Action Item</button>
+              <form class="meeting-quickadd-form" id="meetingQuickTaskForm" novalidate hidden>
+                <input class="portal-field-input" type="text" id="meetingQuickTaskName" placeholder="Task name" maxlength="200" required>
+                <select class="portal-field-select" id="meetingQuickTaskPriority">
+                  <option value="high">High</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="low">Low</option>
+                  <option value="na">N/A</option>
+                </select>
+                <div class="portal-multiselect" id="meetingQuickTaskOwnerField">
+                  <button type="button" class="portal-field-select portal-multiselect-trigger" id="meetingQuickTaskOwnerTrigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="meetingQuickTaskOwnerLabel">Assign to</span>
+                  </button>
+                  <div class="portal-multiselect-panel" id="meetingQuickTaskOwnerPanel" hidden>
+                    <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
+                    <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
+                    <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
+                    <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
+                    <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
+                    <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
+                    <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
+                  </div>
+                </div>
+                <input class="portal-field-input" type="date" id="meetingQuickTaskDueDate">
+                <button type="submit" class="portal-btn">Add</button>
+                <span class="meeting-quickadd-success" id="meetingQuickTaskSuccess" hidden>Added &#10003;</span>
+              </form>
+            </div>
           </div>
         </div>
 
         <!-- Drafts -->
-        <div class="meeting-section">
+        <div class="meeting-section" id="meetingDraftsSection">
           <h3 class="meeting-section-title">Drafts</h3>
           <div class="meeting-drafts-list" id="meetingDraftsList"></div>
         </div>
