@@ -1,7 +1,7 @@
 import { verifySessionToken, SESSION_COOKIE } from './_lib/session.js';
 
 const PROTECTED_PAGES = new Set(['/admin-dashboard', '/admin-dashboard.html', '/admin-dashboard/']);
-const PROTECTED_API_PREFIXES = ['/api/tasks', '/api/events', '/api/me'];
+const PROTECTED_API_PREFIXES = ['/api/tasks', '/api/events', '/api/meetings', '/api/me'];
 
 function getCookie(request, name) {
   const header = request.headers.get('cookie') || '';

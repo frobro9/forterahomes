@@ -4,6 +4,10 @@ export const TASK_OWNER_ALL = 'All';
 export const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 export const DEFAULT_PROPERTY = 'beechwood';
 
+// Team Meetings lifecycle: 'draft' (prepped ahead of time) -> 'open'
+// (in progress) -> 'ended' (archived, read-only).
+export const MEETING_STATUSES = ['draft', 'open', 'ended'];
+
 // A task's `owner` is stored as either the literal "All", or a ", "-joined
 // list of one or more names drawn from TASK_OWNERS (e.g. "Cam Frohar, Ryan Gray").
 export function isValidOwnerValue(value) {

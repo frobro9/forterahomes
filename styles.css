@@ -1747,6 +1747,184 @@ html:has(.portal-body) { overflow-x: hidden; }
 .portal-modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.75rem; }
 .portal-modal-error { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: #b9483f; margin-bottom: 1rem; display: none; }
 
+/* --- Team Meetings -------------------------------------------- */
+.meeting-active {
+  background: var(--white);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+.meeting-active-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(28,26,24,0.08);
+}
+.meeting-active-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #4a8f5c;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+.meeting-active-date { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--charcoal); }
+
+.meeting-field-block { margin-bottom: 2rem; }
+.meeting-field-block:last-child { margin-bottom: 0; }
+.meeting-field-label {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(28,26,24,0.5);
+  margin-bottom: 0.65rem;
+}
+
+#meetingAttendeesField { max-width: 320px; }
+
+.meeting-topics-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.meeting-topics-list:not(:empty) { margin-bottom: 1rem; }
+
+.meeting-topic-row {
+  background: var(--cream);
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  border-left: 2px solid var(--bronze);
+}
+.meeting-topics-list--readonly .meeting-topic-row { background: var(--white); box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
+.meeting-topic-row-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--bronze);
+  flex-shrink: 0;
+  width: 22px;
+}
+.meeting-topic-row-main { flex: 1; min-width: 0; }
+.meeting-topic-row-title { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.25rem; }
+.meeting-topic-row-content { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.6); line-height: 1.5; white-space: pre-wrap; }
+.meeting-topic-row-actions { display: flex; align-items: center; gap: 0.15rem; flex-shrink: 0; }
+.meeting-topic-row-edit,
+.meeting-topic-row-delete {
+  color: rgba(28,26,24,0.3);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.2rem 0.35rem;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+.meeting-topic-row-delete { font-size: 1.2rem; }
+.meeting-topic-row-edit:hover { color: var(--bronze); }
+.meeting-topic-row-delete:hover { color: #b9483f; }
+
+.meeting-topic-add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.meeting-topic-add-form input { flex: 1 1 220px; }
+.meeting-topic-textarea { flex: 2 1 320px; resize: vertical; min-height: 42px; font-family: 'Montserrat', sans-serif; }
+
+.meeting-notes-textarea { width: 100%; resize: vertical; min-height: 100px; font-family: 'Montserrat', sans-serif; margin-bottom: 0.85rem; }
+
+.meeting-section { margin-top: 2.75rem; }
+.meeting-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }
+
+.meeting-empty {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: rgba(28,26,24,0.35);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  background: var(--white);
+}
+
+/* Drafts */
+.meeting-drafts-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.meeting-draft-card { background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,0.04); padding: 1.5rem; }
+.meeting-draft-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.meeting-draft-date { flex: 0 0 auto; }
+.meeting-draft-topic-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: rgba(28,26,24,0.45);
+  flex: 1;
+}
+.meeting-draft-actions { display: flex; align-items: center; gap: 0.5rem; }
+.meeting-draft-delete {
+  color: rgba(28,26,24,0.3);
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  transition: color 0.2s ease;
+}
+.meeting-draft-delete:hover { color: #b9483f; }
+
+/* Archive */
+.meeting-archive-search {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.meeting-archive-search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(28,26,24,0.5);
+}
+.meeting-archive-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.meeting-archive-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--white);
+  padding: 0.9rem 1.25rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+.meeting-archive-row:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.09); }
+.meeting-archive-row-date { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--charcoal); width: 130px; flex-shrink: 0; }
+.meeting-archive-row-attendees { flex: 1; font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.55); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meeting-archive-row-topics { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: var(--bronze); font-weight: 600; flex-shrink: 0; }
+
+/* View archived meeting modal */
+.meeting-view-card { width: 560px; max-height: 85vh; overflow-y: auto; }
+.meeting-view-section { margin-bottom: 1.5rem; }
+.meeting-view-attendees { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.meeting-view-notes { font-family: 'Montserrat', sans-serif; font-size: 0.82rem; line-height: 1.6; color: rgba(28,26,24,0.7); white-space: pre-wrap; }
+
+@media (max-width: 640px) {
+  .meeting-active { padding: 1.5rem; }
+  .meeting-archive-row { flex-wrap: wrap; row-gap: 0.5rem; }
+  .meeting-archive-row-date { width: auto; }
+}
+
 @media (max-width: 960px) {
   .portal-shell { flex-direction: column; }
   .portal-sidebar { width: 100%; }

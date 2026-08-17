@@ -36,6 +36,7 @@
               </button>
               <div class="portal-nav-children is-open" data-children="beechwood">
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="action-items">Action Items</button>
+                <button type="button" class="portal-nav-item portal-nav-leaf" data-page="meetings">Team Meetings</button>
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="calendar">Calendar</button>
                 <button type="button" class="portal-nav-item portal-nav-leaf" data-page="budget">Budget Tracker</button>
               </div>
@@ -103,6 +104,85 @@
         </div>
 
         <ul class="action-items-list" id="actionItemsList"></ul>
+      </section>
+
+      <!-- Team Meetings -->
+      <section class="portal-page" data-page="meetings">
+        <div class="portal-page-header">
+          <div>
+            <span class="portal-page-label">BEECHWOOD COLLECTION</span>
+            <h1 class="portal-page-title">Team Meetings</h1>
+          </div>
+          <button type="button" class="portal-btn" id="meetingNewDraftBtn">+ New Meeting</button>
+        </div>
+
+        <!-- In progress -->
+        <div class="meeting-active" id="meetingActive" hidden>
+          <div class="meeting-active-header">
+            <div>
+              <span class="meeting-active-label">In Progress</span>
+              <h2 class="meeting-active-date" id="meetingActiveDate"></h2>
+            </div>
+            <button type="button" class="portal-btn" id="meetingEndBtn">End Meeting</button>
+          </div>
+
+          <div class="meeting-field-block">
+            <label class="meeting-field-label">Attendance</label>
+            <div class="portal-multiselect" id="meetingAttendeesField">
+              <button type="button" class="portal-field-select portal-multiselect-trigger" id="meetingAttendeesTrigger" aria-haspopup="true" aria-expanded="false">
+                <span id="meetingAttendeesLabel">Who attended?</span>
+              </button>
+              <div class="portal-multiselect-panel" id="meetingAttendeesPanel" hidden>
+                <label class="portal-multiselect-option"><input type="checkbox" value="All"><span>All</span></label>
+                <label class="portal-multiselect-option"><input type="checkbox" value="Cam Frohar"><span>Cam Frohar</span></label>
+                <label class="portal-multiselect-option"><input type="checkbox" value="Adam Hosny"><span>Adam Hosny</span></label>
+                <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Gray"><span>Ryan Gray</span></label>
+                <label class="portal-multiselect-option"><input type="checkbox" value="Ryan Frohar"><span>Ryan Frohar</span></label>
+                <label class="portal-multiselect-option"><input type="checkbox" value="Jacob Splinter"><span>Jacob Splinter</span></label>
+                <label class="portal-multiselect-option"><input type="checkbox" value="Other"><span>Other</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="meeting-field-block">
+            <label class="meeting-field-label">Topics</label>
+            <ul class="meeting-topics-list" id="meetingActiveTopicsList"></ul>
+            <form class="meeting-topic-add-form" id="meetingActiveTopicForm" novalidate>
+              <input class="portal-field-input" type="text" name="title" placeholder="Topic title" maxlength="200" required>
+              <textarea class="portal-field-input meeting-topic-textarea" name="content" placeholder="Notes for this topic (optional)" rows="2"></textarea>
+              <button type="submit" class="portal-btn">+ Add Topic</button>
+            </form>
+          </div>
+
+          <div class="meeting-field-block">
+            <label class="meeting-field-label" for="meetingNotes">Notes &amp; Discussion</label>
+            <textarea class="portal-field-input meeting-notes-textarea" id="meetingNotes" placeholder="Closing notes or discussion points..." rows="4"></textarea>
+            <button type="button" class="portal-btn-outline" id="meetingNotesSaveBtn" disabled>Save Notes</button>
+          </div>
+        </div>
+
+        <!-- Drafts -->
+        <div class="meeting-section">
+          <h3 class="meeting-section-title">Drafts</h3>
+          <div class="meeting-drafts-list" id="meetingDraftsList"></div>
+        </div>
+
+        <!-- Archive -->
+        <div class="meeting-section">
+          <h3 class="meeting-section-title">Archive</h3>
+          <div class="meeting-archive-search">
+            <label class="meeting-archive-search-field">
+              <span>From</span>
+              <input class="portal-field-input" type="date" id="meetingArchiveFrom">
+            </label>
+            <label class="meeting-archive-search-field">
+              <span>To</span>
+              <input class="portal-field-input" type="date" id="meetingArchiveTo">
+            </label>
+            <button type="button" class="portal-btn-outline" id="meetingArchiveClearBtn">Clear</button>
+          </div>
+          <div class="meeting-archive-list" id="meetingArchiveList"></div>
+        </div>
       </section>
 
       <!-- Calendar -->
@@ -269,6 +349,75 @@
           <button type="submit" class="portal-btn">Save</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Edit meeting topic modal -->
+  <div class="portal-modal" id="meetingTopicEditModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title">Edit topic</h3>
+      <form id="meetingTopicEditForm" novalidate>
+        <p class="portal-modal-error" id="meetingTopicEditError" role="alert"></p>
+        <div class="portal-modal-field">
+          <label for="meetingTopicEditTitle">Title</label>
+          <input class="portal-field-input" type="text" id="meetingTopicEditTitle" name="title" maxlength="200" required>
+        </div>
+        <div class="portal-modal-field">
+          <label for="meetingTopicEditContent">Notes</label>
+          <textarea class="portal-field-input meeting-topic-textarea" id="meetingTopicEditContent" name="content" rows="4"></textarea>
+        </div>
+        <div class="portal-modal-actions">
+          <button type="button" class="portal-btn-outline" id="meetingTopicEditCancel">Cancel</button>
+          <button type="submit" class="portal-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- End meeting confirmation -->
+  <div class="portal-modal" id="meetingEndConfirmModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title">End this meeting?</h3>
+      <p class="portal-modal-desc">It will move to the archive and can no longer be edited.</p>
+      <div class="portal-modal-actions">
+        <button type="button" class="portal-btn-outline" id="meetingEndConfirmCancel">Cancel</button>
+        <button type="button" class="portal-btn" id="meetingEndConfirmConfirm">End Meeting</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete meeting confirmation (drafts + archive) -->
+  <div class="portal-modal" id="meetingDeleteConfirmModal" hidden>
+    <div class="portal-modal-card">
+      <h3 class="portal-modal-title">Delete this meeting?</h3>
+      <p class="portal-modal-desc">This will permanently remove it, including all of its topics and notes. This can't be undone.</p>
+      <div class="portal-modal-actions">
+        <button type="button" class="portal-btn-outline" id="meetingDeleteConfirmCancel">Cancel</button>
+        <button type="button" class="portal-btn portal-btn-danger" id="meetingDeleteConfirmConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View archived meeting -->
+  <div class="portal-modal" id="meetingViewModal" hidden>
+    <div class="portal-modal-card meeting-view-card">
+      <h3 class="portal-modal-title" id="meetingViewDate"></h3>
+      <div class="meeting-view-section">
+        <span class="meeting-field-label">Attendance</span>
+        <div class="meeting-view-attendees" id="meetingViewAttendees"></div>
+      </div>
+      <div class="meeting-view-section">
+        <span class="meeting-field-label">Topics</span>
+        <ul class="meeting-topics-list meeting-topics-list--readonly" id="meetingViewTopics"></ul>
+      </div>
+      <div class="meeting-view-section">
+        <span class="meeting-field-label">Notes &amp; Discussion</span>
+        <p class="meeting-view-notes" id="meetingViewNotes"></p>
+      </div>
+      <div class="portal-modal-actions">
+        <button type="button" class="portal-btn-danger" id="meetingViewDeleteBtn">Delete</button>
+        <button type="button" class="portal-btn-outline" id="meetingViewClose">Close</button>
+      </div>
     </div>
   </div>
 
