@@ -60,6 +60,35 @@ function sanitizeRichHtml(html) {
   return container.innerHTML;
 }
 
+// Discussion notes are jotted live during a meeting, so that field is a
+// plain textarea rather than the rich editor. This degrades any
+// HTML saved before that change into readable plain text.
+function richHtmlToPlainText(html) {
+  if (!html) return '';
+  const BLOCK_TAGS = new Set(['DIV', 'P', 'LI']);
+  const container = document.implementation.createHTMLDocument('').body;
+  container.innerHTML = html;
+
+  function walk(node) {
+    let text = '';
+    Array.from(node.childNodes).forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        text += child.textContent;
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        if (child.tagName === 'BR') {
+          text += '\n';
+        } else {
+          text += walk(child);
+          if (BLOCK_TAGS.has(child.tagName)) text += '\n';
+        }
+      }
+    });
+    return text;
+  }
+
+  return walk(container).replace(/\n{3,}/g, '\n\n').trim();
+}
+
 function initRichEditor(toolbarEl, editorEl) {
   if (!toolbarEl || !editorEl) return;
 
@@ -872,7 +901,6 @@ const meetingPresentDiscussionSaveBtn = document.getElementById('meetingPresentD
 const meetingSlideComplete = document.getElementById('meetingSlideComplete');
 
 initRichEditor(document.getElementById('meetingActiveTopicContentToolbar'), document.querySelector('#meetingActiveTopicForm .meeting-topic-content-input'));
-initRichEditor(document.getElementById('meetingPresentDiscussionToolbar'), meetingPresentDiscussion);
 initRichEditor(document.getElementById('meetingTopicEditContentToolbar'), document.getElementById('meetingTopicEditContent'));
 
 const meetingQuickTaskToggleBtn = document.getElementById('meetingQuickTaskToggleBtn');
@@ -996,7 +1024,7 @@ function renderTopicsInto(listEl, topics, { editable }) {
       <div class="meeting-topic-row-main">
         <div class="meeting-topic-row-title">${escapeHtml(t.title)}</div>
         ${t.content ? `<div class="meeting-topic-row-content">${sanitizeRichHtml(t.content)}</div>` : ''}
-        ${t.discussion ? `<div class="meeting-topic-row-discussion"><strong>Discussion:</strong> ${sanitizeRichHtml(t.discussion)}</div>` : ''}
+        ${t.discussion ? `<div class="meeting-topic-row-discussion"><strong>Discussion:</strong> ${escapeHtml(richHtmlToPlainText(t.discussion))}</div>` : ''}
       </div>
       ${
         editable
@@ -1274,7 +1302,7 @@ function renderPresentSlide() {
     meetingSlideTopic.hidden = false;
     meetingPresentTitle.textContent = topic.title;
     meetingPresentContentText.innerHTML = sanitizeRichHtml(topic.content);
-    meetingPresentDiscussion.innerHTML = sanitizeRichHtml(topic.discussion);
+    meetingPresentDiscussion.value = richHtmlToPlainText(topic.discussion);
     meetingPresentDiscussionSaveBtn.disabled = true;
   } else if (slide.type === 'complete') {
     meetingSlideComplete.hidden = false;
@@ -1310,7 +1338,7 @@ if (meetingPresentDiscussionSaveBtn) {
       const res = await fetch(`/api/meetings/${activeMeeting.id}/topics/${topic.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ discussion: meetingPresentDiscussion.innerHTML }),
+        body: JSON.stringify({ discussion: meetingPresentDiscussion.value }),
       });
       if (res.ok) {
         const data = await res.json();

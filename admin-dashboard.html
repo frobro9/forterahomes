@@ -229,19 +229,7 @@
                 <div class="meeting-present-topic-content" id="meetingPresentContentText"></div>
 
                 <span class="meeting-present-discussion-label">Discussion</span>
-                <div class="rich-editor-toolbar" id="meetingPresentDiscussionToolbar">
-                  <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
-                  <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
-                  <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
-                  <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
-                  <select class="rich-editor-fontsize" aria-label="Font size">
-                    <option value="">Size</option>
-                    <option value="2">Small</option>
-                    <option value="3">Normal</option>
-                    <option value="5">Large</option>
-                  </select>
-                </div>
-                <div class="rich-editor" id="meetingPresentDiscussion" contenteditable="true" data-placeholder="Questions, answers, decisions..."></div>
+                <textarea class="meeting-present-discussion-input" id="meetingPresentDiscussion" placeholder="Questions, answers, decisions..."></textarea>
                 <button type="button" class="portal-btn-outline" id="meetingPresentDiscussionSaveBtn" disabled>Save</button>
               </div>
 

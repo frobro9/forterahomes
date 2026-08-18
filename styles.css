@@ -2038,6 +2038,32 @@ html:has(.portal-body) { overflow-x: hidden; }
   color: rgba(28,26,24,0.35);
   pointer-events: none;
 }
+.meeting-present-discussion-input {
+  display: block;
+  width: 100%;
+  min-height: 90px;
+  max-height: 260px;
+  background: var(--cream);
+  border: 1px solid rgba(28,26,24,0.14);
+  color: var(--charcoal);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  padding: 0.7rem 0.85rem;
+  outline: none;
+  resize: vertical;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.2s ease;
+}
+.meeting-present-discussion-input::placeholder { color: rgba(28,26,24,0.35); }
+.meeting-present-discussion-input:focus { border-color: var(--bronze); }
+.meeting-present .meeting-present-discussion-input {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.18);
+  color: var(--white);
+}
+.meeting-present .meeting-present-discussion-input::placeholder { color: rgba(255,255,255,0.35); }
+.meeting-present .meeting-present-discussion-input:focus { border-color: var(--bronze-light); }
 .rich-editor ul { list-style: disc; padding-left: 1.25rem; margin: 0.4rem 0; }
 .rich-editor li { margin-bottom: 0.2rem; }
 /* Font-size scale for rich content — kept modest everywhere this
