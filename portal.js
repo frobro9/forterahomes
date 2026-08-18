@@ -345,6 +345,7 @@ function updateActionItemsBadge() {
 
 function renderActionItems() {
   updateActionItemsBadge();
+  renderHomeDashboard();
   const tasks = sortedActionItems();
   if (!tasks.length) {
     const emptyMsg = actionItemsTab === 'completed' ? 'No completed tasks yet.' : 'No tasks yet — add one above.';
@@ -756,6 +757,7 @@ function renderCalendar() {
 
   calWeeksEl.innerHTML = html;
   renderCalSummary();
+  renderHomeDashboard();
 }
 
 function durationLabel(startStr, endStr) {
@@ -1841,6 +1843,7 @@ function updateNewsBadge() {
 
 function renderNewsList() {
   if (!newsListEl) return;
+  renderHomeDashboard();
   if (!newsItems.length) {
     if (newsEmptyEl) newsEmptyEl.hidden = false;
     newsListEl.innerHTML = '';
@@ -1906,10 +1909,90 @@ if (newsListEl) {
 
 if (newsRefreshBtn) newsRefreshBtn.addEventListener('click', loadNews);
 
+/* ================================================================
+   HOME — at-a-glance summary of Calendar, Action Items, and News
+   ================================================================ */
+const homeCalendarList = document.getElementById('homeCalendarList');
+const homeActionItemsList = document.getElementById('homeActionItemsList');
+const homeNewsList = document.getElementById('homeNewsList');
+
+function homeCalendarRowHtml(ev) {
+  const dateLabel =
+    ev.start_date === ev.end_date
+      ? formatShortDate(ev.start_date)
+      : `${formatShortDate(ev.start_date)} – ${formatShortDate(ev.end_date)}`;
+  return `
+    <div class="home-row">
+      <span class="home-row-swatch" style="background:${calEventColor(ev)}"></span>
+      <span class="home-row-title">${escapeHtml(ev.name)}</span>
+      <span class="home-row-meta">${dateLabel}</span>
+    </div>`;
+}
+
+function homeActionItemRowHtml(t) {
+  return `
+    <div class="home-row">
+      <span class="action-items-priority-dot action-items-priority-dot--${t.priority}"></span>
+      <span class="home-row-title">${escapeHtml(t.name)}</span>
+      <span class="home-row-meta">${t.due_date ? formatShortDate(t.due_date) : ''}</span>
+    </div>`;
+}
+
+function homeNewsRowHtml(item) {
+  return `
+    <a class="home-row home-row--link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" data-id="${item.id}">
+      <span class="home-row-title">${escapeHtml(item.title)}</span>
+      <span class="home-row-meta">${item.source ? `${escapeHtml(item.source)} · ` : ''}${formatNewsDate(item.published_at || item.created_at)}</span>
+    </a>`;
+}
+
+function renderHomeDashboard() {
+  if (homeCalendarList) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const upcoming = calEvents
+      .filter((ev) => parseDate(ev.end_date) >= today)
+      .sort((a, b) => a.start_date.localeCompare(b.start_date))
+      .slice(0, 5);
+    homeCalendarList.innerHTML = upcoming.length
+      ? upcoming.map(homeCalendarRowHtml).join('')
+      : '<p class="home-card-empty">No upcoming events.</p>';
+  }
+
+  if (homeActionItemsList) {
+    const outstanding = actionItems
+      .filter((t) => !t.completed)
+      .sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority] || a.name.localeCompare(b.name))
+      .slice(0, 5);
+    homeActionItemsList.innerHTML = outstanding.length
+      ? outstanding.map(homeActionItemRowHtml).join('')
+      : '<p class="home-card-empty">No outstanding tasks.</p>';
+  }
+
+  if (homeNewsList) {
+    const unread = newsItems.filter((i) => !i.read_at).slice(0, 5);
+    homeNewsList.innerHTML = unread.length
+      ? unread.map(homeNewsRowHtml).join('')
+      : '<p class="home-card-empty">No unread news.</p>';
+  }
+}
+
+document.querySelectorAll('.home-card-link[data-page]').forEach((btn) => {
+  btn.addEventListener('click', () => showPage(btn.dataset.page));
+});
+
+if (homeNewsList) {
+  homeNewsList.addEventListener('click', (e) => {
+    const link = e.target.closest('.home-row--link');
+    if (link) setNewsItemRead(Number(link.dataset.id), true);
+  });
+}
+
 /* ---- Initial page ------------------------------------------- */
-const initialPage = validPages.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'action-items';
+const initialPage = validPages.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
 showPage(initialPage);
 loadNews();
 if (!actionItemsLoaded) loadActionItems();
+if (!calendarLoaded) loadCalendar();
 
 });
