@@ -1245,6 +1245,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .portal-nav-item:hover { color: var(--white); }
 
+.portal-nav-badge[hidden] { display: none; }
 .portal-nav-badge {
   display: inline-flex;
   align-items: center;
