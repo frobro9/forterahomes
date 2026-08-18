@@ -1,14 +1,19 @@
 /* ================================================================
    Fortera Homes — News Fetcher
    Runs daily (see wrangler.toml [triggers]) and on-demand via a
-   secret-protected POST /run. Queries Google News RSS for development,
+   secret-protected POST /run. Queries Bing News RSS for development,
    zoning, and municipal policy news relevant to Ottawa, Ontario, and
    Canada, then inserts new articles into the shared D1 `news_items`
    table (unique on `url`, so re-fetching the same article is a no-op).
 
-   Google News RSS needs no API key or signup, but returns a redirect
-   link (news.google.com/rss/articles/...) rather than the publisher's
-   direct URL — that's expected and still opens the article when clicked.
+   Bing News RSS needs no API key or signup. (Google News RSS was tried
+   first, but Google returns a durable HTTP 503 to Cloudflare's shared
+   Worker egress IP range regardless of headers/backoff — Bing does
+   not have that problem.) Bing's <link> is a bing.com/news/apiclick.aspx
+   tracking redirect wrapping the real article URL in a `url=` query
+   param; we extract that real URL rather than storing the wrapper,
+   since the wrapper's other tracking params appear to vary between
+   requests for the same article and would otherwise defeat dedup.
    ================================================================ */
 
 const QUERIES = [
@@ -24,8 +29,8 @@ const MAX_PER_QUERY = 6;
 const MAX_ARTICLE_AGE_DAYS = 21;
 
 function buildRssUrl(q) {
-  const params = new URLSearchParams({ q, hl: 'en-CA', gl: 'CA', ceid: 'CA:en' });
-  return `https://news.google.com/rss/search?${params.toString()}`;
+  const params = new URLSearchParams({ q, format: 'RSS', mkt: 'en-ca' });
+  return `https://www.bing.com/news/search?${params.toString()}`;
 }
 
 function decodeEntities(str) {
@@ -47,31 +52,36 @@ function extractTag(block, tag) {
 }
 
 function extractSource(block) {
-  const match = block.match(/<source[^>]*>([\s\S]*?)<\/source>/i);
+  const match = block.match(/<News:Source[^>]*>([\s\S]*?)<\/News:Source>/i);
   return match ? decodeEntities(match[1].trim()) : '';
+}
+
+// Bing's <link> is a tracking redirect like
+// bing.com/news/apiclick.aspx?...&url=<real-article-url>&... — pull the
+// real URL out so dedup keys on the actual article, not a wrapper whose
+// other params can change between requests.
+function extractTargetUrl(bingLink) {
+  try {
+    return new URL(bingLink).searchParams.get('url') || bingLink;
+  } catch {
+    return bingLink;
+  }
 }
 
 function parseRssItems(xml) {
   const items = [];
   const itemBlocks = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
   for (const block of itemBlocks) {
-    const rawTitle = extractTag(block, 'title');
+    const title = extractTag(block, 'title');
     const link = extractTag(block, 'link');
     const pubDate = extractTag(block, 'pubDate');
     const source = extractSource(block);
-    if (!rawTitle || !link) continue;
-
-    // Google News titles are "Headline - Source Name"; strip that
-    // suffix now that we have the source separately from <source>.
-    let title = rawTitle;
-    if (source && title.endsWith(` - ${source}`)) {
-      title = title.slice(0, -(source.length + 3)).trim();
-    }
+    if (!title || !link) continue;
 
     const parsed = pubDate ? new Date(pubDate) : null;
     if (!parsed || Number.isNaN(parsed.getTime())) continue;
 
-    items.push({ title, url: link, source, publishedAt: parsed.toISOString() });
+    items.push({ title, url: extractTargetUrl(link), source, publishedAt: parsed.toISOString() });
   }
   return items;
 }
@@ -100,8 +110,7 @@ async function fetchQuery(query, attempt = 1) {
     return { query, error: `fetch threw: ${err.message}`, items: [] };
   }
 
-  // Google's rate limiting on this endpoint is usually transient — one
-  // retry after a short backoff clears most 503s.
+  // A transient 503 is worth one retry after a short backoff.
   if (res.status === 503 && attempt < 3) {
     await sleep(1500 * attempt);
     return fetchQuery(query, attempt + 1);
