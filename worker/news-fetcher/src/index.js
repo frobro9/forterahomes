@@ -76,17 +76,40 @@ function parseRssItems(xml) {
   return items;
 }
 
-async function fetchQuery(query) {
+// A real browser sends more than just a User-Agent; Google appears to
+// rate-limit/503 requests from Cloudflare's shared Worker IP range more
+// aggressively when they look automated (bare UA, no Accept headers,
+// several fired at once — see fetchAllQueries below).
+const BROWSER_HEADERS = {
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'en-CA,en;q=0.9',
+};
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchQuery(query, attempt = 1) {
   const url = buildRssUrl(query);
   let res;
   try {
-    res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ForteraNewsBot/1.0)' } });
+    res = await fetch(url, { headers: BROWSER_HEADERS });
   } catch (err) {
     return { query, error: `fetch threw: ${err.message}`, items: [] };
+  }
+
+  // Google's rate limiting on this endpoint is usually transient — one
+  // retry after a short backoff clears most 503s.
+  if (res.status === 503 && attempt < 3) {
+    await sleep(1500 * attempt);
+    return fetchQuery(query, attempt + 1);
   }
   if (!res.ok) {
     return { query, error: `HTTP ${res.status}`, items: [] };
   }
+
   const xml = await res.text();
   const rawCount = (xml.match(/<item>/g) || []).length;
 
@@ -100,8 +123,21 @@ async function fetchQuery(query) {
   return { query, error: null, rawCount, items };
 }
 
+// Run queries one at a time with a short gap, rather than all at once —
+// six simultaneous requests from the same IP is a much stronger bot
+// signal than six spread over a few seconds, and this only runs on a
+// once-daily cron so the extra wall-clock time costs nothing.
+async function fetchAllQueries() {
+  const results = [];
+  for (const query of QUERIES) {
+    results.push(await fetchQuery(query));
+    await sleep(800);
+  }
+  return results;
+}
+
 async function runFetch(env) {
-  const results = await Promise.all(QUERIES.map(fetchQuery));
+  const results = await fetchAllQueries();
   const allItems = results.flatMap((r) => r.items);
 
   let inserted = 0;
