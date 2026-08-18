@@ -56,6 +56,16 @@ function extractSource(block) {
   return match ? decodeEntities(match[1].trim()) : '';
 }
 
+// Not every item has an image — Bing only indexes one for a subset of
+// articles. When present, request a small cropped size for a thumbnail.
+function extractImageUrl(block) {
+  const match = block.match(/<News:Image[^>]*>([\s\S]*?)<\/News:Image>/i);
+  if (!match) return null;
+  const base = decodeEntities(match[1].trim());
+  if (!base) return null;
+  return `${base}&w=160&h=100&c=7`;
+}
+
 // Bing's <link> is a tracking redirect like
 // bing.com/news/apiclick.aspx?...&url=<real-article-url>&... — pull the
 // real URL out so dedup keys on the actual article, not a wrapper whose
@@ -81,7 +91,13 @@ function parseRssItems(xml) {
     const parsed = pubDate ? new Date(pubDate) : null;
     if (!parsed || Number.isNaN(parsed.getTime())) continue;
 
-    items.push({ title, url: extractTargetUrl(link), source, publishedAt: parsed.toISOString() });
+    items.push({
+      title,
+      url: extractTargetUrl(link),
+      source,
+      publishedAt: parsed.toISOString(),
+      imageUrl: extractImageUrl(block),
+    });
   }
   return items;
 }
@@ -152,11 +168,11 @@ async function runFetch(env) {
   let inserted = 0;
   for (const item of allItems) {
     const res = await env.DB.prepare(
-      `INSERT INTO news_items (title, url, source, published_at, query_term)
-       VALUES (?1, ?2, ?3, ?4, ?5)
+      `INSERT INTO news_items (title, url, source, published_at, query_term, image_url)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6)
        ON CONFLICT(url) DO NOTHING`
     )
-      .bind(item.title, item.url, item.source || '', item.publishedAt, item.queryTerm)
+      .bind(item.title, item.url, item.source || '', item.publishedAt, item.queryTerm, item.imageUrl)
       .run();
     if (res.meta.changes > 0) inserted += 1;
   }
