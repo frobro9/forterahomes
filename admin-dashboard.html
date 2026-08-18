@@ -24,6 +24,7 @@
         <a href="/" class="portal-sidebar-logo" aria-label="Fortera Homes">FORTERA</a>
 
         <nav class="portal-nav" id="portalNav">
+          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="home">Home</button>
           <div class="portal-nav-group">
             <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="properties" aria-expanded="true">
               <span>Properties</span>
@@ -56,6 +57,41 @@
     </aside>
 
     <main class="portal-main">
+
+      <!-- Home -->
+      <section class="portal-page" data-page="home">
+        <div class="portal-page-header">
+          <div>
+            <h1 class="portal-page-title">Home</h1>
+          </div>
+        </div>
+
+        <div class="home-cards">
+          <div class="home-card">
+            <div class="home-card-header">
+              <h2 class="home-card-title">Calendar</h2>
+              <button type="button" class="home-card-link" data-page="calendar">View All &rsaquo;</button>
+            </div>
+            <div class="home-card-body" id="homeCalendarList"></div>
+          </div>
+
+          <div class="home-card">
+            <div class="home-card-header">
+              <h2 class="home-card-title">Action Items</h2>
+              <button type="button" class="home-card-link" data-page="action-items">View All &rsaquo;</button>
+            </div>
+            <div class="home-card-body" id="homeActionItemsList"></div>
+          </div>
+
+          <div class="home-card">
+            <div class="home-card-header">
+              <h2 class="home-card-title">News</h2>
+              <button type="button" class="home-card-link" data-page="news">View All &rsaquo;</button>
+            </div>
+            <div class="home-card-body" id="homeNewsList"></div>
+          </div>
+        </div>
+      </section>
 
       <!-- Action Items -->
       <section class="portal-page" data-page="action-items">
