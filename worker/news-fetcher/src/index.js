@@ -4,7 +4,10 @@
    secret-protected POST /run. Queries Bing News RSS for development,
    zoning, and municipal policy news relevant to Ottawa, Ontario, and
    Canada, then inserts new articles into the shared D1 `news_items`
-   table (unique on `url`, so re-fetching the same article is a no-op).
+   table. Deduped two ways: `url` (re-fetching the same article is a
+   no-op) and `title_key`, a normalized title (the same story is
+   sometimes syndicated under more than one URL, which url-only dedup
+   wouldn't catch).
 
    Bing News RSS needs no API key or signup. (Google News RSS was tried
    first, but Google returns a durable HTTP 503 to Cloudflare's shared
@@ -78,6 +81,22 @@ function extractTargetUrl(bingLink) {
   }
 }
 
+// The same story is sometimes syndicated under more than one URL (e.g.
+// MSN posting the identical article to two different category paths),
+// which url-based dedup alone doesn't catch. A normalized title is a
+// second dedup key — lowercased and stripped to bare alphanumerics so
+// trivial differences (curly quotes, punctuation, whitespace) don't
+// produce a false mismatch.
+function normalizeTitle(title) {
+  return title
+    .toLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
 function parseRssItems(xml) {
   const items = [];
   const itemBlocks = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
@@ -97,6 +116,7 @@ function parseRssItems(xml) {
       source,
       publishedAt: parsed.toISOString(),
       imageUrl: extractImageUrl(block),
+      titleKey: normalizeTitle(title),
     });
   }
   return items;
@@ -165,14 +185,24 @@ async function runFetch(env) {
   const results = await fetchAllQueries();
   const allItems = results.flatMap((r) => r.items);
 
+  // The same story can match more than one of our search queries in a
+  // single run — drop those before ever hitting the database.
+  const seenTitleKeys = new Set();
+  const uniqueItems = allItems.filter((item) => {
+    if (seenTitleKeys.has(item.titleKey)) return false;
+    seenTitleKeys.add(item.titleKey);
+    return true;
+  });
+
   let inserted = 0;
-  for (const item of allItems) {
+  for (const item of uniqueItems) {
     const res = await env.DB.prepare(
-      `INSERT INTO news_items (title, url, source, published_at, query_term, image_url)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6)
-       ON CONFLICT(url) DO NOTHING`
+      `INSERT INTO news_items (title, url, source, published_at, query_term, image_url, title_key)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+       ON CONFLICT(url) DO NOTHING
+       ON CONFLICT(title_key) DO NOTHING`
     )
-      .bind(item.title, item.url, item.source || '', item.publishedAt, item.queryTerm, item.imageUrl)
+      .bind(item.title, item.url, item.source || '', item.publishedAt, item.queryTerm, item.imageUrl, item.titleKey)
       .run();
     if (res.meta.changes > 0) inserted += 1;
   }
