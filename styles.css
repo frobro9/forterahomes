@@ -1816,7 +1816,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 .meeting-topic-row-main { flex: 1; min-width: 0; }
 .meeting-topic-row-title { font-family: 'Montserrat', sans-serif; font-size: 0.92rem; font-weight: 600; color: var(--charcoal); margin-bottom: 0.25rem; }
 .meeting-topic-row-content { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.6); line-height: 1.5; }
-.meeting-topic-row-content ul, .meeting-topic-row-discussion ul { padding-left: 1.1rem; margin: 0.3rem 0; }
+.meeting-topic-row-content ul, .meeting-topic-row-discussion ul { list-style: disc; padding-left: 1.1rem; margin: 0.3rem 0; }
 .meeting-topic-row-discussion {
   margin-top: 0.5rem;
   padding-top: 0.5rem;
@@ -1972,7 +1972,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   margin-bottom: 1.75rem;
 }
 .meeting-present-topic-content:empty { display: none; }
-.meeting-present-topic-content ul { padding-left: 1.25rem; margin: 0.4rem 0; }
+.meeting-present-topic-content ul { list-style: disc; padding-left: 1.25rem; margin: 0.4rem 0; }
 
 .meeting-present-discussion-label {
   display: block;
@@ -2038,7 +2038,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   color: rgba(28,26,24,0.35);
   pointer-events: none;
 }
-.rich-editor ul { padding-left: 1.25rem; margin: 0.4rem 0; }
+.rich-editor ul { list-style: disc; padding-left: 1.25rem; margin: 0.4rem 0; }
 .rich-editor li { margin-bottom: 0.2rem; }
 /* Font-size scale for rich content — kept modest everywhere this
    renders (editing and read-only) so formatted body text can never
