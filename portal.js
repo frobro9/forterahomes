@@ -199,6 +199,7 @@ const PRIORITY_ORDER = { high: 0, medium: 1, low: 2, na: 3 };
 const PRIORITY_LABEL = { high: 'High', medium: 'Medium', low: 'Low', na: 'N/A' };
 
 const actionItemsListEl = document.getElementById('actionItemsList');
+const actionItemsNavBadge = document.getElementById('actionItemsNavBadge');
 const actionItemsForm = document.getElementById('actionItemsForm');
 const actionItemsSortBtns = document.querySelectorAll('.action-items-sort-btn[data-sort]');
 const actionItemsTabBtns = document.querySelectorAll('.action-items-sort-btn[data-tab]');
@@ -335,7 +336,15 @@ function isOverdue(dateStr) {
   return new Date(y, m - 1, d) < today;
 }
 
+function updateActionItemsBadge() {
+  if (!actionItemsNavBadge) return;
+  const active = actionItems.filter((t) => !t.completed).length;
+  actionItemsNavBadge.hidden = active === 0;
+  actionItemsNavBadge.textContent = active > 99 ? '99+' : String(active);
+}
+
 function renderActionItems() {
+  updateActionItemsBadge();
   const tasks = sortedActionItems();
   if (!tasks.length) {
     const emptyMsg = actionItemsTab === 'completed' ? 'No completed tasks yet.' : 'No tasks yet — add one above.';
@@ -1901,5 +1910,6 @@ if (newsRefreshBtn) newsRefreshBtn.addEventListener('click', loadNews);
 const initialPage = validPages.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'action-items';
 showPage(initialPage);
 loadNews();
+if (!actionItemsLoaded) loadActionItems();
 
 });
