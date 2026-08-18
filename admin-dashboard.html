@@ -154,27 +154,21 @@
               <ul class="meeting-topics-list" id="meetingActiveTopicsList"></ul>
               <form class="meeting-topic-add-form" id="meetingActiveTopicForm" novalidate>
                 <input class="portal-field-input" type="text" name="title" placeholder="Topic title" maxlength="200" required>
-                <textarea class="portal-field-input meeting-topic-textarea" name="content" placeholder="Notes for this topic (optional)" rows="2"></textarea>
+                <div class="rich-editor-toolbar" id="meetingActiveTopicContentToolbar">
+                  <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
+                  <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
+                  <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
+                  <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
+                  <select class="rich-editor-fontsize" aria-label="Font size">
+                    <option value="">Size</option>
+                    <option value="2">Small</option>
+                    <option value="3">Normal</option>
+                    <option value="5">Large</option>
+                  </select>
+                </div>
+                <div class="rich-editor rich-editor--compact meeting-topic-content-input" contenteditable="true" data-placeholder="Notes for this topic (optional)"></div>
                 <button type="submit" class="portal-btn">+ Add Topic</button>
               </form>
-            </div>
-
-            <div class="meeting-field-block">
-              <label class="meeting-field-label">Notes &amp; Discussion</label>
-              <div class="rich-editor-toolbar" id="meetingNotesToolbar">
-                <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
-                <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
-                <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
-                <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
-                <select class="rich-editor-fontsize" aria-label="Font size">
-                  <option value="">Size</option>
-                  <option value="2">Small</option>
-                  <option value="3">Normal</option>
-                  <option value="5">Large</option>
-                </select>
-              </div>
-              <div class="rich-editor" id="meetingNotes" contenteditable="true" data-placeholder="Closing notes or discussion points..."></div>
-              <button type="button" class="portal-btn-outline" id="meetingNotesSaveBtn" disabled>Save Notes</button>
             </div>
           </div>
 
@@ -232,43 +226,11 @@
               <!-- Slide: one per topic -->
               <div id="meetingSlideTopic" hidden>
                 <h3 class="meeting-present-topic-title" id="meetingPresentTitle"></h3>
-                <p class="meeting-present-topic-content" id="meetingPresentContentText"></p>
+                <div class="meeting-present-topic-content" id="meetingPresentContentText"></div>
 
                 <span class="meeting-present-discussion-label">Discussion</span>
-                <div class="rich-editor-toolbar" id="meetingPresentDiscussionToolbar">
-                  <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
-                  <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
-                  <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
-                  <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
-                  <select class="rich-editor-fontsize" aria-label="Font size">
-                    <option value="">Size</option>
-                    <option value="2">Small</option>
-                    <option value="3">Normal</option>
-                    <option value="5">Large</option>
-                  </select>
-                </div>
-                <div class="rich-editor" id="meetingPresentDiscussion" contenteditable="true" data-placeholder="Questions, answers, decisions..."></div>
+                <textarea class="meeting-present-discussion-input" id="meetingPresentDiscussion" placeholder="Questions, answers, decisions..."></textarea>
                 <button type="button" class="portal-btn-outline" id="meetingPresentDiscussionSaveBtn" disabled>Save</button>
-              </div>
-
-              <!-- Slide: closing notes -->
-              <div id="meetingSlideNotes" hidden>
-                <h2 class="meeting-present-slide-title">Notes &amp; Discussion</h2>
-                <p class="meeting-present-slide-body">Any final notes or discussion points?</p>
-                <div class="rich-editor-toolbar" id="meetingPresentNotesToolbar">
-                  <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
-                  <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
-                  <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
-                  <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
-                  <select class="rich-editor-fontsize" aria-label="Font size">
-                    <option value="">Size</option>
-                    <option value="2">Small</option>
-                    <option value="3">Normal</option>
-                    <option value="5">Large</option>
-                  </select>
-                </div>
-                <div class="rich-editor" id="meetingPresentNotes" contenteditable="true" data-placeholder="Closing notes or discussion points..."></div>
-                <button type="button" class="portal-btn-outline" id="meetingPresentNotesSaveBtn" disabled>Save</button>
               </div>
 
               <!-- Slide: presentation complete -->
@@ -475,8 +437,20 @@
           <input class="portal-field-input" type="text" id="meetingTopicEditTitle" name="title" maxlength="200" required>
         </div>
         <div class="portal-modal-field">
-          <label for="meetingTopicEditContent">Notes</label>
-          <textarea class="portal-field-input meeting-topic-textarea" id="meetingTopicEditContent" name="content" rows="4"></textarea>
+          <label>Notes</label>
+          <div class="rich-editor-toolbar" id="meetingTopicEditContentToolbar">
+            <button type="button" class="rich-editor-btn" data-cmd="bold" aria-label="Bold"><b>B</b></button>
+            <button type="button" class="rich-editor-btn" data-cmd="italic" aria-label="Italic"><i>I</i></button>
+            <button type="button" class="rich-editor-btn" data-cmd="underline" aria-label="Underline"><u>U</u></button>
+            <button type="button" class="rich-editor-btn rich-editor-btn--list" data-cmd="insertUnorderedList">&#8226; List</button>
+            <select class="rich-editor-fontsize" aria-label="Font size">
+              <option value="">Size</option>
+              <option value="2">Small</option>
+              <option value="3">Normal</option>
+              <option value="5">Large</option>
+            </select>
+          </div>
+          <div class="rich-editor" id="meetingTopicEditContent" contenteditable="true" data-placeholder="Notes for this topic"></div>
         </div>
         <div class="portal-modal-actions">
           <button type="button" class="portal-btn-outline" id="meetingTopicEditCancel">Cancel</button>
@@ -538,10 +512,6 @@
         <div class="meeting-view-section">
           <span class="meeting-field-label">Topics</span>
           <ul class="meeting-topics-list meeting-topics-list--readonly" id="meetingViewTopics"></ul>
-        </div>
-        <div class="meeting-view-section">
-          <span class="meeting-field-label">Notes &amp; Discussion</span>
-          <p class="meeting-view-notes" id="meetingViewNotes"></p>
         </div>
       </div>
 

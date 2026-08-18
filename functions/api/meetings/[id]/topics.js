@@ -15,7 +15,7 @@ export async function onRequestPost(context) {
   const title = typeof body.title === 'string' ? body.title.trim() : '';
   const content = typeof body.content === 'string' ? body.content.trim() : '';
   if (!title || title.length > 200) return badRequest('Title is required (max 200 characters).');
-  if (content.length > 5000) return badRequest('Content is too long (max 5000 characters).');
+  if (content.length > 8000) return badRequest('Content is too long (max 8000 characters).');
 
   const meeting = await env.DB.prepare('SELECT id, status FROM meetings WHERE id = ?').bind(meetingId).first();
   if (!meeting) return notFound('Meeting not found.');
