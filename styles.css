@@ -2205,6 +2205,44 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .meeting-archive-row-attendees { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; color: rgba(28,26,24,0.55); }
 
+.meeting-archive-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.5rem; }
+.meeting-archive-row-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--cream);
+  border: 1px solid rgba(28,26,24,0.1);
+  border-radius: 8px;
+  text-align: left;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.meeting-archive-row-btn:hover { border-color: var(--bronze); background: var(--white); }
+.meeting-archive-row-date { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--charcoal); }
+.meeting-archive-row-count {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(28,26,24,0.45);
+  flex-shrink: 0;
+}
+.meeting-archive-back-btn {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(28,26,24,0.5);
+  margin-bottom: 1.25rem;
+  transition: color 0.2s ease;
+}
+.meeting-archive-back-btn:hover { color: var(--bronze); }
+
 .meeting-archive-pager {
   display: flex;
   align-items: center;
