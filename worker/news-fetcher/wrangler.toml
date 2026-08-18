@@ -1,0 +1,15 @@
+name = "forterahomes-news-fetcher"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+
+# Same D1 database as the main forterahomes Pages project — see the
+# root wrangler.toml. This worker only ever inserts into news_items.
+[[d1_databases]]
+binding = "DB"
+database_name = "forterahomes-portal"
+database_id = "0e80e915-b9dc-46a1-9dd3-d39a09ee10da"
+
+# Runs once daily. 11:00 UTC is ~6-7am Ottawa time (EST/EDT), so a fresh
+# feed is ready before the workday starts.
+[triggers]
+crons = ["0 11 * * *"]
