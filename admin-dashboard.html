@@ -503,7 +503,19 @@
 
       <div class="meeting-empty" id="meetingArchiveEmpty" hidden>No past meetings match.</div>
 
-      <div id="meetingArchiveContent">
+      <!-- List view: meetings by date -->
+      <div id="meetingArchiveListView">
+        <ul class="meeting-archive-list" id="meetingArchiveListEl"></ul>
+        <div class="meeting-archive-pager">
+          <button type="button" class="meeting-archive-pager-btn" id="meetingArchiveListPrevBtn" aria-label="Previous page">&#8249; Prev</button>
+          <span class="meeting-archive-pager-label" id="meetingArchiveListPagerLabel"></span>
+          <button type="button" class="meeting-archive-pager-btn" id="meetingArchiveListNextBtn" aria-label="Next page">Next &#8250;</button>
+        </div>
+      </div>
+
+      <!-- Detail view: one meeting's full content -->
+      <div id="meetingArchiveDetailView" hidden>
+        <button type="button" class="meeting-archive-back-btn" id="meetingArchiveBackBtn">&#8249; Back to list</button>
         <h4 class="meeting-active-date" id="meetingViewDate"></h4>
         <div class="meeting-view-section">
           <span class="meeting-field-label">Attendance</span>
@@ -515,14 +527,8 @@
         </div>
       </div>
 
-      <div class="meeting-archive-pager">
-        <button type="button" class="meeting-archive-pager-btn" id="meetingArchivePrevBtn" aria-label="Previous meeting">&#8249; Prev</button>
-        <span class="meeting-archive-pager-label" id="meetingArchivePagerLabel"></span>
-        <button type="button" class="meeting-archive-pager-btn" id="meetingArchiveNextBtn" aria-label="Next meeting">Next &#8250;</button>
-      </div>
-
       <div class="portal-modal-actions">
-        <button type="button" class="portal-btn-danger" id="meetingViewDeleteBtn">Delete</button>
+        <button type="button" class="portal-btn-danger" id="meetingViewDeleteBtn" hidden>Delete</button>
         <button type="button" class="portal-btn-outline" id="meetingViewClose">Close</button>
       </div>
     </div>
