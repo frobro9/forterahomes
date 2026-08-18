@@ -1245,6 +1245,20 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .portal-nav-item:hover { color: var(--white); }
 
+.portal-nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--bronze);
+  color: var(--white);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
 .portal-nav-children .portal-nav-item { padding-left: 2.5rem; font-size: 0.66rem; }
 .portal-nav-children .portal-nav-children .portal-nav-item { padding-left: 3.25rem; }
 
@@ -2278,6 +2292,66 @@ html:has(.portal-body) { overflow-x: hidden; }
 .meeting-view-card { width: 560px; max-height: 85vh; overflow-y: auto; }
 .meeting-view-section { margin-bottom: 1.5rem; }
 .meeting-view-attendees { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+/* News */
+.news-page-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(28,26,24,0.55);
+  margin: -0.5rem 0 1.5rem;
+}
+.news-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.news-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--white);
+  border: 1px solid rgba(28,26,24,0.1);
+  border-radius: 8px;
+  transition: opacity 0.2s ease;
+}
+.news-row.is-read { opacity: 0.55; }
+.news-row-main { min-width: 0; }
+.news-row-title {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  transition: color 0.2s ease;
+}
+.news-row-title:hover { color: var(--bronze); }
+.news-row-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; }
+.news-row-source {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(28,26,24,0.45);
+}
+.news-row-date { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: rgba(28,26,24,0.4); }
+.news-row-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+.news-row-read-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(28,26,24,0.45);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.news-row-read-btn:hover { color: var(--bronze); }
+.news-row-dismiss {
+  font-size: 1.1rem;
+  line-height: 1;
+  color: rgba(28,26,24,0.3);
+  transition: color 0.2s ease;
+}
+.news-row-dismiss:hover { color: #b9483f; }
 
 @media (max-width: 640px) {
   .meeting-active { padding: 1.5rem; }
