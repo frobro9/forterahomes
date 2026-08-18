@@ -2306,6 +2306,15 @@ html:has(.portal-body) { overflow-x: hidden; }
   transition: opacity 0.2s ease;
 }
 .news-row.is-read { opacity: 0.55; }
+.news-row-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 0.5rem;
+  border-radius: 50%;
+  background: #0a84ff;
+}
+.news-row.is-read .news-row-dot { background: transparent; }
 .news-row-thumb {
   display: block;
   flex-shrink: 0;
@@ -2319,9 +2328,9 @@ html:has(.portal-body) { overflow-x: hidden; }
 .news-row-main { flex: 1; min-width: 0; }
 .news-row-title {
   display: block;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem;
-  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--charcoal);
   transition: color 0.2s ease;
 }

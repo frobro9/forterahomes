@@ -1803,6 +1803,7 @@ function newsRowHtml(item) {
   const isRead = Boolean(item.read_at);
   return `
     <li class="news-row${isRead ? ' is-read' : ''}" data-id="${item.id}">
+      <span class="news-row-dot" aria-hidden="true"></span>
       ${
         item.image_url
           ? `<a class="news-row-thumb" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" data-id="${item.id}"><img src="${escapeHtml(item.image_url)}" alt="" loading="lazy"></a>`
