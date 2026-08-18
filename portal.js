@@ -1782,8 +1782,124 @@ if (meetingDeleteConfirmConfirm) {
   });
 }
 
+/* ================================================================
+   NEWS
+   ================================================================ */
+const newsListEl = document.getElementById('newsList');
+const newsEmptyEl = document.getElementById('newsEmpty');
+const newsNavBadge = document.getElementById('newsNavBadge');
+const newsRefreshBtn = document.getElementById('newsRefreshBtn');
+
+let newsItems = [];
+
+function formatNewsDate(isoStr) {
+  if (!isoStr) return '';
+  const d = new Date(isoStr);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function newsRowHtml(item) {
+  const isRead = Boolean(item.read_at);
+  return `
+    <li class="news-row${isRead ? ' is-read' : ''}" data-id="${item.id}">
+      <span class="news-row-dot" aria-hidden="true"></span>
+      ${
+        item.image_url
+          ? `<a class="news-row-thumb" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" data-id="${item.id}"><img src="${escapeHtml(item.image_url)}" alt="" loading="lazy"></a>`
+          : ''
+      }
+      <div class="news-row-main">
+        <a class="news-row-title" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" data-id="${item.id}">${escapeHtml(item.title)}</a>
+        <div class="news-row-meta">
+          ${item.source ? `<span class="news-row-source">${escapeHtml(item.source)}</span>` : ''}
+          <span class="news-row-date">${formatNewsDate(item.published_at || item.created_at)}</span>
+        </div>
+      </div>
+      <div class="news-row-actions">
+        <button type="button" class="news-row-read-btn" data-id="${item.id}" data-read="${isRead ? '1' : '0'}">${isRead ? 'Mark Unread' : 'Mark Read'}</button>
+        <button type="button" class="news-row-dismiss" data-id="${item.id}" aria-label="Dismiss">&times;</button>
+      </div>
+    </li>`;
+}
+
+function updateNewsBadge() {
+  if (!newsNavBadge) return;
+  const unread = newsItems.filter((i) => !i.read_at).length;
+  newsNavBadge.hidden = unread === 0;
+  newsNavBadge.textContent = unread > 99 ? '99+' : String(unread);
+}
+
+function renderNewsList() {
+  if (!newsListEl) return;
+  if (!newsItems.length) {
+    if (newsEmptyEl) newsEmptyEl.hidden = false;
+    newsListEl.innerHTML = '';
+    return;
+  }
+  if (newsEmptyEl) newsEmptyEl.hidden = true;
+  newsListEl.innerHTML = newsItems.map(newsRowHtml).join('');
+}
+
+async function loadNews() {
+  try {
+    const res = await fetch('/api/news');
+    if (res.ok) {
+      const data = await res.json();
+      newsItems = data.items || [];
+    }
+  } catch {
+    // leave prior items on screen; Refresh lets the user retry
+  }
+  renderNewsList();
+  updateNewsBadge();
+}
+
+async function setNewsItemRead(id, read) {
+  const item = newsItems.find((i) => i.id === id);
+  if (!item) return;
+  item.read_at = read ? new Date().toISOString() : null;
+  renderNewsList();
+  updateNewsBadge();
+  try {
+    await fetch(`/api/news/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ read }),
+    });
+  } catch {
+    // optimistic update stands; Refresh will resync if the request failed
+  }
+}
+
+if (newsListEl) {
+  newsListEl.addEventListener('click', (e) => {
+    const link = e.target.closest('.news-row-title, .news-row-thumb');
+    if (link) {
+      setNewsItemRead(Number(link.dataset.id), true);
+      return;
+    }
+    const readBtn = e.target.closest('.news-row-read-btn');
+    if (readBtn) {
+      setNewsItemRead(Number(readBtn.dataset.id), readBtn.dataset.read !== '1');
+      return;
+    }
+    const dismissBtn = e.target.closest('.news-row-dismiss');
+    if (dismissBtn) {
+      const id = Number(dismissBtn.dataset.id);
+      newsItems = newsItems.filter((i) => i.id !== id);
+      renderNewsList();
+      updateNewsBadge();
+      fetch(`/api/news/${id}`, { method: 'DELETE' }).catch(() => {});
+    }
+  });
+}
+
+if (newsRefreshBtn) newsRefreshBtn.addEventListener('click', loadNews);
+
 /* ---- Initial page ------------------------------------------- */
 const initialPage = validPages.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'action-items';
 showPage(initialPage);
+loadNews();
 
 });

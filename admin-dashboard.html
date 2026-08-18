@@ -43,6 +43,7 @@
           </div>
 
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="meetings">Team Meetings</button>
+          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="news">News<span class="portal-nav-badge" id="newsNavBadge" hidden></span></button>
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="finder">Property Finder Tool</button>
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="pm-portal">Property Management Portal</button>
         </nav>
@@ -257,6 +258,22 @@
           <h3 class="meeting-section-title">Drafts</h3>
           <div class="meeting-drafts-list" id="meetingDraftsList"></div>
         </div>
+      </section>
+
+      <!-- News -->
+      <section class="portal-page" data-page="news">
+        <div class="portal-page-header">
+          <div>
+            <h1 class="portal-page-title">News</h1>
+          </div>
+          <div class="meeting-header-actions">
+            <button type="button" class="portal-btn-outline" id="newsRefreshBtn">Refresh</button>
+          </div>
+        </div>
+
+        <div class="meeting-empty" id="newsEmpty" hidden>No news yet — check back after the next daily update.</div>
+
+        <ul class="news-list" id="newsList"></ul>
       </section>
 
       <!-- Calendar -->
