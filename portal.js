@@ -1803,6 +1803,11 @@ function newsRowHtml(item) {
   const isRead = Boolean(item.read_at);
   return `
     <li class="news-row${isRead ? ' is-read' : ''}" data-id="${item.id}">
+      ${
+        item.image_url
+          ? `<a class="news-row-thumb" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" data-id="${item.id}"><img src="${escapeHtml(item.image_url)}" alt="" loading="lazy"></a>`
+          : ''
+      }
       <div class="news-row-main">
         <a class="news-row-title" href="${escapeHtml(item.url)}" target="_blank" rel="noopener" data-id="${item.id}">${escapeHtml(item.title)}</a>
         <div class="news-row-meta">
@@ -1868,7 +1873,7 @@ async function setNewsItemRead(id, read) {
 
 if (newsListEl) {
   newsListEl.addEventListener('click', (e) => {
-    const link = e.target.closest('.news-row-title');
+    const link = e.target.closest('.news-row-title, .news-row-thumb');
     if (link) {
       setNewsItemRead(Number(link.dataset.id), true);
       return;

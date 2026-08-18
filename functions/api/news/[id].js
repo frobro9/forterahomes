@@ -17,7 +17,7 @@ export async function onRequestPatch(context) {
 
   const row = await env.DB.prepare(
     `UPDATE news_items SET read_at = ? WHERE id = ?
-     RETURNING id, title, url, source, published_at, query_term, read_at, created_at`
+     RETURNING id, title, url, source, published_at, query_term, image_url, read_at, created_at`
   )
     .bind(readAt, id)
     .first();
