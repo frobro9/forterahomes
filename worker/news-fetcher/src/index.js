@@ -78,21 +78,31 @@ function parseRssItems(xml) {
 
 async function fetchQuery(query) {
   const url = buildRssUrl(query);
-  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ForteraNewsBot/1.0)' } });
-  if (!res.ok) return [];
+  let res;
+  try {
+    res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ForteraNewsBot/1.0)' } });
+  } catch (err) {
+    return { query, error: `fetch threw: ${err.message}`, items: [] };
+  }
+  if (!res.ok) {
+    return { query, error: `HTTP ${res.status}`, items: [] };
+  }
   const xml = await res.text();
+  const rawCount = (xml.match(/<item>/g) || []).length;
 
   const cutoff = Date.now() - MAX_ARTICLE_AGE_DAYS * 24 * 60 * 60 * 1000;
-  return parseRssItems(xml)
+  const items = parseRssItems(xml)
     .filter((item) => new Date(item.publishedAt).getTime() >= cutoff)
     .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt))
     .slice(0, MAX_PER_QUERY)
     .map((item) => ({ ...item, queryTerm: query }));
+
+  return { query, error: null, rawCount, items };
 }
 
 async function runFetch(env) {
-  const results = await Promise.allSettled(QUERIES.map(fetchQuery));
-  const allItems = results.flatMap((r) => (r.status === 'fulfilled' ? r.value : []));
+  const results = await Promise.all(QUERIES.map(fetchQuery));
+  const allItems = results.flatMap((r) => r.items);
 
   let inserted = 0;
   for (const item of allItems) {
@@ -106,8 +116,11 @@ async function runFetch(env) {
     if (res.meta.changes > 0) inserted += 1;
   }
 
-  const failedQueries = results.filter((r) => r.status === 'rejected').length;
-  return { checked: allItems.length, inserted, failedQueries };
+  return {
+    checked: allItems.length,
+    inserted,
+    queries: results.map((r) => ({ query: r.query, error: r.error, rawCount: r.rawCount, matched: r.items.length })),
+  };
 }
 
 export default {
