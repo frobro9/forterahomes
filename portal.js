@@ -859,7 +859,9 @@ let editingTopicId = null;
 let viewingMeeting = null;
 let pendingDeleteMeetingId = null;
 let pendingDeleteFrom = null; // 'draft' | 'archive'
-let archiveIndex = 0;
+let archiveListPage = 0;
+let archiveViewMode = 'list'; // 'list' | 'detail'
+const ARCHIVE_PAGE_SIZE = 10;
 const archiveDetailCache = new Map();
 let isPresenting = false;
 let presentIndex = 0;
@@ -920,10 +922,13 @@ const meetingArchiveFrom = document.getElementById('meetingArchiveFrom');
 const meetingArchiveTo = document.getElementById('meetingArchiveTo');
 const meetingArchiveClearBtn = document.getElementById('meetingArchiveClearBtn');
 const meetingArchiveEmpty = document.getElementById('meetingArchiveEmpty');
-const meetingArchiveContent = document.getElementById('meetingArchiveContent');
-const meetingArchivePrevBtn = document.getElementById('meetingArchivePrevBtn');
-const meetingArchiveNextBtn = document.getElementById('meetingArchiveNextBtn');
-const meetingArchivePagerLabel = document.getElementById('meetingArchivePagerLabel');
+const meetingArchiveListView = document.getElementById('meetingArchiveListView');
+const meetingArchiveListEl = document.getElementById('meetingArchiveListEl');
+const meetingArchiveListPrevBtn = document.getElementById('meetingArchiveListPrevBtn');
+const meetingArchiveListNextBtn = document.getElementById('meetingArchiveListNextBtn');
+const meetingArchiveListPagerLabel = document.getElementById('meetingArchiveListPagerLabel');
+const meetingArchiveDetailView = document.getElementById('meetingArchiveDetailView');
+const meetingArchiveBackBtn = document.getElementById('meetingArchiveBackBtn');
 
 const meetingTopicEditModal = document.getElementById('meetingTopicEditModal');
 const meetingTopicEditForm = document.getElementById('meetingTopicEditForm');
@@ -1110,47 +1115,69 @@ function archiveDateFilter() {
 }
 
 function openArchiveModal() {
-  archiveIndex = 0;
+  archiveListPage = 0;
+  archiveViewMode = 'list';
   meetingArchiveModal.hidden = false;
-  renderArchiveModalEntry();
+  renderArchiveList();
 }
 
-async function renderArchiveModalEntry() {
+function renderArchiveList() {
+  archiveViewMode = 'list';
+  viewingMeeting = null;
   const filtered = archiveDateFilter();
 
   if (!filtered.length) {
     meetingArchiveEmpty.hidden = false;
     meetingArchiveEmpty.textContent = archivedMeetings.length ? 'No meetings match that date range.' : 'No past meetings yet.';
-    meetingArchiveContent.hidden = true;
-    meetingArchivePagerLabel.textContent = '';
-    meetingArchivePrevBtn.disabled = true;
-    meetingArchiveNextBtn.disabled = true;
+    meetingArchiveListView.hidden = true;
+    meetingArchiveDetailView.hidden = true;
     meetingViewDeleteBtn.hidden = true;
-    viewingMeeting = null;
     return;
   }
 
-  archiveIndex = Math.min(Math.max(archiveIndex, 0), filtered.length - 1);
-  const summary = filtered[archiveIndex];
-
   meetingArchiveEmpty.hidden = true;
-  meetingArchiveContent.hidden = false;
-  meetingViewDeleteBtn.hidden = false;
-  meetingArchivePagerLabel.textContent = `${archiveIndex + 1} of ${filtered.length}`;
-  meetingArchivePrevBtn.disabled = archiveIndex === 0;
-  meetingArchiveNextBtn.disabled = archiveIndex === filtered.length - 1;
+  meetingArchiveDetailView.hidden = true;
+  meetingArchiveListView.hidden = false;
+  meetingViewDeleteBtn.hidden = true;
 
-  let detail = archiveDetailCache.get(summary.id);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ARCHIVE_PAGE_SIZE));
+  archiveListPage = Math.min(Math.max(archiveListPage, 0), totalPages - 1);
+  const pageItems = filtered.slice(archiveListPage * ARCHIVE_PAGE_SIZE, (archiveListPage + 1) * ARCHIVE_PAGE_SIZE);
+
+  meetingArchiveListEl.innerHTML = pageItems
+    .map(
+      (m) => `
+    <li class="meeting-archive-row">
+      <button type="button" class="meeting-archive-row-btn" data-id="${m.id}">
+        <span class="meeting-archive-row-date">${formatMeetingDate(m.meeting_date)}</span>
+        <span class="meeting-archive-row-count">${m.topic_count} topic${m.topic_count === 1 ? '' : 's'}</span>
+      </button>
+    </li>`
+    )
+    .join('');
+
+  meetingArchiveListPagerLabel.textContent = `Page ${archiveListPage + 1} of ${totalPages}`;
+  meetingArchiveListPrevBtn.disabled = archiveListPage === 0;
+  meetingArchiveListNextBtn.disabled = archiveListPage === totalPages - 1;
+}
+
+async function openArchiveDetail(id) {
+  archiveViewMode = 'detail';
+  meetingArchiveListView.hidden = true;
+  meetingArchiveDetailView.hidden = false;
+  meetingViewDeleteBtn.hidden = false;
+
+  let detail = archiveDetailCache.get(id);
   if (!detail) {
     try {
-      const res = await fetch(`/api/meetings/${summary.id}`);
+      const res = await fetch(`/api/meetings/${id}`);
       if (res.ok) {
         const data = await res.json();
         detail = data.meeting;
-        archiveDetailCache.set(summary.id, detail);
+        archiveDetailCache.set(id, detail);
       }
     } catch {
-      // leave prior content on screen; user can retry by paging away and back
+      // leave the list showing; user can retry by clicking the row again
     }
   }
   if (detail) fillArchiveModalContent(detail);
@@ -1644,36 +1671,46 @@ if (meetingArchiveBtn) meetingArchiveBtn.addEventListener('click', openArchiveMo
 
 if (meetingArchiveFrom) {
   meetingArchiveFrom.addEventListener('change', () => {
-    archiveIndex = 0;
-    renderArchiveModalEntry();
+    archiveListPage = 0;
+    renderArchiveList();
   });
 }
 if (meetingArchiveTo) {
   meetingArchiveTo.addEventListener('change', () => {
-    archiveIndex = 0;
-    renderArchiveModalEntry();
+    archiveListPage = 0;
+    renderArchiveList();
   });
 }
 if (meetingArchiveClearBtn) {
   meetingArchiveClearBtn.addEventListener('click', () => {
     meetingArchiveFrom.value = '';
     meetingArchiveTo.value = '';
-    archiveIndex = 0;
-    renderArchiveModalEntry();
+    archiveListPage = 0;
+    renderArchiveList();
   });
 }
 
-if (meetingArchivePrevBtn) {
-  meetingArchivePrevBtn.addEventListener('click', () => {
-    archiveIndex -= 1;
-    renderArchiveModalEntry();
+if (meetingArchiveListPrevBtn) {
+  meetingArchiveListPrevBtn.addEventListener('click', () => {
+    archiveListPage -= 1;
+    renderArchiveList();
   });
 }
-if (meetingArchiveNextBtn) {
-  meetingArchiveNextBtn.addEventListener('click', () => {
-    archiveIndex += 1;
-    renderArchiveModalEntry();
+if (meetingArchiveListNextBtn) {
+  meetingArchiveListNextBtn.addEventListener('click', () => {
+    archiveListPage += 1;
+    renderArchiveList();
   });
+}
+if (meetingArchiveListEl) {
+  meetingArchiveListEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.meeting-archive-row-btn');
+    if (!btn) return;
+    openArchiveDetail(Number(btn.dataset.id));
+  });
+}
+if (meetingArchiveBackBtn) {
+  meetingArchiveBackBtn.addEventListener('click', renderArchiveList);
 }
 
 function closeArchiveModal() {
@@ -1683,8 +1720,9 @@ function closeArchiveModal() {
 
 if (meetingArchiveModal) {
   meetingArchiveModal.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft' && !meetingArchivePrevBtn.disabled) meetingArchivePrevBtn.click();
-    if (e.key === 'ArrowRight' && !meetingArchiveNextBtn.disabled) meetingArchiveNextBtn.click();
+    if (archiveViewMode !== 'list') return;
+    if (e.key === 'ArrowLeft' && !meetingArchiveListPrevBtn.disabled) meetingArchiveListPrevBtn.click();
+    if (e.key === 'ArrowRight' && !meetingArchiveListNextBtn.disabled) meetingArchiveListNextBtn.click();
   });
   meetingArchiveModal.addEventListener('click', (e) => {
     if (e.target === meetingArchiveModal) closeArchiveModal();
@@ -1735,7 +1773,7 @@ if (meetingDeleteConfirmConfirm) {
           archivedMeetings = archivedMeetings.filter((m) => m.id !== id);
           archiveDetailCache.delete(id);
           meetingArchiveModal.hidden = false;
-          renderArchiveModalEntry();
+          renderArchiveList();
         }
       }
     } catch {
