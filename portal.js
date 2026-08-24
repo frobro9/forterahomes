@@ -626,12 +626,17 @@ const calMonthLabel = document.getElementById('calMonthLabel');
 const calWeeksEl = document.getElementById('calWeeks');
 const calSummaryList = document.getElementById('calSummaryList');
 const calModal = document.getElementById('calModal');
+const calModalTitle = document.getElementById('calModalTitle');
+const calModalSubmitBtn = document.getElementById('calModalSubmitBtn');
+const calModalDelete = document.getElementById('calModalDelete');
 const calEventForm = document.getElementById('calEventForm');
 const calEventError = document.getElementById('calEventError');
 const calAddEventBtn = document.getElementById('calAddEventBtn');
 const calModalCancel = document.getElementById('calModalCancel');
 const calPrevBtn = document.getElementById('calPrevBtn');
 const calNextBtn = document.getElementById('calNextBtn');
+
+let editingEventId = null;
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -744,7 +749,7 @@ function renderCalendar() {
         const width = ((endCol - startCol + 1) / 7) * 100;
         const top = item.lane * 22;
         const color = calEventColor(item.ev);
-        return `<div class="cal-event-bar" style="left:${left}%;width:calc(${width}% - 4px);top:${top}px;background:${color}" title="${escapeHtml(item.ev.name)}">${escapeHtml(item.ev.name)}</div>`;
+        return `<div class="cal-event-bar" style="left:${left}%;width:calc(${width}% - 4px);top:${top}px;background:${color}" title="${escapeHtml(item.ev.name)}" data-id="${item.ev.id}">${escapeHtml(item.ev.name)}</div>`;
       })
       .join('');
 
@@ -773,7 +778,7 @@ function renderCalSummary() {
   calSummaryList.innerHTML = sorted
     .map(
       (ev) => `
-    <div class="cal-summary-row">
+    <div class="cal-summary-row" data-id="${ev.id}">
       <span class="cal-summary-swatch" style="background:${calEventColor(ev)}"></span>
       <span class="cal-summary-name">${escapeHtml(ev.name)}</span>
       <span class="cal-summary-dates">${formatShortDate(ev.start_date)} – ${formatShortDate(ev.end_date)}</span>
@@ -784,15 +789,68 @@ function renderCalSummary() {
     .join('');
 }
 
+function openAddEventModal() {
+  editingEventId = null;
+  calEventError.style.display = 'none';
+  calEventForm.reset();
+  calModalTitle.textContent = 'Add Event';
+  calModalSubmitBtn.textContent = 'Add Event';
+  calModalDelete.hidden = true;
+  calModal.hidden = false;
+}
+
+function openEditEventModal(ev) {
+  editingEventId = ev.id;
+  calEventError.style.display = 'none';
+  document.getElementById('calEventName').value = ev.name;
+  document.getElementById('calEventStart').value = ev.start_date;
+  document.getElementById('calEventEnd').value = ev.end_date;
+  calModalTitle.textContent = 'Edit Event';
+  calModalSubmitBtn.textContent = 'Save Changes';
+  calModalDelete.hidden = false;
+  calModal.hidden = false;
+}
+
+async function deleteCalEvent(id) {
+  const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+  if (res.ok) {
+    calEvents = calEvents.filter((ev) => ev.id !== id);
+    renderCalendar();
+  }
+  return res.ok;
+}
+
 if (calAddEventBtn) {
-  calAddEventBtn.addEventListener('click', () => {
-    calEventError.style.display = 'none';
-    calEventForm.reset();
-    calModal.hidden = false;
-  });
+  calAddEventBtn.addEventListener('click', openAddEventModal);
 }
 if (calModalCancel) calModalCancel.addEventListener('click', () => { calModal.hidden = true; });
 if (calModal) calModal.addEventListener('click', (e) => { if (e.target === calModal) calModal.hidden = true; });
+
+if (calWeeksEl) {
+  calWeeksEl.addEventListener('click', (e) => {
+    const bar = e.target.closest('.cal-event-bar');
+    if (!bar) return;
+    const ev = calEvents.find((item) => item.id === Number(bar.dataset.id));
+    if (ev) openEditEventModal(ev);
+  });
+}
+
+if (calModalDelete) {
+  calModalDelete.addEventListener('click', async () => {
+    if (editingEventId == null) return;
+    calModalDelete.disabled = true;
+    try {
+      const ok = await deleteCalEvent(editingEventId);
+      if (ok) calModal.hidden = true;
+      else {
+        calEventError.textContent = 'Something went wrong. Please try again.';
+        calEventError.style.display = 'block';
+      }
+    } finally {
+      calModalDelete.disabled = false;
+    }
+  });
+}
 
 if (calEventForm) {
   calEventForm.addEventListener('submit', async (e) => {
@@ -816,19 +874,37 @@ if (calEventForm) {
     const submitBtn = calEventForm.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     try {
-      const res = await fetch('/api/events', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, startDate, endDate, property: 'beechwood' }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        calEvents.push(data.event);
-        calModal.hidden = true;
-        renderCalendar();
+      if (editingEventId != null) {
+        const res = await fetch(`/api/events/${editingEventId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, startDate, endDate }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          const idx = calEvents.findIndex((ev) => ev.id === editingEventId);
+          if (idx !== -1) calEvents[idx] = data.event;
+          calModal.hidden = true;
+          renderCalendar();
+        } else {
+          calEventError.textContent = data.error || 'Something went wrong.';
+          calEventError.style.display = 'block';
+        }
       } else {
-        calEventError.textContent = data.error || 'Something went wrong.';
-        calEventError.style.display = 'block';
+        const res = await fetch('/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, startDate, endDate, property: 'beechwood' }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          calEvents.push(data.event);
+          calModal.hidden = true;
+          renderCalendar();
+        } else {
+          calEventError.textContent = data.error || 'Something went wrong.';
+          calEventError.style.display = 'block';
+        }
       }
     } catch {
       calEventError.textContent = 'Something went wrong. Please try again.';
@@ -841,18 +917,20 @@ if (calEventForm) {
 
 if (calSummaryList) {
   calSummaryList.addEventListener('click', async (e) => {
-    const btn = e.target.closest('.cal-summary-remove');
-    if (!btn) return;
-    const id = Number(btn.dataset.id);
-    try {
-      const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        calEvents = calEvents.filter((ev) => ev.id !== id);
-        renderCalendar();
+    const removeBtn = e.target.closest('.cal-summary-remove');
+    if (removeBtn) {
+      const id = Number(removeBtn.dataset.id);
+      try {
+        await deleteCalEvent(id);
+      } catch {
+        // leave list as-is; user can retry
       }
-    } catch {
-      // leave list as-is; user can retry
+      return;
     }
+    const row = e.target.closest('.cal-summary-row');
+    if (!row) return;
+    const ev = calEvents.find((item) => item.id === Number(row.dataset.id));
+    if (ev) openEditEventModal(ev);
   });
 }
 

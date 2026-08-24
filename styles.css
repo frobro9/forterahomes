@@ -1712,7 +1712,10 @@ html:has(.portal-body) { overflow-x: hidden; }
   padding: 0.85rem 1.25rem;
   border-bottom: 1px solid rgba(28,26,24,0.06);
   font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
+.cal-summary-row:hover { background: rgba(28,26,24,0.02); }
 .cal-summary-row:last-child { border-bottom: none; }
 .cal-summary-swatch { width: 8px; height: 8px; border-radius: 50%; background: var(--bronze); flex-shrink: 0; }
 .cal-summary-name { flex: 1; font-size: 0.82rem; font-weight: 600; color: var(--charcoal); }

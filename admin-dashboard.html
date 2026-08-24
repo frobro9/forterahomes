@@ -359,10 +359,10 @@
     </main>
   </div>
 
-  <!-- Add event modal -->
+  <!-- Add/Edit event modal -->
   <div class="portal-modal" id="calModal" hidden>
     <div class="portal-modal-card">
-      <h3 class="portal-modal-title">Add Event</h3>
+      <h3 class="portal-modal-title" id="calModalTitle">Add Event</h3>
       <form id="calEventForm" novalidate>
         <p class="portal-modal-error" id="calEventError" role="alert"></p>
         <div class="portal-modal-field">
@@ -380,8 +380,9 @@
           </div>
         </div>
         <div class="portal-modal-actions">
+          <button type="button" class="portal-btn-danger" id="calModalDelete" hidden>Delete</button>
           <button type="button" class="portal-btn-outline" id="calModalCancel">Cancel</button>
-          <button type="submit" class="portal-btn">Add Event</button>
+          <button type="submit" class="portal-btn" id="calModalSubmitBtn">Add Event</button>
         </div>
       </form>
     </div>
