@@ -26,6 +26,7 @@ const QUERIES = [
   'Ontario development charges',
   'Ontario housing policy',
   'Canada housing development policy',
+  'Canada tariffs construction materials',
 ];
 
 const MAX_PER_QUERY = 6;
