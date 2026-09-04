@@ -345,4 +345,26 @@ if (adminPasswordToggle && adminPasswordInput) {
   });
 }
 
+/* ---- Wifi offer bubble — expands to show offer details ---- */
+const wifiOffer        = document.getElementById('wifiOffer');
+const wifiOfferTrigger = document.getElementById('wifiOfferTrigger');
+const wifiOfferDetails = document.getElementById('wifiOfferDetails');
+if (wifiOffer && wifiOfferTrigger && wifiOfferDetails) {
+  const setOpen = (open) => {
+    wifiOffer.classList.toggle('is-open', open);
+    wifiOfferTrigger.setAttribute('aria-expanded', String(open));
+    wifiOfferDetails.hidden = !open;
+  };
+  wifiOfferTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setOpen(!wifiOffer.classList.contains('is-open'));
+  });
+  document.addEventListener('click', (e) => {
+    if (wifiOffer.classList.contains('is-open') && !wifiOffer.contains(e.target)) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && wifiOffer.classList.contains('is-open')) { setOpen(false); wifiOfferTrigger.focus(); }
+  });
+}
+
 });
