@@ -7,13 +7,6 @@
       "runtimeArgs": ["-c", "cd /tmp/fortera-site && python3 -m http.server $PORT"],
       "port": 4200,
       "autoPort": true
-    },
-    {
-      "name": "fortera-homes-cf",
-      "runtimeExecutable": "bash",
-      "runtimeArgs": ["-c", "npx wrangler pages dev . --port $PORT --compatibility-date=2026-06-01"],
-      "port": 4300,
-      "autoPort": true
     }
   ]
 }
