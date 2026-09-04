@@ -42,6 +42,7 @@
   --cream:    #f5f0eb;
   --blush:    #ede5de;
   --sand:     #e0d5c8;
+  --green:    #3f6b47;
   --white:    #ffffff;
   --nav-h:    72px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -92,18 +93,16 @@ ul { list-style: none; }
 }
 
 .section-h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.8rem, 5vw, 5.5rem);
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
   font-weight: 700;
   color: var(--charcoal);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
 }
 
 /* Universal heading uppercase */
-.hero-title,
-.project-card-title,
 .project-hero-title,
 .unit-name,
 .value-title,
@@ -312,7 +311,7 @@ ul { list-style: none; }
 }
 
 .nav-overlay-link {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 700;
   color: rgba(255,255,255,0.8);
@@ -377,7 +376,7 @@ ul { list-style: none; }
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 0 38% 7rem 3rem;
+  padding: 0 10% clamp(5rem, 16vh, 12rem) clamp(1.5rem, 6vw, 5.5rem);
   max-width: none;
   margin: 0;
 }
@@ -385,12 +384,14 @@ ul { list-style: none; }
 .hero-content .section-label { color: var(--bronze-light); margin-bottom: 1.25rem; }
 
 .hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.5rem, 4.8vw, 5.5rem);
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(2.25rem, 3.6vw, 4rem);
   font-weight: 700;
   color: var(--white);
-  line-height: 1;
-  letter-spacing: 0.02em;
+  line-height: 1.08;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
 }
 
 .hero-title-by {
@@ -405,9 +406,8 @@ ul { list-style: none; }
 }
 
 .hero-title-accent {
-  color: var(--bronze-light);
-  font-style: italic;
-  font-weight: 500;
+  color: rgba(255,255,255,0.62);
+  font-weight: 700;
 }
 
 .hero-desc {
@@ -419,7 +419,7 @@ ul { list-style: none; }
   margin: 1.75rem 0 2.5rem;
 }
 
-.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-top: 2.5rem; }
+.hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-top: 2rem; }
 
 /* ============================================================
    HOMEPAGE — FORTERA WAY PANELS
@@ -430,25 +430,130 @@ ul { list-style: none; }
 .section-home-project { padding: 8rem 0; background: var(--cream); }
 .home-project-inner {
   max-width: 1280px; margin: 0 auto; padding: 0 3rem;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
 }
-.home-project-location {
-  font-family: 'Montserrat', sans-serif; font-size: 0.65rem; letter-spacing: 0.15em;
-  text-transform: uppercase; color: var(--bronze); margin: 1rem 0 1.5rem;
+
+/* Feature card — a larger, richer version of the Projects-page card */
+.feature-card-wrap { position: relative; max-width: 940px; }
+.project-card--feature { max-width: 940px; }
+
+/* Free-internet offer bubble beside the feature card */
+.wifi-offer {
+  position: absolute;
+  top: -22px;
+  right: -30px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem 0.6rem 0.6rem;
+  box-shadow: 0 16px 40px rgba(28,26,24,0.16);
+  animation: wifiOfferFloat 4.5s var(--ease-out) infinite;
 }
-.home-project-desc {
-  font-family: 'Montserrat', sans-serif; font-size: 0.87rem; line-height: 1.9;
-  color: rgba(28,26,24,0.65); margin-bottom: 2rem;
+.wifi-offer-badge {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--white);
+  display: grid;
+  place-items: center;
 }
-.home-project-specs { display: flex; gap: 2.5rem; margin-bottom: 2.5rem; }
-.home-spec-label {
-  display: block; font-family: 'Montserrat', sans-serif; font-size: 0.55rem;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--bronze); margin-bottom: 0.3rem;
+.wifi-offer-eyebrow {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bronze);
+  margin-bottom: 0.15rem;
 }
-.home-spec-value {
-  display: block; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;
-  font-weight: 500; color: var(--charcoal);
+.wifi-offer-text {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--charcoal);
+  line-height: 1.15;
+  white-space: nowrap;
 }
+@keyframes wifiOfferFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wifi-offer { animation: none; }
+}
+.project-card--feature .project-card-body { padding: 2rem 2.25rem 2.4rem; }
+.project-card--feature .project-card-title { font-size: 2rem; margin-bottom: 0.3rem; text-transform: none; letter-spacing: 0; }
+.project-card--feature .project-card-location-simple { font-size: 0.85rem; }
+
+.feature-card-gallery {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  aspect-ratio: 21 / 9;
+  margin: 14px 14px 0;
+}
+.feature-card-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.feature-card-photo--main { grid-row: 1 / 3; }
+.feature-card-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s var(--ease-out);
+}
+.project-card--feature:hover .feature-card-photo img { transform: scale(1.04); }
+
+.feature-card-specs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 1.75rem;
+}
+.feature-spec {
+  background: var(--cream);
+  border: 1px solid var(--sand);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+}
+.feature-spec-label {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bronze);
+  margin-bottom: 0.4rem;
+}
+.feature-spec-value {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+/* Intro copy under each homepage section header */
+.home-section-intro {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(28,26,24,0.6);
+  max-width: 640px;
+  margin: 0 0 2.75rem;
+}
+.home-section-intro--light { color: rgba(255,255,255,0.5); }
+
 .home-learn-more {
   display: inline-flex; align-items: center; gap: 0.5rem;
   font-family: 'Montserrat', sans-serif; font-size: 0.62rem; font-weight: 600;
@@ -460,16 +565,6 @@ ul { list-style: none; }
 .home-learn-more--light { color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.35); }
 .home-learn-more--light:hover { color: var(--bronze-light); border-color: var(--bronze-light); }
 
-.home-project-images {
-  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto;
-  gap: 6px;
-}
-.home-project-img { overflow: hidden; }
-.home-project-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s var(--ease-out); }
-.home-project-img:hover img { transform: scale(1.04); }
-.home-project-img--tall { grid-row: span 2; aspect-ratio: 2/3; }
-.home-project-img--short { aspect-ratio: 4/3; }
-
 /* ============================================================
    HOME — EXPERTISE PREVIEW
    ============================================================ */
@@ -477,7 +572,7 @@ ul { list-style: none; }
 .home-expertise-inner { max-width: 1280px; margin: 0 auto; padding: 0 3rem; }
 .home-expertise-header {
   display: flex; justify-content: space-between; align-items: flex-end;
-  margin-bottom: 4rem;
+  margin-bottom: 1.25rem;
 }
 .section-label--light { color: rgba(255,255,255,0.45); }
 .section-h2--light { color: var(--white); }
@@ -490,7 +585,7 @@ ul { list-style: none; }
 .home-expertise-card:hover { background: rgba(255,255,255,0.04); }
 .expertise-icon--light { background: rgba(255,255,255,0.06); color: var(--bronze); }
 .home-expertise-title {
-  font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700;
+  font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 700;
   color: var(--white); text-transform: uppercase; margin: 1.25rem 0 0.75rem; line-height: 1.2;
 }
 .home-expertise-text {
@@ -505,7 +600,7 @@ ul { list-style: none; }
 .home-blog-inner { max-width: 1280px; margin: 0 auto; padding: 0 3rem; }
 .home-section-header {
   display: flex; justify-content: space-between; align-items: flex-end;
-  margin-bottom: 3.5rem;
+  margin-bottom: 1.25rem;
 }
 .home-blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
 .home-blog-card { text-decoration: none; color: inherit; display: block; background: var(--white); border-radius: 18px; border: 1px solid var(--sand); overflow: hidden; transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease; }
@@ -515,7 +610,7 @@ ul { list-style: none; }
 .home-blog-card:hover .home-blog-img img { transform: scale(1.04); }
 .home-blog-body { padding: 1.25rem 1.5rem 1.75rem; }
 .home-blog-title {
-  font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600;
+  font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 600;
   color: var(--charcoal); line-height: 1.25; margin-top: 0.5rem;
 }
 
@@ -523,22 +618,26 @@ ul { list-style: none; }
    PAGE HERO (non-homepage)
    ============================================================ */
 .page-hero {
-  padding-top: calc(var(--nav-h) + 5rem);
-  padding-bottom: 4rem;
+  padding-top: calc(var(--nav-h) + 4rem);
+  padding-bottom: 2rem;
   background: var(--cream);
 }
 .page-hero-inner { max-width: 1280px; margin: 0 auto; padding: 0 3rem; }
+.page-hero .section-h2 {
+  font-size: clamp(1.85rem, 2.8vw, 2.5rem);
+  letter-spacing: 0;
+}
 
 /* ============================================================
    PROJECTS PAGE
    ============================================================ */
 .page-hero-desc {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.92rem;
-  line-height: 1.85;
+  font-size: 1rem;
+  line-height: 1.55;
   color: rgba(28,26,24,0.62);
-  max-width: 580px;
-  margin-top: 1.75rem;
+  max-width: 640px;
+  margin-top: 1rem;
 }
 
 .projects-grid {
@@ -579,8 +678,8 @@ ul { list-style: none; }
 .project-card-badge {
   position: absolute;
   top: 1rem; left: 1rem;
-  background: var(--bronze-light);
-  color: var(--charcoal);
+  background: var(--green);
+  color: var(--white);
   font-family: 'Montserrat', sans-serif;
   font-size: 0.6rem;
   font-weight: 600;
@@ -596,14 +695,14 @@ ul { list-style: none; }
   content: '';
   width: 6px;
   height: 6px;
-  background: var(--charcoal);
+  background: rgba(255,255,255,0.9);
   border-radius: 50%;
 }
 
 .project-card-body { padding: 1.5rem 1.75rem 2rem; }
 
 .project-card-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
   color: var(--charcoal);
@@ -712,7 +811,7 @@ ul { list-style: none; }
 .project-hero-location .location-pin { flex-shrink: 0; }
 
 .project-hero-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: clamp(2.5rem, 5vw, 5rem);
   font-weight: 700;
   color: var(--white);
@@ -769,7 +868,7 @@ ul { list-style: none; }
   margin-bottom: 0.6rem;
 }
 .spec-value {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.75rem;
   font-weight: 500;
   color: var(--charcoal);
@@ -821,9 +920,9 @@ ul { list-style: none; }
 
 .unit-card { background: var(--cream); display: flex; flex-direction: column; padding: 2.5rem; }
 .unit-card-top { border-bottom: 1px solid var(--sand); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
-.unit-name { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.3rem; }
+.unit-name { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.3rem; }
 .unit-name-tag {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.7em;
   font-weight: 400;
   font-style: italic;
@@ -865,7 +964,7 @@ ul { list-style: none; }
   color: var(--bronze);
 }
 .unit-floorplan-placeholder .placeholder-text {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.4rem;
   font-style: italic;
   color: rgba(28,26,24,0.45);
@@ -1000,7 +1099,7 @@ ul { list-style: none; }
 .register-other-inquiries { margin-top: 2.5rem; padding: 1.75rem 1.75rem 1.75rem 1.5rem; border-left: 3px solid var(--bronze); background: rgba(255,255,255,0.04); }
 .register-other-inquiries .section-label { color: var(--bronze-light); }
 .register-other-inquiries .register-desc { color: rgba(255,255,255,0.75); margin-top: 0.5rem; }
-.register-email-link { display: inline-block; margin-top: 1.25rem; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: var(--white); text-decoration: none; border-bottom: 1px solid var(--bronze); padding-bottom: 0.15rem; transition: color 0.2s ease; }
+.register-email-link { display: inline-block; margin-top: 1.25rem; font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--white); text-decoration: none; border-bottom: 1px solid var(--bronze); padding-bottom: 0.15rem; transition: color 0.2s ease; }
 .register-email-link:hover { color: var(--bronze-light); }
 
 .form-field { margin-bottom: 1.5rem; }
@@ -1165,7 +1264,7 @@ html:has(.admin-dashboard-body) { overflow-x: hidden; }
 }
 
 .admin-dashboard-label { font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--bronze); margin-bottom: 0.75rem; }
-.admin-dashboard-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.75rem, 3vw, 2.5rem); color: var(--white); margin-bottom: 0.75rem; }
+.admin-dashboard-title { font-family: 'Montserrat', sans-serif; font-size: clamp(1.75rem, 3vw, 2.5rem); color: var(--white); margin-bottom: 0.75rem; }
 .admin-dashboard-desc { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.5); max-width: 420px; margin: 0 auto 2.5rem; }
 
 .admin-dashboard-logout {
@@ -1340,7 +1439,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   display: block;
 }
 .portal-page-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: clamp(2rem, 3vw, 2.6rem);
   font-weight: 600;
   color: var(--charcoal);
@@ -1361,7 +1460,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   margin-bottom: 1rem;
 }
 .portal-coming-soon-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: clamp(1.75rem, 3vw, 2.4rem);
   color: var(--charcoal);
   margin-bottom: 0.75rem;
@@ -1651,7 +1750,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 .cal-nav-btn:hover { border-color: var(--bronze); background: rgba(178,151,125,0.08); }
-.cal-month-label { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: var(--charcoal); min-width: 190px; text-align: center; }
+.cal-month-label { font-family: 'Montserrat', sans-serif; font-size: 1.35rem; color: var(--charcoal); min-width: 190px; text-align: center; }
 
 .cal-grid { background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
 .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid rgba(28,26,24,0.08); }
@@ -1703,7 +1802,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 .cal-event-bar:hover { filter: brightness(0.9); }
 
 .cal-summary { margin-top: 2.5rem; }
-.cal-summary-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }
+.cal-summary-title { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }
 .cal-summary-list { background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
 .cal-summary-row {
   display: flex;
@@ -1744,7 +1843,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   max-width: 100%;
   box-shadow: 0 30px 80px rgba(0,0,0,0.35);
 }
-.portal-modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--charcoal); margin-bottom: 1.5rem; }
+.portal-modal-title { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; color: var(--charcoal); margin-bottom: 1.5rem; }
 .portal-modal-desc { font-family: 'Montserrat', sans-serif; font-size: 0.82rem; line-height: 1.6; color: rgba(28,26,24,0.6); margin-bottom: 1.75rem; }
 .portal-modal-field { margin-bottom: 1.25rem; }
 .portal-modal-field label {
@@ -1795,7 +1894,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   display: block;
   margin-bottom: 0.35rem;
 }
-.meeting-active-date { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--charcoal); }
+.meeting-active-date { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; color: var(--charcoal); }
 
 .meeting-field-block { margin-bottom: 2rem; }
 .meeting-field-block:last-child { margin-bottom: 0; }
@@ -1825,7 +1924,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 .meeting-topics-list--readonly .meeting-topic-row { background: var(--white); box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
 .meeting-topic-row-num {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.1rem;
   color: var(--bronze);
   flex-shrink: 0;
@@ -1949,7 +2048,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 .meeting-present-titleslide .meeting-quickadd-form { text-align: left; }
 
 .meeting-present-slide-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: clamp(2rem, 4vw, 2.8rem);
   margin-bottom: 1rem;
@@ -1977,7 +2076,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 
 .meeting-present-topic-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   margin-bottom: 0.85rem;
@@ -2163,7 +2262,7 @@ html:has(.portal-body) { overflow-x: hidden; }
 }
 
 .meeting-section { margin-top: 2.75rem; }
-.meeting-section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }
+.meeting-section-title { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; color: var(--charcoal); margin-bottom: 1rem; }
 
 .meeting-empty {
   text-align: center;
@@ -2238,7 +2337,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 .meeting-archive-row-btn:hover { border-color: var(--bronze); background: var(--white); }
-.meeting-archive-row-date { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--charcoal); }
+.meeting-archive-row-date { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: var(--charcoal); }
 .meeting-archive-row-count {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.68rem;
@@ -2402,7 +2501,7 @@ html:has(.portal-body) { overflow-x: hidden; }
    ============================================================ */
 .section-about-hero { padding-top: calc(var(--nav-h) + 6rem); padding-bottom: 6rem; background: var(--cream); }
 .about-hero-inner { max-width: 1280px; margin: 0 auto; padding: 0 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
-.about-intro-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 400; line-height: 1.5; color: var(--charcoal); margin-top: 1.5rem; }
+.about-intro-text { font-family: 'Montserrat', sans-serif; font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 400; line-height: 1.5; color: var(--charcoal); margin-top: 1.5rem; }
 .about-body-text { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; line-height: 1.95; color: rgba(28,26,24,0.65); margin-top: 2rem; }
 .about-image { aspect-ratio: 3/4; overflow: hidden; }
 .about-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -2412,8 +2511,8 @@ html:has(.portal-body) { overflow-x: hidden; }
 .section-values { padding: 7rem 0; background: var(--blush); }
 .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--sand); margin-top: 4rem; }
 .value-card { background: var(--cream); padding: 3rem 2.5rem; }
-.value-number { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 300; color: var(--bronze); opacity: 0.32; line-height: 1; margin-bottom: 1.5rem; }
-.value-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1rem; }
+.value-number { font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 300; color: var(--bronze); opacity: 0.32; line-height: 1; margin-bottom: 1.5rem; }
+.value-title { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--charcoal); margin-bottom: 1rem; }
 .value-text { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; line-height: 1.85; color: rgba(28,26,24,0.6); }
 
 /* ============================================================
@@ -2428,14 +2527,14 @@ html:has(.portal-body) { overflow-x: hidden; }
 .expertise-card:hover { background: var(--white); }
 .expertise-icon { width: 48px; height: 48px; border: 1px solid var(--bronze); display: flex; align-items: center; justify-content: center; color: var(--bronze); font-size: 1.2rem; margin-bottom: 2rem; transition: background 0.3s ease, color 0.3s ease; }
 .expertise-card:hover .expertise-icon { background: var(--bronze); color: var(--white); }
-.expertise-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.75rem; }
+.expertise-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); margin-bottom: 0.75rem; }
 .expertise-text { font-family: 'Montserrat', sans-serif; font-size: 0.78rem; line-height: 1.85; color: rgba(28,26,24,0.6); }
 .section-expertise-stats { padding: 6rem 0; background: var(--charcoal); }
 
 /* ============================================================
    BLOG PAGE
    ============================================================ */
-.section-blog { padding: 2rem 0 7rem; background: var(--cream); }
+.section-blog { padding: 0 0 7rem; background: var(--cream); }
 
 /* ============================================================
    BLOG POST PAGE
@@ -2447,26 +2546,26 @@ html:has(.portal-body) { overflow-x: hidden; }
 .blog-back-link { display: inline-block; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--bronze); text-decoration: none; margin-bottom: 2.5rem; transition: opacity 0.2s ease; }
 .blog-back-link:hover { opacity: 0.65; }
 .blog-post-date { display: block; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; color: rgba(28,26,24,0.42); letter-spacing: 0.08em; margin-bottom: 0.9rem; }
-.blog-post-title { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 700; color: var(--charcoal); line-height: 1.15; margin-bottom: 3rem; text-transform: uppercase; }
+.blog-post-title { font-family: 'Montserrat', sans-serif; font-size: 2.8rem; font-weight: 700; color: var(--charcoal); line-height: 1.15; margin-bottom: 3rem; text-transform: uppercase; }
 .blog-post-content p { font-family: 'Montserrat', sans-serif; font-size: 0.86rem; line-height: 2; color: rgba(28,26,24,0.7); margin-bottom: 1.75rem; }
-.blog-post-content h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.75rem; font-weight: 700; color: var(--charcoal); text-transform: uppercase; letter-spacing: 0.02em; margin: 3rem 0 1rem; }
+.blog-post-content h2 { font-family: 'Montserrat', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--charcoal); text-transform: uppercase; letter-spacing: 0.02em; margin: 3rem 0 1rem; }
 .blog-post-content h3 { font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bronze); margin: 2.5rem 0 0.75rem; }
 .blog-post-content strong { font-weight: 600; color: var(--charcoal); }
 .blog-post-cta { margin-top: 4rem; padding: 3rem 2.5rem; background: var(--blush); text-align: center; border: 1px solid var(--sand); }
-.blog-post-cta-lead { font-family: 'Cormorant Garamond', serif; font-size: 1.65rem; font-weight: 500; color: var(--charcoal); margin-bottom: 1.5rem !important; }
-.blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; margin-top: 3.5rem; }
+.blog-post-cta-lead { font-family: 'Montserrat', sans-serif; font-size: 1.65rem; font-weight: 500; color: var(--charcoal); margin-bottom: 1.5rem !important; }
+.blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2rem; margin-top: 1rem; }
 .blog-card { background: var(--white); display: block; text-decoration: none; color: inherit; overflow: hidden; border-radius: 18px; border: 1px solid var(--sand); transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease; }
 .blog-card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(28,26,24,0.08); }
 .blog-card-image { aspect-ratio: 4/3; overflow: hidden; margin: 12px 12px 0; border-radius: 12px; }
 .blog-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-out); }
 .blog-card:hover .blog-card-image img { transform: scale(1.04); }
 .blog-card-image-placeholder { width: 100%; aspect-ratio: 4/3; background: var(--blush); display: flex; align-items: center; justify-content: center; margin: 12px 12px 0; border-radius: 12px; }
-.blog-card-image-placeholder span { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; color: var(--bronze); opacity: 0.32; }
+.blog-card-image-placeholder span { font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 300; color: var(--bronze); opacity: 0.32; }
 .blog-card-body { padding: 1.5rem 1.75rem 2rem; }
 .blog-card-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
 .blog-card-tag { font-family: 'Montserrat', sans-serif; font-size: 0.52rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bronze); }
 .blog-card-date { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; color: rgba(28,26,24,0.4); letter-spacing: 0.04em; }
-.blog-card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); line-height: 1.25; margin-bottom: 0.65rem; }
+.blog-card-title { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); line-height: 1.25; margin-bottom: 0.65rem; }
 .blog-card-excerpt { font-family: 'Montserrat', sans-serif; font-size: 0.75rem; line-height: 1.8; color: rgba(28,26,24,0.55); }
 .blog-card-read-more { display: none; }
 
@@ -2516,12 +2615,9 @@ html:has(.portal-body) { overflow-x: hidden; }
   .stats-inner { grid-template-columns: repeat(2, 1fr); }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .footer-wordmark { display: none; }
-  .home-project-inner { grid-template-columns: 1fr; gap: 3rem; }
-  .home-project-images { grid-template-columns: 1fr 1fr; }
-  .home-project-img--tall { grid-column: 1 / 3; grid-row: span 1; aspect-ratio: 16/9; }
-  .home-project-img--short { aspect-ratio: 4/3; }
   .home-expertise-grid { grid-template-columns: 1fr; }
   .home-blog-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .wifi-offer { right: 12px; top: -20px; }
 }
 
 @media (max-width: 860px) {
@@ -2542,7 +2638,11 @@ html:has(.portal-body) { overflow-x: hidden; }
   .gal-int-6 { grid-column: 1/2; grid-row: 4/5; }
   .gal-int-7 { grid-column: 2/3; grid-row: 4/5; }
   .project-subnav-inner { padding: 0 1.5rem; }
-  .hero-content { padding: 0 2rem 4rem; }
+  .feature-card-gallery { grid-template-columns: 1fr 1fr; aspect-ratio: 16 / 10; }
+  .feature-card-photo--main { grid-column: 1 / 3; grid-row: 1 / 2; }
+  .feature-card-specs { grid-template-columns: 1fr 1fr; }
+  .hero-content { padding: 0 2rem 12vh; }
+  .hero-title { white-space: normal; }
   .project-hero-content { left: 2rem; right: 2rem; bottom: 3rem; }
   .register-form-wrap { padding: 2rem; }
 }
@@ -2555,7 +2655,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   .nav-overlay-footer { padding: 1.5rem 1.25rem; }
   .section-inner, .footer-inner, .fortera-way-header, .about-hero-inner,
   .neighbourhood-inner, .register-inner, .overview-inner, .page-hero-inner { padding: 0 1.25rem; }
-  .hero-content { padding: 0 1.25rem 3rem; }
+  .hero-content { padding: 0 1.25rem 10vh; }
   .projects-grid { padding: 0 0 5rem; grid-template-columns: 1fr; }
   .values-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr; }
@@ -2573,5 +2673,17 @@ html:has(.portal-body) { overflow-x: hidden; }
   .home-blog-inner { padding: 0 1.25rem; }
   .home-blog-grid { grid-template-columns: 1fr; }
   .home-expertise-grid { gap: 1px; }
+  .feature-card-gallery { grid-template-columns: 1fr; grid-template-rows: auto; aspect-ratio: auto; }
+  .feature-card-photo { aspect-ratio: 16 / 10; }
+  .feature-card-photo--main { grid-column: auto; grid-row: auto; }
+  .feature-card-specs { grid-template-columns: 1fr 1fr; }
+  .project-card--feature .project-card-title { font-size: 1.6rem; }
+  .wifi-offer {
+    position: static;
+    animation: none;
+    width: fit-content;
+    margin: 0 0 1rem;
+    box-shadow: 0 8px 24px rgba(28,26,24,0.12);
+  }
   .section-home-project, .section-home-expertise, .section-home-blog { padding: 5rem 0; }
 }
