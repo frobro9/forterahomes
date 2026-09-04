@@ -225,7 +225,7 @@ if (form) {
     e.preventDefault();
     let valid = true;
 
-    const name = form.querySelector('[name="name"]');
+    const name = form.querySelector('[name="firstName"], [name="name"]');
     const email = form.querySelector('[name="email"]');
 
     if (nameError) nameError.textContent = '';
