@@ -1224,37 +1224,27 @@ ul { list-style: none; }
   margin-top: 1.5rem;
 }
 
-.amenities-categories {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 5rem;
-  row-gap: 3rem;
-  margin-top: 4rem;
+.amenities-list { margin-top: 3.5rem; border-top: 1px solid rgba(255,255,255,0.12); max-width: 900px; }
+.amenities-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
 }
-.amenity-category-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.35rem; }
-.amenity-category-icon { display: flex; color: var(--bronze-light); flex-shrink: 0; }
-.amenity-category-title {
+.amenities-row-icon { flex: 0 0 auto; display: flex; color: var(--bronze-light); }
+.amenities-row-title {
+  flex: 0 0 190px;
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--white);
 }
-.amenity-category-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
-.amenity-category-list li {
-  position: relative;
-  padding-left: 1.15rem;
+.amenities-row-items {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: rgba(255,255,255,0.62);
-}
-.amenity-category-list li::before {
-  content: '';
-  position: absolute;
-  left: 1px; top: 0.5em;
-  width: 5px; height: 5px;
-  background: var(--bronze-light);
-  transform: rotate(45deg);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.6);
 }
 
 /* Process */
@@ -1269,39 +1259,29 @@ ul { list-style: none; }
   color: rgba(255,255,255,0.55);
   margin-top: 1.25rem;
 }
-.process-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-  max-width: 1080px;
-}
-.process-step-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  color: var(--white);
+.process-list { max-width: 780px; border-top: 1px solid rgba(255,255,255,0.12); }
+.process-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.5rem;
+  align-items: baseline;
+  gap: 2.5rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
 }
-.process-step-number {
+.process-row-num {
+  flex: 0 0 auto;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.72rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  color: rgba(255,255,255,0.35);
-  margin-bottom: 0.6rem;
+  color: var(--bronze-light);
 }
-.process-step-title {
+.process-row-title {
   font-family: 'Montserrat', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--white);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
-.process-step-desc {
+.process-row-desc {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.85rem;
   line-height: 1.7;
@@ -1341,7 +1321,8 @@ ul { list-style: none; }
 
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-.register-checklist { list-style: none; margin: 1.75rem 0 0; padding: 0; display: grid; gap: 0.65rem; max-width: 400px; }
+.register-checklist-box { margin-top: 1.75rem; padding: 2rem 2.25rem; background: var(--white); border-radius: 12px; max-width: 440px; }
+.register-checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; max-width: 400px; }
 .register-checklist li {
   position: relative;
   padding-left: 1.15rem;
@@ -2887,8 +2868,10 @@ html:has(.portal-body) { overflow-x: hidden; }
   .neighbourhood-grid { grid-template-columns: 1fr; gap: 3rem; }
   .neighbourhood-inner--split { grid-template-columns: 1fr; gap: 3rem; }
   .map-wrap { min-height: 420px; }
-  .amenities-categories { grid-template-columns: 1fr; row-gap: 2.5rem; }
-  .process-steps { grid-template-columns: 1fr; gap: 3rem; }
+  .amenities-row { flex-wrap: wrap; }
+  .amenities-row-title { flex: 0 0 auto; }
+  .amenities-row-items { flex: 0 0 100%; margin-top: 0.35rem; padding-left: calc(20px + 1.25rem); }
+  .process-row { flex-direction: column; gap: 0.75rem; }
   .offer-grid { grid-template-columns: 1fr; gap: 2rem; }
   .offer-value { border-left: none; border-top: 2px solid var(--bronze-light); padding-left: 0; padding-top: 1.5rem; }
   .first-renters-grid { grid-template-columns: 1fr; gap: 3rem; }
