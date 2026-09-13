@@ -1,0 +1,7 @@
+providerListingId,address,neighborhood,lat,lng,listPrice,lotWidthM,lotDepthM,lotAreaSqm,buildingSqft,yearBuilt,propertyType,status,zoneCode
+MLS-1001,123 Bank St,Centretown,45.4131,-75.6903,850000,15,30,450,1800,1920,Detached,active,N4
+MLS-1002,45 Wellington St W,Hintonburg,45.4023,-75.7275,795000,15,32,480,1650,1935,Detached,active,N4
+MLS-1003,78 Montreal Rd,Vanier,45.4368,-75.6683,550000,12,30,360,1400,1945,Detached,active,N3
+MLS-1004,220 Alta Vista Dr,Alta Vista,45.3831,-75.6584,675000,18,35,630,2100,1962,Detached,active,N2
+MLS-1005,56 First Ave,The Glebe,45.3985,-75.6875,920000,15,30,450,1950,1912,Detached,active,N4
+MLS-1006,10 Greenbank Rd,Barrhaven,45.2914,-75.7466,610000,15,30,450,1750,1998,Detached,active,N2

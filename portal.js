@@ -1,6 +1,7 @@
 /* ============================================================
    FORTERA HOMES — Management Portal
    ============================================================ */
+/* global finderLoaded, initPropertyFinder */
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -158,6 +159,7 @@ function showPage(pageKey) {
   if (pageKey === 'action-items' && !actionItemsLoaded) loadActionItems();
   if (pageKey === 'calendar' && !calendarLoaded) loadCalendar();
   if (pageKey === 'meetings' && !meetingsLoaded) loadMeetings();
+  if (pageKey === 'finder' && !finderLoaded) initPropertyFinder();
 }
 
 navLeaves.forEach((btn) => {

@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/assets/leaflet/leaflet.css">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7X71SV3ET6"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7X71SV3ET6');</script>
   <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -334,10 +335,115 @@
             <h1 class="portal-page-title">Property Finder Tool</h1>
           </div>
         </div>
-        <div class="portal-coming-soon">
-          <p class="portal-coming-soon-label">COMING SOON</p>
-          <h2 class="portal-coming-soon-title">Property Finder Tool is on the way</h2>
-          <p class="portal-coming-soon-desc">This section will help you search and evaluate new acquisition opportunities.</p>
+
+        <div class="finder-subnav">
+          <button type="button" class="finder-subnav-btn active" data-finder-tab="feed">Opportunity Feed</button>
+          <button type="button" class="finder-subnav-btn" data-finder-tab="saved">Saved</button>
+          <button type="button" class="finder-subnav-btn" data-finder-tab="history">History</button>
+          <button type="button" class="finder-subnav-btn" data-finder-tab="settings">Settings</button>
+        </div>
+
+        <!-- Opportunity Feed -->
+        <div class="finder-tab-panel" data-finder-panel="feed">
+          <div id="finderFeedListView">
+            <form class="finder-filter-bar" id="finderFilterForm" novalidate>
+              <input class="portal-field-input" type="number" name="priceMin" placeholder="Min price" min="0">
+              <input class="portal-field-input" type="number" name="priceMax" placeholder="Max price" min="0">
+              <input class="portal-field-input" type="text" name="neighborhood" placeholder="Neighborhood">
+              <input class="portal-field-input" type="number" name="minCapRate" placeholder="Min cap rate %" step="0.1" min="0">
+              <button type="submit" class="portal-btn-outline">Filter</button>
+            </form>
+            <div class="finder-card-list" id="finderCardList"></div>
+            <div class="action-items-empty" id="finderFeedEmpty" hidden>No opportunities match your filters yet.</div>
+          </div>
+
+          <div id="finderDetailView" hidden>
+            <button type="button" class="finder-back-btn" id="finderDetailBackBtn">&larr; Back to feed</button>
+            <div class="finder-detail-header">
+              <h2 class="finder-detail-address" id="finderDetailAddress"></h2>
+              <button type="button" class="finder-save-btn" id="finderDetailSaveBtn">&#9734; Save</button>
+            </div>
+            <div id="finderDetailMap" class="finder-map"></div>
+            <div class="finder-zoning-breakdown" id="finderZoningBreakdown"></div>
+
+            <div class="finder-proforma-grid">
+              <div class="finder-proforma-explorer">
+                <h3 class="finder-proforma-title">What-If Assumptions</h3>
+                <label class="finder-slider-label">Unit count <span id="finderSliderUnitCountVal"></span>
+                  <input type="range" id="finderSliderUnitCount" min="1" max="12" step="1">
+                </label>
+                <label class="finder-slider-label">Stair core area / stair <span id="finderSliderStairSqftVal"></span>
+                  <input type="range" id="finderSliderStairSqft" min="80" max="250" step="5">
+                </label>
+                <label class="finder-slider-label">Construction cost / sqft <span id="finderSliderCostPerSqftVal"></span>
+                  <input type="range" id="finderSliderCostPerSqft" min="150" max="500" step="5">
+                </label>
+                <label class="finder-slider-label">Rent / sqft / month <span id="finderSliderRentVal"></span>
+                  <input type="range" id="finderSliderRent" min="1" max="4" step="0.05">
+                </label>
+                <label class="finder-slider-label">Interest rate <span id="finderSliderInterestRateVal"></span>
+                  <input type="range" id="finderSliderInterestRate" min="3" max="9" step="0.05">
+                </label>
+              </div>
+              <div class="finder-proforma-explorer">
+                <h3 class="finder-proforma-title">Pro Forma</h3>
+                <div class="finder-proforma-output" id="finderProFormaOutput"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved -->
+        <div class="finder-tab-panel" data-finder-panel="saved" hidden>
+          <div class="finder-card-list" id="finderSavedList"></div>
+          <div class="action-items-empty" id="finderSavedEmpty" hidden>No saved properties yet.</div>
+        </div>
+
+        <!-- History -->
+        <div class="finder-tab-panel" data-finder-panel="history" hidden>
+          <label class="finder-history-date-label">Pipeline run date
+            <select class="portal-field-input finder-history-date-select" id="finderHistoryDateSelect"></select>
+          </label>
+          <div class="finder-history-table-wrap">
+            <table class="finder-history-table">
+              <thead>
+                <tr>
+                  <th>Address</th>
+                  <th>Neighborhood</th>
+                  <th>Zone</th>
+                  <th class="align-right">Price</th>
+                  <th class="align-right">Buildable Units</th>
+                  <th class="align-right">Cap Rate</th>
+                  <th class="align-right">Cash-on-Cash ROI</th>
+                </tr>
+              </thead>
+              <tbody id="finderHistoryTableBody"></tbody>
+            </table>
+          </div>
+          <div class="action-items-empty" id="finderHistoryEmpty" hidden>No pipeline runs yet.</div>
+        </div>
+
+        <!-- Settings -->
+        <div class="finder-tab-panel" data-finder-panel="settings" hidden>
+          <form class="finder-settings-form" id="finderSettingsForm" novalidate>
+            <h3 class="finder-settings-heading">Financial Assumptions</h3>
+            <label>Cost per sqft ($)<input class="portal-field-input" type="number" name="costPerSqft" step="1"></label>
+            <label>Soft cost (decimal, e.g. 0.15 = 15%)<input class="portal-field-input" type="number" name="softCostPct" step="0.01"></label>
+            <label>Down payment (decimal)<input class="portal-field-input" type="number" name="downPaymentPct" step="0.01"></label>
+            <label>Interest rate (decimal)<input class="portal-field-input" type="number" name="interestRate" step="0.001"></label>
+            <label>Amortization (years)<input class="portal-field-input" type="number" name="amortizationYears" step="1"></label>
+            <label>Vacancy rate (decimal)<input class="portal-field-input" type="number" name="vacancyRatePct" step="0.01"></label>
+            <label>Opex (decimal, % of GPI)<input class="portal-field-input" type="number" name="opexPctOfGpi" step="0.01"></label>
+
+            <h3 class="finder-settings-heading">Preferences</h3>
+            <label>Min cap rate (decimal)<input class="portal-field-input" type="number" name="minCapRate" step="0.01"></label>
+            <label>Min ROI (decimal)<input class="portal-field-input" type="number" name="minRoi" step="0.01"></label>
+            <label>Price min ($)<input class="portal-field-input" type="number" name="priceMin" step="1000"></label>
+            <label>Price max ($)<input class="portal-field-input" type="number" name="priceMax" step="1000"></label>
+
+            <button type="submit" class="portal-btn">Save Settings</button>
+            <span class="finder-settings-saved-msg" id="finderSettingsSavedMsg" hidden>Saved.</span>
+          </form>
         </div>
       </section>
 
@@ -552,6 +658,10 @@
     </div>
   </div>
 
+  <script src="/assets/leaflet/leaflet.js"></script>
+  <script src="/assets/js/pro-forma.js"></script>
+  <script src="/assets/js/unit-mix.js"></script>
+  <script src="/assets/js/property-finder.js"></script>
   <script src="/portal.js"></script>
 
 </body>
