@@ -7,6 +7,13 @@
       "runtimeArgs": ["-c", "cd /tmp/fortera-site && python3 -m http.server $PORT"],
       "port": 4200,
       "autoPort": true
+    },
+    {
+      "name": "fortera-admin-portal",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler", "pages", "dev", ".", "--port", "$PORT"],
+      "port": 8788,
+      "autoPort": true
     }
   ]
 }

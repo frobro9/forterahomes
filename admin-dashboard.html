@@ -359,26 +359,34 @@
 
           <div id="finderDetailView" hidden>
             <button type="button" class="finder-back-btn" id="finderDetailBackBtn">&larr; Back to feed</button>
-            <div class="finder-detail-grid">
-              <div class="finder-detail-main">
-                <div class="finder-detail-header">
-                  <h2 class="finder-detail-address" id="finderDetailAddress"></h2>
-                  <button type="button" class="finder-save-btn" id="finderDetailSaveBtn">&#9734; Save</button>
-                </div>
-                <div id="finderDetailMap" class="finder-map"></div>
-                <div class="finder-zoning-breakdown" id="finderZoningBreakdown"></div>
-              </div>
+            <div class="finder-detail-header">
+              <h2 class="finder-detail-address" id="finderDetailAddress"></h2>
+              <button type="button" class="finder-save-btn" id="finderDetailSaveBtn">&#9734; Save</button>
+            </div>
+            <div id="finderDetailMap" class="finder-map"></div>
+            <div class="finder-zoning-breakdown" id="finderZoningBreakdown"></div>
+
+            <div class="finder-proforma-grid">
               <div class="finder-proforma-explorer">
-                <h3 class="finder-proforma-title">Pro Forma &mdash; What If?</h3>
+                <h3 class="finder-proforma-title">What-If Assumptions</h3>
                 <label class="finder-slider-label">Unit count <span id="finderSliderUnitCountVal"></span>
                   <input type="range" id="finderSliderUnitCount" min="1" max="12" step="1">
                 </label>
-                <label class="finder-slider-label">Avg unit size (sqft) <span id="finderSliderAvgUnitSqftVal"></span>
-                  <input type="range" id="finderSliderAvgUnitSqft" min="300" max="1400" step="10">
+                <label class="finder-slider-label">Stair core area / stair <span id="finderSliderStairSqftVal"></span>
+                  <input type="range" id="finderSliderStairSqft" min="80" max="250" step="5">
                 </label>
-                <label class="finder-slider-label">Rent ($/sqft/mo) <span id="finderSliderRentVal"></span>
-                  <input type="range" id="finderSliderRent" min="1" max="5" step="0.05">
+                <label class="finder-slider-label">Construction cost / sqft <span id="finderSliderCostPerSqftVal"></span>
+                  <input type="range" id="finderSliderCostPerSqft" min="150" max="500" step="5">
                 </label>
+                <label class="finder-slider-label">Rent / sqft / month <span id="finderSliderRentVal"></span>
+                  <input type="range" id="finderSliderRent" min="1" max="4" step="0.05">
+                </label>
+                <label class="finder-slider-label">Interest rate <span id="finderSliderInterestRateVal"></span>
+                  <input type="range" id="finderSliderInterestRate" min="3" max="9" step="0.05">
+                </label>
+              </div>
+              <div class="finder-proforma-explorer">
+                <h3 class="finder-proforma-title">Pro Forma</h3>
                 <div class="finder-proforma-output" id="finderProFormaOutput"></div>
               </div>
             </div>
@@ -393,7 +401,26 @@
 
         <!-- History -->
         <div class="finder-tab-panel" data-finder-panel="history" hidden>
-          <ul class="finder-history-list" id="finderHistoryList"></ul>
+          <label class="finder-history-date-label">Pipeline run date
+            <select class="portal-field-input finder-history-date-select" id="finderHistoryDateSelect"></select>
+          </label>
+          <div class="finder-history-table-wrap">
+            <table class="finder-history-table">
+              <thead>
+                <tr>
+                  <th>Address</th>
+                  <th>Neighborhood</th>
+                  <th>Zone</th>
+                  <th class="align-right">Price</th>
+                  <th class="align-right">Buildable Units</th>
+                  <th class="align-right">Cap Rate</th>
+                  <th class="align-right">Cash-on-Cash ROI</th>
+                </tr>
+              </thead>
+              <tbody id="finderHistoryTableBody"></tbody>
+            </table>
+          </div>
+          <div class="action-items-empty" id="finderHistoryEmpty" hidden>No pipeline runs yet.</div>
         </div>
 
         <!-- Settings -->
@@ -633,6 +660,7 @@
 
   <script src="/assets/leaflet/leaflet.js"></script>
   <script src="/assets/js/pro-forma.js"></script>
+  <script src="/assets/js/unit-mix.js"></script>
   <script src="/assets/js/property-finder.js"></script>
   <script src="/portal.js"></script>
 

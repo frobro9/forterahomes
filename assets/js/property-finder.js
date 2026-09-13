@@ -34,12 +34,16 @@ const finderDetailSaveBtn = document.getElementById('finderDetailSaveBtn');
 const finderZoningBreakdown = document.getElementById('finderZoningBreakdown');
 const finderProFormaOutput = document.getElementById('finderProFormaOutput');
 const finderSliderUnitCount = document.getElementById('finderSliderUnitCount');
-const finderSliderAvgUnitSqft = document.getElementById('finderSliderAvgUnitSqft');
+const finderSliderStairSqft = document.getElementById('finderSliderStairSqft');
+const finderSliderCostPerSqft = document.getElementById('finderSliderCostPerSqft');
 const finderSliderRent = document.getElementById('finderSliderRent');
+const finderSliderInterestRate = document.getElementById('finderSliderInterestRate');
 
 const finderSavedList = document.getElementById('finderSavedList');
 const finderSavedEmpty = document.getElementById('finderSavedEmpty');
-const finderHistoryList = document.getElementById('finderHistoryList');
+const finderHistoryDateSelect = document.getElementById('finderHistoryDateSelect');
+const finderHistoryTableBody = document.getElementById('finderHistoryTableBody');
+const finderHistoryEmpty = document.getElementById('finderHistoryEmpty');
 const finderSettingsForm = document.getElementById('finderSettingsForm');
 const finderSettingsSavedMsg = document.getElementById('finderSettingsSavedMsg');
 
@@ -137,9 +141,11 @@ function initPropertyFinder() {
 
   finderDetailBackBtn.addEventListener('click', closeFinderDetail);
 
-  [finderSliderUnitCount, finderSliderAvgUnitSqft, finderSliderRent].forEach((slider) => {
-    slider.addEventListener('input', renderFinderProForma);
-  });
+  [finderSliderUnitCount, finderSliderStairSqft, finderSliderCostPerSqft, finderSliderRent, finderSliderInterestRate].forEach(
+    (slider) => {
+      slider.addEventListener('input', renderFinderProForma);
+    }
+  );
 
   finderSettingsForm.addEventListener('submit', submitFinderSettings);
 
@@ -246,51 +252,104 @@ function renderFinderMap({ listing, run }) {
   setTimeout(() => finderMapInstance.invalidateSize(), 50);
 }
 
-function seedFinderProFormaSliders({ run }) {
-  const unitCount = (run && run.buildable_units) || 1;
-  const avgUnitSqft = run && run.buildable_units ? Math.round(run.buildable_sqft / run.buildable_units) : 800;
-  const rentPerSqft =
-    run && run.projectedRentRoll && run.projectedRentRoll.perUnitMonthlyRent && avgUnitSqft
-      ? Number((run.projectedRentRoll.perUnitMonthlyRent / avgUnitSqft).toFixed(2))
-      : 2.5;
+// buildableSqft = buildableFootprintSqm * storeys * SQM_TO_SQFT (see
+// mls-scraper's computeBuildablePotential) — storeys itself isn't
+// persisted in pf_analysis_runs (only the fields that feed the pro forma
+// are), so it's re-derived from the two areas that are.
+function deriveStoreys(run) {
+  if (!run || !run.buildable_footprint_sqm) return 1;
+  const storeys = Math.round(run.buildable_sqft / (run.buildable_footprint_sqm * window.UnitMix.SQM_TO_SQFT));
+  return Math.max(storeys, 1);
+}
 
-  finderSliderUnitCount.value = unitCount;
-  finderSliderAvgUnitSqft.value = avgUnitSqft;
+function seedFinderProFormaSliders({ run, assumptions }) {
+  const maxUnitCount = Math.max((run && run.buildable_units) || 1, 1);
+  finderSliderUnitCount.max = maxUnitCount;
+  finderSliderUnitCount.value = maxUnitCount;
+
+  const defaultStairSqft = window.UnitMix.STAIR_CORE_AREA_SQM * window.UnitMix.SQM_TO_SQFT;
+  finderSliderStairSqft.value = defaultStairSqft;
+  finderSliderCostPerSqft.value = assumptions.cost_per_sqft;
+  finderSliderInterestRate.value = assumptions.interest_rate * 100;
+
+  const unitMix = run
+    ? window.UnitMix.computeUnitMix({
+        storeys: deriveStoreys(run),
+        buildableSqft: run.buildable_sqft,
+        unitCount: maxUnitCount,
+        stairCoreAreaSqftPerStair: defaultStairSqft,
+      })
+    : { avgUnitSqft: 800 };
+  const rentPerSqft =
+    run && run.projectedRentRoll && run.projectedRentRoll.perUnitMonthlyRent && unitMix.avgUnitSqft
+      ? Number((run.projectedRentRoll.perUnitMonthlyRent / unitMix.avgUnitSqft).toFixed(2))
+      : 2.5;
   finderSliderRent.value = rentPerSqft;
+}
+
+function pfRow(label, value, strong) {
+  const valueClass = strong ? ' class="finder-proforma-strong"' : '';
+  return `<div class="finder-proforma-row"><span>${label}</span><span${valueClass}>${value}</span></div>`;
 }
 
 function renderFinderProForma() {
   if (!finderDetailListing) return;
   const { listing, run, assumptions } = finderDetailListing;
 
-  const input = {
+  const unitCount = Number(finderSliderUnitCount.value);
+  const stairCoreAreaSqftPerStair = Number(finderSliderStairSqft.value);
+  const costPerSqft = Number(finderSliderCostPerSqft.value);
+  const monthlyRentPerSqft = Number(finderSliderRent.value);
+  const interestRatePct = Number(finderSliderInterestRate.value);
+
+  const buildableSqft = (run && run.buildable_sqft) || 0;
+  const unitMix = window.UnitMix.computeUnitMix({
+    storeys: deriveStoreys(run),
+    buildableSqft,
+    unitCount,
+    stairCoreAreaSqftPerStair,
+  });
+
+  const result = window.ProForma.computeProForma({
     listPrice: listing.list_price,
-    buildableSqft: (run && run.buildable_sqft) || 0,
-    unitCount: Number(finderSliderUnitCount.value),
-    avgUnitSqft: Number(finderSliderAvgUnitSqft.value),
-    monthlyRentPerSqft: Number(finderSliderRent.value),
+    buildableSqft,
+    unitCount,
+    avgUnitSqft: unitMix.avgUnitSqft,
+    monthlyRentPerSqft,
     assumptions: {
-      costPerSqft: assumptions.cost_per_sqft,
+      costPerSqft,
       softCostPct: assumptions.soft_cost_pct,
       downPaymentPct: assumptions.down_payment_pct,
-      interestRate: assumptions.interest_rate,
+      interestRate: interestRatePct / 100,
       amortizationYears: assumptions.amortization_years,
       vacancyRatePct: assumptions.vacancy_rate_pct,
       opexPctOfGpi: assumptions.opex_pct_of_gpi,
     },
-  };
+  });
 
-  const result = window.ProForma.computeProForma(input);
-
-  document.getElementById('finderSliderUnitCountVal').textContent = input.unitCount;
-  document.getElementById('finderSliderAvgUnitSqftVal').textContent = fmtSqft(input.avgUnitSqft);
-  document.getElementById('finderSliderRentVal').textContent = `$${input.monthlyRentPerSqft.toFixed(2)}`;
+  document.getElementById('finderSliderUnitCountVal').textContent = `${unitCount} unit${unitCount === 1 ? '' : 's'}`;
+  document.getElementById('finderSliderStairSqftVal').textContent = fmtSqft(stairCoreAreaSqftPerStair);
+  document.getElementById('finderSliderCostPerSqftVal').textContent = fmtMoney(costPerSqft);
+  document.getElementById('finderSliderRentVal').textContent = `$${monthlyRentPerSqft.toFixed(2)}`;
+  document.getElementById('finderSliderInterestRateVal').textContent = `${interestRatePct.toFixed(2)}%`;
 
   finderProFormaOutput.innerHTML = `
-    <div class="finder-proforma-row"><span>Total Project Cost</span><strong>${fmtMoney(result.totalProjectCost)}</strong></div>
-    <div class="finder-proforma-row"><span>NOI</span><strong>${fmtMoney(result.noi)}</strong></div>
-    <div class="finder-proforma-row"><span>Cap Rate</span><strong>${fmtPercent(result.capRate)}</strong></div>
-    <div class="finder-proforma-row"><span>Cash-on-Cash ROI</span><strong>${fmtPercent(result.cashOnCashRoi)}</strong></div>
+    ${pfRow('Units / floor', unitMix.unitsPerFloor)}
+    ${pfRow('Avg unit size (net)', fmtSqft(unitMix.avgUnitSqft))}
+    ${pfRow('Stair core area (total)', fmtSqft(unitMix.stairCoreAreaSqft))}
+    ${pfRow('Corridor area (total)', fmtSqft(unitMix.corridorAreaSqft))}
+    <div class="finder-proforma-divider"></div>
+    ${pfRow('Construction cost', fmtMoney(result.constructionCost))}
+    ${pfRow('Soft costs', fmtMoney(result.softCosts))}
+    ${pfRow('Total project cost', fmtMoney(result.totalProjectCost), true)}
+    ${pfRow('Per-unit monthly rent', fmtMoney(result.perUnitMonthlyRent))}
+    ${pfRow('Gross potential income', fmtMoney(result.grossPotentialIncomeAnnual))}
+    ${pfRow('Effective gross income', fmtMoney(result.effectiveGrossIncomeAnnual))}
+    ${pfRow('Operating expenses', fmtMoney(result.operatingExpensesAnnual))}
+    ${pfRow('NOI', fmtMoney(result.noi), true)}
+    ${pfRow('Cap rate', fmtPercent(result.capRate), true)}
+    ${pfRow('Annual debt service', fmtMoney(result.annualDebtService))}
+    ${pfRow('Cash-on-cash ROI', fmtPercent(result.cashOnCashRoi), true)}
   `;
 }
 
@@ -351,33 +410,54 @@ finderSavedList.addEventListener('click', (e) => {
   }
 });
 
-/* ---- History tab --------------------------------------------------- */
-async function loadFinderHistory() {
+/* ---- History tab ---------------------------------------------------
+   A date-selectable table of every listing analyzed on a given pipeline
+   run day (mirrors mls-scraper's history page: dates bucketed by calendar
+   day, one row per listing showing its latest result that day). */
+async function loadFinderHistory(date) {
   finderHistoryLoaded = true;
-  let data = { runs: [] };
+  let data = { dates: [], selectedDate: null, runs: [] };
   try {
-    const res = await fetch('/api/property-finder/history');
+    const url = date ? `/api/property-finder/history?date=${encodeURIComponent(date)}` : '/api/property-finder/history';
+    const res = await fetch(url);
     if (res.ok) data = await res.json();
   } catch {
     // leave empty
   }
-  finderHistoryList.innerHTML = data.runs
+
+  finderHistoryDateSelect.innerHTML = data.dates
+    .map((d) => `<option value="${d}" ${d === data.selectedDate ? 'selected' : ''}>${d}</option>`)
+    .join('');
+
+  finderHistoryEmpty.hidden = data.dates.length > 0;
+  finderHistoryDateSelect.closest('.finder-history-date-label').hidden = data.dates.length === 0;
+  finderHistoryTableBody.closest('.finder-history-table-wrap').hidden = data.dates.length === 0;
+
+  finderHistoryTableBody.innerHTML = data.runs
     .map(
       (run) => `
-    <li class="finder-history-row" data-run-date="${run.runDate}">
-      <span>${new Date(run.runDate).toLocaleString('en-CA')}</span>
-      <span>${run.listingCount} listing${run.listingCount === 1 ? '' : 's'}</span>
-      <span>${run.meetsThresholdCount} meets threshold</span>
-    </li>`
+    <tr data-id="${run.id}" class="${run.meetsThreshold ? 'meets-threshold' : ''}">
+      <td class="finder-history-address">${escapeHtml(run.address)}</td>
+      <td>${escapeHtml(run.neighborhood || '—')}</td>
+      <td>${escapeHtml(run.zoneCode || '—')}</td>
+      <td class="align-right">${fmtMoney(run.listPrice)}</td>
+      <td class="align-right">${run.buildableUnits}</td>
+      <td class="align-right">${fmtPercent(run.capRate)}</td>
+      <td class="align-right">${fmtPercent(run.cashOnCashRoi)}</td>
+    </tr>`
     )
     .join('');
 }
 
-finderHistoryList.addEventListener('click', (e) => {
-  const row = e.target.closest('.finder-history-row');
+finderHistoryDateSelect.addEventListener('change', () => {
+  loadFinderHistory(finderHistoryDateSelect.value);
+});
+
+finderHistoryTableBody.addEventListener('click', (e) => {
+  const row = e.target.closest('tr[data-id]');
   if (!row) return;
   showFinderTab('feed');
-  loadFinderFeed({ runDate: row.dataset.runDate });
+  openFinderDetail(Number(row.dataset.id));
 });
 
 /* ---- Settings tab --------------------------------------------------- */
