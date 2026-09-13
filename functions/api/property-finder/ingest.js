@@ -1,6 +1,8 @@
 import { badRequest } from '../../_lib/http.js';
+import { verifyIngestKey, unauthorized } from '../../_lib/property-finder-auth.js';
 
-// Called by mls-scraper's GitHub Actions ingest job after each pipeline run —
+// Called by forterahomes' own standalone Property Finder ingest pipeline
+// (ingest/ + .github/workflows/property-finder-ingest.yml) after each run —
 // not a logged-in portal user, so this does NOT go through the cookie-session
 // middleware (it's deliberately absent from PROTECTED_API_PREFIXES). Auth is
 // a single shared secret header instead, same pattern as
@@ -8,10 +10,7 @@ import { badRequest } from '../../_lib/http.js';
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  const expectedKey = env.PROPERTY_FINDER_INGEST_KEY;
-  if (!expectedKey || request.headers.get('x-property-finder-ingest-key') !== expectedKey) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  if (!verifyIngestKey(request, env)) return unauthorized();
 
   let body;
   try {

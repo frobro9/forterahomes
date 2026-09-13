@@ -29,12 +29,14 @@ function parseJson(value) {
   }
 }
 
-export async function onRequestGet(context) {
-  const { env } = context;
+// Shared with functions/api/property-finder/pipeline/settings.js (the
+// ingest-key-authenticated route the standalone pipeline reads from) so
+// both callers get the identical shape from one place.
+export async function buildSettingsPayload(env) {
   const prefs = await env.DB.prepare('SELECT * FROM pf_user_preferences WHERE id = 1').first();
   const assumptions = await env.DB.prepare('SELECT * FROM pf_financial_assumptions WHERE id = 1').first();
 
-  return Response.json({
+  return {
     preferences: {
       targetNeighborhoods: parseJson(prefs.target_neighborhoods_json),
       minLotSize: prefs.min_lot_size,
@@ -53,7 +55,11 @@ export async function onRequestGet(context) {
       vacancyRatePct: assumptions.vacancy_rate_pct,
       opexPctOfGpi: assumptions.opex_pct_of_gpi,
     },
-  });
+  };
+}
+
+export async function onRequestGet(context) {
+  return Response.json(await buildSettingsPayload(context.env));
 }
 
 function buildUpdate(body, fieldMap) {
