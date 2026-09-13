@@ -1,0 +1,26 @@
+{
+  "name": "forterahomes-property-finder-ingest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone OneHome scrape -> Claude extraction -> Ottawa zoning/GIS match -> pro forma pipeline for forterahomes' Property Finder tab. Runs only in GitHub Actions (Node + Playwright); not part of the Cloudflare Pages Functions build. Ported from mfrohar/mls-scraper — no runtime dependency on that repo.",
+  "scripts": {
+    "ingest": "tsx scripts/runIngest.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.120.0",
+    "cheerio": "^1.2.0",
+    "imapflow": "^1.7.0",
+    "mailparser": "^3.9.15",
+    "playwright": "^1.62.1"
+  },
+  "devDependencies": {
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^20",
+    "tsx": "^4.23.12",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}
