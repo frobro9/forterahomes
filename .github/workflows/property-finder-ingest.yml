@@ -1,0 +1,37 @@
+name: Property Finder Ingest
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ingest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - run: npx playwright install --with-deps chromium
+
+      - run: npx tsx scripts/runIngest.ts
+        env:
+          PROPERTY_FINDER_BASE_URL: ${{ secrets.PROPERTY_FINDER_BASE_URL }}
+          PROPERTY_FINDER_INGEST_KEY: ${{ secrets.PROPERTY_FINDER_INGEST_KEY }}
+          USE_LIVE_GIS: "true"
+          LISTINGS_PROVIDER: email
+          EMAIL_IMAP_HOST: imap.gmail.com
+          EMAIL_IMAP_PORT: "993"
+          EMAIL_IMAP_SECURE: "true"
+          EMAIL_IMAP_USER: ${{ secrets.EMAIL_IMAP_USER }}
+          EMAIL_IMAP_PASSWORD: ${{ secrets.EMAIL_IMAP_PASSWORD }}
+          EMAIL_FROM_FILTER: ${{ secrets.EMAIL_FROM_FILTER }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
