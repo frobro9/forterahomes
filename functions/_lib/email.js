@@ -50,6 +50,39 @@ export function sendScreeningInviteEmail(env, applicant, token) {
   });
 }
 
+// Notifies staff the moment a new inquiry lands, so they don't have to
+// remember to check the portal. Recipient is configurable via
+// INQUIRY_NOTIFICATION_EMAIL (Cloudflare Pages dashboard); falls back to the
+// public contact address already shown on register.html.
+export function sendNewInquiryNotification(env, applicant) {
+  const to = env.INQUIRY_NOTIFICATION_EMAIL || 'admin@forterahomes.ca';
+  const portalLink = siteUrl(env, '/admin-dashboard#pm-applicants');
+
+  const rows = [
+    ['Name', applicant.name],
+    ['Email', applicant.email],
+    ['Phone', applicant.phone],
+    ['Preferred Unit', applicant.layout],
+    ['Occupants', applicant.occupants],
+    ['Pets', applicant.hasPets ? applicant.petsDetails || 'Yes' : 'No'],
+    ['Desired Move-In', applicant.desiredMoveIn],
+    ['Employment', applicant.employmentStatus],
+    ['Message', applicant.message],
+  ].filter(([, value]) => value !== null && value !== undefined && value !== '');
+
+  return sendEmail(env, {
+    to,
+    subject: `New rental inquiry: ${applicant.name}`,
+    html: `
+      <p>A new rental inquiry was just submitted:</p>
+      <table cellpadding="4" cellspacing="0">
+        ${rows.map(([label, value]) => `<tr><td><strong>${escapeHtml(label)}</strong></td><td>${escapeHtml(String(value))}</td></tr>`).join('')}
+      </table>
+      <p><a href="${portalLink}">Review in the Property Management Portal</a></p>
+    `,
+  });
+}
+
 export function sendLeaseEmail(env, applicant) {
   return sendEmail(env, {
     to: applicant.email,

@@ -3,10 +3,13 @@ compatibility_date = "2026-06-01"
 pages_build_output_dir = "."
 
 # D1 binding only — secrets (SESSION_SECRET, ADMIN_USERS, RESEND_API_KEY,
-# RESEND_FROM_EMAIL, SITE_BASE_URL, PROPERTY_FINDER_INGEST_KEY) stay in the
-# Cloudflare Pages dashboard, never here. RESEND_API_KEY/RESEND_FROM_EMAIL
-# power the applicant screening-invite and lease emails (see
+# RESEND_FROM_EMAIL, SITE_BASE_URL, INQUIRY_NOTIFICATION_EMAIL,
+# PROPERTY_FINDER_INGEST_KEY) stay in the Cloudflare Pages dashboard, never
+# here. RESEND_API_KEY/RESEND_FROM_EMAIL power the applicant
+# screening-invite, lease, and new-inquiry-notification emails (see
 # functions/_lib/email.js); SITE_BASE_URL builds the links in those emails.
+# INQUIRY_NOTIFICATION_EMAIL is who gets notified of new inquiries — falls
+# back to admin@forterahomes.ca if unset.
 [[d1_databases]]
 binding = "DB"
 database_name = "forterahomes-portal"

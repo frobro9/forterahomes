@@ -1,4 +1,5 @@
 import { badRequest } from '../_lib/http.js';
+import { sendNewInquiryNotification } from '../_lib/email.js';
 
 // Public endpoint — the rental inquiry form on register.html posts here
 // directly (no logged-in session), so this is deliberately absent from
@@ -37,6 +38,11 @@ export async function onRequestPost(context) {
   )
     .bind(name, email, phone, layout, message, occupants, hasPets, petsDetails, desiredMoveIn, employmentStatus)
     .first();
+
+  await sendNewInquiryNotification(env, {
+    name, email, phone, layout, message, occupants,
+    hasPets: Boolean(hasPets), petsDetails, desiredMoveIn, employmentStatus,
+  });
 
   return Response.json({ applicant: row }, { status: 201 });
 }
