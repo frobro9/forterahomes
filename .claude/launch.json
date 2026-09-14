@@ -10,8 +10,8 @@
     },
     {
       "name": "fortera-admin-portal",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["wrangler", "pages", "dev", ".", "--port", "$PORT"],
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "npx wrangler pages dev . --port $PORT"],
       "port": 8788,
       "autoPort": true
     }

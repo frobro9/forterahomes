@@ -46,7 +46,16 @@
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="meetings">Team Meetings</button>
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="news">News<span class="portal-nav-badge" id="newsNavBadge" hidden></span></button>
           <button type="button" class="portal-nav-item portal-nav-leaf" data-page="finder">Property Finder Tool</button>
-          <button type="button" class="portal-nav-item portal-nav-leaf" data-page="pm-portal">Property Management Portal</button>
+
+          <div class="portal-nav-group">
+            <button type="button" class="portal-nav-item portal-nav-parent" data-children-target="pm-portal" aria-expanded="true">
+              <span>Property Management Portal</span>
+              <span class="portal-nav-parent-chevron" aria-hidden="true">&#8250;</span>
+            </button>
+            <div class="portal-nav-children is-open" data-children="pm-portal">
+              <button type="button" class="portal-nav-item portal-nav-leaf" data-page="pm-applicants">Applicants<span class="portal-nav-badge" id="applicantsNavBadge" hidden></span></button>
+            </div>
+          </div>
         </nav>
 
         <div class="portal-sidebar-footer">
@@ -447,19 +456,23 @@
         </div>
       </section>
 
-      <!-- Property Management Portal -->
-      <section class="portal-page" data-page="pm-portal">
+      <!-- Property Management Portal: Applicants -->
+      <section class="portal-page" data-page="pm-applicants">
         <div class="portal-page-header">
           <div>
-            <span class="portal-page-label">TOOLS</span>
-            <h1 class="portal-page-title">Property Management Portal</h1>
+            <span class="portal-page-label">PROPERTY MANAGEMENT PORTAL</span>
+            <h1 class="portal-page-title">Applicants</h1>
           </div>
         </div>
-        <div class="portal-coming-soon">
-          <p class="portal-coming-soon-label">COMING SOON</p>
-          <h2 class="portal-coming-soon-title">Property Management Portal is on the way</h2>
-          <p class="portal-coming-soon-desc">This section will handle day-to-day management of completed rental properties.</p>
+
+        <div class="action-items-controls">
+          <div class="action-items-tabs">
+            <button type="button" class="action-items-sort-btn active" data-applicants-tab="active">Active</button>
+            <button type="button" class="action-items-sort-btn" data-applicants-tab="archived">Declined / Leased</button>
+          </div>
         </div>
+
+        <ul class="action-items-list applicants-list" id="applicantsList"></ul>
       </section>
 
     </main>
@@ -654,6 +667,36 @@
       <div class="portal-modal-actions">
         <button type="button" class="portal-btn-danger" id="meetingViewDeleteBtn" hidden>Delete</button>
         <button type="button" class="portal-btn-outline" id="meetingViewClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applicant detail -->
+  <div class="portal-modal" id="applicantModal" hidden>
+    <div class="portal-modal-card applicant-detail-card">
+      <h3 class="portal-modal-title" id="applicantModalName"></h3>
+      <p class="applicant-detail-status" id="applicantModalStatus"></p>
+
+      <div class="applicant-detail-grid" id="applicantModalGrid"></div>
+
+      <div class="applicant-detail-section" id="applicantModalScreeningSection" hidden>
+        <h4 class="applicant-detail-section-title">Screening Form</h4>
+        <div class="applicant-detail-grid" id="applicantModalScreeningGrid"></div>
+      </div>
+
+      <div class="portal-modal-field">
+        <label for="applicantModalNotes">Internal Notes</label>
+        <textarea class="portal-field-input" id="applicantModalNotes" rows="3" placeholder="Notes for the team…"></textarea>
+      </div>
+
+      <p class="portal-modal-error" id="applicantModalError" role="alert"></p>
+
+      <div class="portal-modal-actions applicant-detail-actions">
+        <button type="button" class="portal-btn-outline" id="applicantModalClose">Close</button>
+        <button type="button" class="portal-btn-outline" id="applicantModalSaveNotes">Save Notes</button>
+        <button type="button" class="portal-btn-danger" id="applicantModalDecline" hidden>Decline</button>
+        <button type="button" class="portal-btn" id="applicantModalMoveForward" hidden>Move Forward</button>
+        <button type="button" class="portal-btn" id="applicantModalPursue" hidden>Pursue &amp; Send Lease</button>
       </div>
     </div>
   </div>

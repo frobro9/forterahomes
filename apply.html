@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="assets/favicon1.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Complete Your Application | Fortera Homes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav id="nav" class="nav nav--light">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="Fortera Homes">FORTERA</a>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <p class="section-label">RENTAL APPLICATION</p>
+      <h1 class="section-h2" id="applyHeading">Complete Your Application</h1>
+      <p class="page-hero-desc" id="applyIntro">Loading your application&hellip;</p>
+    </div>
+  </section>
+
+  <section class="section-register section-register--light">
+    <div class="apply-form-container">
+      <div class="register-form-wrap register-form-wrap--card" id="applyFormWrap" hidden>
+        <form id="applyForm" novalidate>
+          <p class="form-error" id="applyFormError" style="margin-bottom:1rem;"></p>
+          <div class="form-field">
+            <label for="applyReferences">REFERENCES</label>
+            <textarea id="applyReferences" name="references" rows="3" placeholder="Name, relationship, and contact info for 1&ndash;2 references"></textarea>
+          </div>
+          <div class="form-field">
+            <label for="applyIncome">INCOME &amp; EMPLOYMENT</label>
+            <textarea id="applyIncome" name="incomeNotes" rows="3" placeholder="Employer, position, and approximate annual income"></textarea>
+          </div>
+          <div class="form-field">
+            <label for="applyRentalHistory">RENTAL HISTORY</label>
+            <textarea id="applyRentalHistory" name="rentalHistory" rows="3" placeholder="Current/previous address, landlord name and contact, length of tenancy"></textarea>
+          </div>
+          <button type="submit" class="form-submit">SUBMIT APPLICATION</button>
+          <p class="form-privacy">Our team may follow up for supporting documents (credit check, proof of income) before a final decision.</p>
+        </form>
+        <div id="applyFormSuccess" class="form-success"></div>
+      </div>
+      <div class="apply-status-message" id="applyStatusMessage" hidden></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-bar">
+        <span>&copy; 2026 Fortera Homes. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      const heading = document.getElementById('applyHeading');
+      const intro = document.getElementById('applyIntro');
+      const formWrap = document.getElementById('applyFormWrap');
+      const statusMessage = document.getElementById('applyStatusMessage');
+      const form = document.getElementById('applyForm');
+      const formError = document.getElementById('applyFormError');
+      const formSuccess = document.getElementById('applyFormSuccess');
+
+      function showStatus(message) {
+        intro.textContent = '';
+        statusMessage.textContent = message;
+        statusMessage.hidden = false;
+      }
+
+      if (!token) {
+        showStatus('This link is missing an application token. Please use the link from your email.');
+        return;
+      }
+
+      fetch(`/api/apply/${encodeURIComponent(token)}`)
+        .then((res) => {
+          if (!res.ok) throw new Error('invalid');
+          return res.json();
+        })
+        .then((data) => {
+          heading.textContent = `Welcome, ${data.name.split(' ')[0]}`;
+          intro.textContent = 'Please complete the fields below so we can review your application.';
+          formWrap.hidden = false;
+        })
+        .catch(() => {
+          showStatus('This link is invalid or has expired. Please contact us for a new link.');
+        });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        formError.textContent = '';
+
+        const data = new FormData(form);
+        const body = {
+          references: data.get('references') || '',
+          incomeNotes: data.get('incomeNotes') || '',
+          rentalHistory: data.get('rentalHistory') || '',
+        };
+
+        if (!body.references.trim() || !body.incomeNotes.trim() || !body.rentalHistory.trim()) {
+          formError.textContent = 'Please fill out all three fields.';
+          return;
+        }
+
+        const submitBtn = form.querySelector('.form-submit');
+        submitBtn.textContent = 'SUBMITTING…';
+        submitBtn.disabled = true;
+
+        try {
+          const res = await fetch(`/api/apply/${encodeURIComponent(token)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          });
+          if (!res.ok) throw new Error('server error');
+
+          form.style.display = 'none';
+          formSuccess.style.display = 'block';
+          formSuccess.textContent = 'Thank you — your application has been submitted. Our team will be in touch soon.';
+        } catch {
+          submitBtn.textContent = 'SUBMIT APPLICATION';
+          submitBtn.disabled = false;
+          formError.textContent = 'Something went wrong. Please try again or contact us directly.';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

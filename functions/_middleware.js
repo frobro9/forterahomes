@@ -3,6 +3,7 @@ import { verifySessionToken, SESSION_COOKIE } from './_lib/session.js';
 const PROTECTED_PAGES = new Set(['/admin-dashboard', '/admin-dashboard.html', '/admin-dashboard/']);
 const PROTECTED_API_PREFIXES = [
   '/api/tasks', '/api/events', '/api/meetings', '/api/news', '/api/me',
+  '/api/applicants',
   // Property Finder reads/writes for logged-in portal users. The ingest
   // endpoint (/api/property-finder/ingest) is deliberately NOT listed here —
   // its caller is the mls-scraper GitHub Actions job, not a browser session,
@@ -12,6 +13,10 @@ const PROTECTED_API_PREFIXES = [
   '/api/property-finder/history',
   '/api/property-finder/settings',
   '/api/property-finder/saved',
+  // /api/inquiries (register.html's form) and /api/apply/[token] (the
+  // emailed screening link) are deliberately NOT listed here — both are
+  // public, unauthenticated endpoints for people who aren't logged-in
+  // portal users. See functions/api/inquiries.js and functions/api/apply/[token].js.
 ];
 
 function getCookie(request, name) {

@@ -2,8 +2,11 @@ name = "forterahomes"
 compatibility_date = "2026-06-01"
 pages_build_output_dir = "."
 
-# D1 binding only — secrets (SESSION_SECRET, ADMIN_USERS) stay in the
-# Cloudflare Pages dashboard, never here.
+# D1 binding only — secrets (SESSION_SECRET, ADMIN_USERS, RESEND_API_KEY,
+# RESEND_FROM_EMAIL, SITE_BASE_URL, PROPERTY_FINDER_INGEST_KEY) stay in the
+# Cloudflare Pages dashboard, never here. RESEND_API_KEY/RESEND_FROM_EMAIL
+# power the applicant screening-invite and lease emails (see
+# functions/_lib/email.js); SITE_BASE_URL builds the links in those emails.
 [[d1_databases]]
 binding = "DB"
 database_name = "forterahomes-portal"

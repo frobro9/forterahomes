@@ -90,6 +90,37 @@
             </select>
           </div>
           <div class="form-field">
+            <label for="foccupants">NUMBER OF OCCUPANTS</label>
+            <input type="number" id="foccupants" name="occupants" min="1" max="20" placeholder="e.g. 2">
+          </div>
+          <div class="form-field">
+            <label for="fpets">DO YOU HAVE PETS?</label>
+            <select id="fpets" name="pets">
+              <option value="no" selected>No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+          <div class="form-field" id="petsDetailsField" hidden>
+            <label for="fpetsDetails">TELL US ABOUT YOUR PET(S)</label>
+            <input type="text" id="fpetsDetails" name="petsDetails" placeholder="e.g. 1 cat">
+          </div>
+          <div class="form-field">
+            <label for="fmoveIn">DESIRED MOVE-IN DATE</label>
+            <input type="date" id="fmoveIn" name="desiredMoveIn">
+          </div>
+          <div class="form-field">
+            <label for="femployment">EMPLOYMENT STATUS</label>
+            <select id="femployment" name="employmentStatus">
+              <option value="" disabled selected>Select an option</option>
+              <option value="employed-full-time">Employed &mdash; Full-time</option>
+              <option value="employed-part-time">Employed &mdash; Part-time</option>
+              <option value="self-employed">Self-employed</option>
+              <option value="student">Student</option>
+              <option value="retired">Retired</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-field">
             <label for="fmessage">MESSAGE</label>
             <textarea id="fmessage" name="message" rows="3" placeholder="Any questions or notes…"></textarea>
           </div>
