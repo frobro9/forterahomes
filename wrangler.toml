@@ -2,8 +2,20 @@ name = "forterahomes"
 compatibility_date = "2026-06-01"
 pages_build_output_dir = "."
 
-# D1 binding only — secrets (SESSION_SECRET, ADMIN_USERS) stay in the
+# This project's non-secret env vars are managed here (Cloudflare Pages only
+# allows adding Secrets via its dashboard for a wrangler.toml-managed
+# project — plain vars have to live in code). Actual secrets (SESSION_SECRET,
+# ADMIN_USERS, RESEND_API_KEY, PROPERTY_FINDER_INGEST_KEY) stay in the
 # Cloudflare Pages dashboard, never here.
+[vars]
+# Builds the links sent in applicant emails (see functions/_lib/email.js).
+SITE_BASE_URL = "https://forterahomes.ca"
+# "From" address for applicant screening-invite/lease emails and the
+# new-inquiry staff notification. Domain must be verified in Resend.
+RESEND_FROM_EMAIL = "Fortera Homes <leasing@forterahomes.ca>"
+# Who gets emailed when a new inquiry comes in (functions/api/inquiries.js).
+INQUIRY_NOTIFICATION_EMAIL = "leasing@forterahomes.ca"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "forterahomes-portal"

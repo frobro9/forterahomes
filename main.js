@@ -220,6 +220,14 @@ const formSuccess = document.getElementById('formSuccess');
 const nameError = document.getElementById('nameError');
 const emailError = document.getElementById('emailError');
 
+const petsSelect = document.getElementById('fpets');
+const petsDetailsField = document.getElementById('petsDetailsField');
+if (petsSelect && petsDetailsField) {
+  petsSelect.addEventListener('change', () => {
+    petsDetailsField.hidden = petsSelect.value !== 'yes';
+  });
+}
+
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -247,12 +255,26 @@ if (form) {
 
     try {
       const data = new FormData(form);
-      const body = {};
-      data.forEach((v, k) => body[k] = v);
+      const occupantsRaw = data.get('occupants');
 
-      const res = await fetch('https://formspree.io/f/xjybyzjq', {
+      const fullName = data.get('name') || [data.get('firstName'), data.get('lastName')].filter(Boolean).join(' ');
+
+      const body = {
+        name: fullName || '',
+        email: data.get('email') || '',
+        phone: data.get('phone') || '',
+        layout: data.get('layout') || '',
+        message: data.get('message') || '',
+        occupants: occupantsRaw ? parseInt(occupantsRaw, 10) : null,
+        hasPets: data.get('pets') === 'yes',
+        petsDetails: data.get('petsDetails') || '',
+        desiredMoveIn: data.get('desiredMoveIn') || '',
+        employmentStatus: data.get('employmentStatus') || '',
+      };
+
+      const res = await fetch('/api/inquiries', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
 

@@ -1319,6 +1319,25 @@ ul { list-style: none; }
 .register-form-wrap--card .form-privacy { color: rgba(28,26,24,0.42); }
 .register-form-wrap--card .form-success { color: var(--bronze); }
 
+/* --- Apply page (public screening form, reached via emailed link) ---- */
+.section-register--light { background: var(--blush); }
+.section-register--light .section-label { color: var(--bronze); }
+.section-register--light .section-h2 { color: var(--charcoal); }
+.apply-form-container { max-width: 620px; margin: 0 auto; padding: 0 3rem; }
+.apply-status-message {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(28,26,24,0.6);
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: 4px;
+  padding: 2.5rem;
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .apply-form-container { padding: 0 1.25rem; }
+}
+
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
 .register-checklist-box { margin-top: 1.75rem; padding: 2rem 2.25rem; background: var(--white); border-radius: 12px; max-width: 440px; }
@@ -1980,6 +1999,91 @@ html:has(.portal-body) { overflow-x: hidden; }
   font-family: 'Montserrat', sans-serif;
   font-size: 0.82rem;
   background: var(--white);
+}
+
+/* --- Applicants (Property Management Portal) ------------------- */
+.applicants-row-email {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(28,26,24,0.55);
+  width: 190px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.applicants-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: rgba(28,26,24,0.2); }
+.applicants-status-dot--new { background: var(--bronze); }
+.applicants-status-dot--reviewing { background: var(--bronze-light); }
+.applicants-status-dot--invited { background: var(--bronze-light); }
+.applicants-status-dot--screening_complete { background: var(--green); }
+.applicants-status-dot--lease_sent { background: var(--green); }
+.applicants-status-dot--leased { background: var(--charcoal); }
+.applicants-status-dot--declined { background: #b9483f; }
+
+.applicants-status-badge {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: rgba(28,26,24,0.3);
+  border-radius: 50px;
+  padding: 0.25rem 0.7rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.applicants-status-badge--new { background: var(--bronze); }
+.applicants-status-badge--reviewing,
+.applicants-status-badge--invited { background: var(--bronze-light); color: var(--charcoal); }
+.applicants-status-badge--screening_complete,
+.applicants-status-badge--lease_sent { background: var(--green); }
+.applicants-status-badge--leased { background: var(--charcoal); }
+.applicants-status-badge--declined { background: #b9483f; }
+
+@media (max-width: 640px) {
+  .applicants-row-email { width: auto; }
+}
+
+.portal-modal-card.applicant-detail-card { width: 640px; max-height: 85vh; overflow-y: auto; }
+.applicant-detail-status {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bronze);
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+}
+.applicant-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.applicant-detail-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.applicant-detail-field-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(28,26,24,0.4);
+}
+.applicant-detail-field-value { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; color: var(--charcoal); }
+.applicant-detail-section { border-top: 1px solid rgba(28,26,24,0.1); padding-top: 1.25rem; margin-bottom: 1.5rem; }
+.applicant-detail-section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--charcoal);
+  margin-bottom: 1rem;
+}
+.applicant-detail-actions { flex-wrap: wrap; }
+@media (max-width: 640px) {
+  .applicant-detail-grid { grid-template-columns: 1fr; }
 }
 
 /* --- Calendar ------------------------------------------------ */

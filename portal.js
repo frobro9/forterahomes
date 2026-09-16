@@ -160,6 +160,7 @@ function showPage(pageKey) {
   if (pageKey === 'calendar' && !calendarLoaded) loadCalendar();
   if (pageKey === 'meetings' && !meetingsLoaded) loadMeetings();
   if (pageKey === 'finder' && !finderLoaded) initPropertyFinder();
+  if (pageKey === 'pm-applicants' && !applicantsLoaded) loadApplicants();
 }
 
 navLeaves.forEach((btn) => {
@@ -1986,10 +1987,259 @@ if (newsListEl) {
 
 if (newsRefreshBtn) newsRefreshBtn.addEventListener('click', loadNews);
 
+/* ================================================================
+   APPLICANTS (Property Management Portal)
+   ================================================================ */
+let applicants = [];
+let applicantsLoaded = false;
+let applicantsTab = 'active';
+let activeApplicantId = null;
+let declineConfirmPending = false;
+
+const ACTIVE_APPLICANT_STATUSES = ['new', 'reviewing', 'invited', 'screening_complete', 'lease_sent'];
+const APPLICANT_STATUS_LABEL = {
+  new: 'New',
+  reviewing: 'Reviewing',
+  invited: 'Invited',
+  screening_complete: 'Screening Complete',
+  declined: 'Declined',
+  lease_sent: 'Lease Sent',
+  leased: 'Leased',
+};
+const APPLICANT_LAYOUT_LABEL = {
+  '2bed-1bath': 'Elmwood — 2 Bed / 1 Bath',
+  'manor-2bed-2bath': 'Manor — 2 Bed / 2 Bath',
+  '2bed-2bath': 'Rideau (Executive) — 2 Bed / 2 Bath',
+  undecided: 'Undecided',
+};
+const APPLICANT_EMPLOYMENT_LABEL = {
+  'employed-full-time': 'Employed — Full-time',
+  'employed-part-time': 'Employed — Part-time',
+  'self-employed': 'Self-employed',
+  student: 'Student',
+  retired: 'Retired',
+  other: 'Other',
+};
+
+const applicantsListEl = document.getElementById('applicantsList');
+const applicantsNavBadge = document.getElementById('applicantsNavBadge');
+const applicantsTabBtns = document.querySelectorAll('[data-applicants-tab]');
+
+const applicantModal = document.getElementById('applicantModal');
+const applicantModalName = document.getElementById('applicantModalName');
+const applicantModalStatus = document.getElementById('applicantModalStatus');
+const applicantModalGrid = document.getElementById('applicantModalGrid');
+const applicantModalScreeningSection = document.getElementById('applicantModalScreeningSection');
+const applicantModalScreeningGrid = document.getElementById('applicantModalScreeningGrid');
+const applicantModalNotes = document.getElementById('applicantModalNotes');
+const applicantModalError = document.getElementById('applicantModalError');
+const applicantModalClose = document.getElementById('applicantModalClose');
+const applicantModalSaveNotes = document.getElementById('applicantModalSaveNotes');
+const applicantModalDecline = document.getElementById('applicantModalDecline');
+const applicantModalMoveForward = document.getElementById('applicantModalMoveForward');
+const applicantModalPursue = document.getElementById('applicantModalPursue');
+
+function formatApplicantDateTime(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(`${dateStr.replace(' ', 'T')}Z`);
+  if (Number.isNaN(d.getTime())) return '—';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function updateApplicantsBadge() {
+  if (!applicantsNavBadge) return;
+  const count = applicants.filter((a) => a.status === 'new').length;
+  applicantsNavBadge.hidden = count === 0;
+  applicantsNavBadge.textContent = count > 99 ? '99+' : String(count);
+}
+
+function applicantRowHtml(a) {
+  return `
+    <li class="action-items-row applicants-row" data-id="${a.id}">
+      <div class="action-items-row-main">
+        <span class="applicants-status-dot applicants-status-dot--${a.status}"></span>
+        <span class="action-items-row-name">${escapeHtml(a.name)}</span>
+      </div>
+      <div class="action-items-row-meta">
+        <span class="applicants-row-email">${escapeHtml(a.email)}</span>
+        <span class="applicants-status-badge applicants-status-badge--${a.status}">${APPLICANT_STATUS_LABEL[a.status] || a.status}</span>
+        <span class="action-items-row-due">${formatApplicantDateTime(a.created_at)}</span>
+      </div>
+    </li>
+  `;
+}
+
+function renderApplicantsList() {
+  if (!applicantsListEl) return;
+  const filtered = applicants.filter((a) =>
+    applicantsTab === 'active' ? ACTIVE_APPLICANT_STATUSES.includes(a.status) : !ACTIVE_APPLICANT_STATUSES.includes(a.status)
+  );
+  if (!filtered.length) {
+    applicantsListEl.innerHTML = `<li class="action-items-empty">${applicantsTab === 'active' ? 'No active applicants.' : 'No declined or leased applicants yet.'}</li>`;
+    return;
+  }
+  applicantsListEl.innerHTML = filtered.map(applicantRowHtml).join('');
+}
+
+async function loadApplicants() {
+  try {
+    const res = await fetch('/api/applicants');
+    if (res.ok) {
+      const data = await res.json();
+      applicants = data.applicants || [];
+      applicantsLoaded = true;
+    }
+  } catch {
+    // leave prior items on screen
+  }
+  renderApplicantsList();
+  updateApplicantsBadge();
+}
+
+function applicantDetailField(label, value) {
+  if (value === null || value === undefined || value === '') return '';
+  return `
+    <div class="applicant-detail-field">
+      <span class="applicant-detail-field-label">${escapeHtml(label)}</span>
+      <span class="applicant-detail-field-value">${escapeHtml(String(value))}</span>
+    </div>
+  `;
+}
+
+function openApplicantModal(id) {
+  const a = applicants.find((x) => x.id === id);
+  if (!a || !applicantModal) return;
+
+  activeApplicantId = id;
+  declineConfirmPending = false;
+  applicantModalError.textContent = '';
+  applicantModalDecline.textContent = 'Decline';
+
+  applicantModalName.textContent = a.name;
+  applicantModalStatus.textContent = APPLICANT_STATUS_LABEL[a.status] || a.status;
+  applicantModalStatus.className = `applicant-detail-status applicant-detail-status--${a.status}`;
+
+  applicantModalGrid.innerHTML = [
+    applicantDetailField('Email', a.email),
+    applicantDetailField('Phone', a.phone),
+    applicantDetailField('Preferred Unit', APPLICANT_LAYOUT_LABEL[a.layout] || a.layout),
+    applicantDetailField('Occupants', a.occupants),
+    applicantDetailField('Pets', a.has_pets ? (a.pets_details || 'Yes') : 'No'),
+    applicantDetailField('Desired Move-In', formatShortDate(a.desired_move_in)),
+    applicantDetailField('Employment', APPLICANT_EMPLOYMENT_LABEL[a.employment_status] || a.employment_status),
+    applicantDetailField('Message', a.message),
+    applicantDetailField('Submitted', formatApplicantDateTime(a.created_at)),
+  ].join('');
+
+  const hasScreening = Boolean(a.screening_submitted_at);
+  applicantModalScreeningSection.hidden = !hasScreening;
+  if (hasScreening) {
+    applicantModalScreeningGrid.innerHTML = [
+      applicantDetailField('References', a.screening_references),
+      applicantDetailField('Income & Employment', a.screening_income_notes),
+      applicantDetailField('Rental History', a.screening_rental_history),
+      applicantDetailField('Submitted', formatApplicantDateTime(a.screening_submitted_at)),
+    ].join('');
+  }
+
+  applicantModalNotes.value = a.notes || '';
+
+  applicantModalMoveForward.hidden = !['new', 'reviewing'].includes(a.status);
+  applicantModalPursue.hidden = a.status !== 'screening_complete';
+  applicantModalDecline.hidden = !['new', 'reviewing', 'invited', 'screening_complete'].includes(a.status);
+
+  applicantModal.hidden = false;
+}
+
+function closeApplicantModal() {
+  applicantModal.hidden = true;
+  activeApplicantId = null;
+}
+
+async function saveApplicantNotes() {
+  if (!activeApplicantId) return;
+  applicantModalError.textContent = '';
+  try {
+    const res = await fetch(`/api/applicants/${activeApplicantId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: applicantModalNotes.value }),
+    });
+    if (!res.ok) throw new Error('save failed');
+    const data = await res.json();
+    applicants = applicants.map((a) => (a.id === activeApplicantId ? data.applicant : a));
+  } catch {
+    applicantModalError.textContent = 'Could not save notes. Please try again.';
+  }
+}
+
+async function performApplicantAction(action) {
+  if (!activeApplicantId) return;
+  applicantModalError.textContent = '';
+  try {
+    const res = await fetch(`/api/applicants/${activeApplicantId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'action failed');
+    }
+    const data = await res.json();
+    applicants = applicants.map((a) => (a.id === activeApplicantId ? data.applicant : a));
+    renderApplicantsList();
+    updateApplicantsBadge();
+    closeApplicantModal();
+  } catch (err) {
+    applicantModalError.textContent = err.message || 'Something went wrong. Please try again.';
+  }
+}
+
+if (applicantsListEl) {
+  applicantsListEl.addEventListener('click', (e) => {
+    const row = e.target.closest('.applicants-row');
+    if (row) openApplicantModal(Number(row.dataset.id));
+  });
+}
+
+applicantsTabBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    applicantsTab = btn.dataset.applicantsTab;
+    applicantsTabBtns.forEach((b) => b.classList.toggle('active', b === btn));
+    renderApplicantsList();
+  });
+});
+
+if (applicantModalClose) applicantModalClose.addEventListener('click', closeApplicantModal);
+if (applicantModal) {
+  applicantModal.addEventListener('click', (e) => {
+    if (e.target === applicantModal) closeApplicantModal();
+  });
+}
+if (applicantModalSaveNotes) applicantModalSaveNotes.addEventListener('click', saveApplicantNotes);
+if (applicantModalMoveForward) {
+  applicantModalMoveForward.addEventListener('click', () => performApplicantAction('move_forward'));
+}
+if (applicantModalPursue) {
+  applicantModalPursue.addEventListener('click', () => performApplicantAction('pursue'));
+}
+if (applicantModalDecline) {
+  applicantModalDecline.addEventListener('click', () => {
+    if (!declineConfirmPending) {
+      declineConfirmPending = true;
+      applicantModalDecline.textContent = 'Click again to confirm';
+      return;
+    }
+    performApplicantAction('decline');
+  });
+}
+
 /* ---- Initial page ------------------------------------------- */
 const initialPage = validPages.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'action-items';
 showPage(initialPage);
 loadNews();
 if (!actionItemsLoaded) loadActionItems();
+loadApplicants();
 
 });
