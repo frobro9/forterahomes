@@ -6,6 +6,7 @@ import { base64urlEncode, base64urlDecode } from './base64url.js';
 
 export const SESSION_COOKIE = 'fortera_session';
 export const SESSION_TTL_SECONDS = 60 * 60 * 12; // 12 hours
+export const SESSION_TTL_REMEMBER_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
 async function hmacKey(secret) {
   return crypto.subtle.importKey(
@@ -17,8 +18,8 @@ async function hmacKey(secret) {
   );
 }
 
-export async function createSessionToken(username, firstName, secret) {
-  const payload = { u: username, n: firstName || null, exp: Date.now() + SESSION_TTL_SECONDS * 1000 };
+export async function createSessionToken(username, firstName, secret, ttlSeconds = SESSION_TTL_SECONDS) {
+  const payload = { u: username, n: firstName || null, exp: Date.now() + ttlSeconds * 1000 };
   const payloadB64 = base64urlEncode(new TextEncoder().encode(JSON.stringify(payload)));
   const key = await hmacKey(secret);
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payloadB64));
