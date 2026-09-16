@@ -2,7 +2,8 @@ name: Property Finder Ingest
 
 on:
   schedule:
-    - cron: "0 12 * * *"
+    # Mondays and Thursdays, 12:00 UTC.
+    - cron: "0 12 * * 1,4"
   workflow_dispatch: {}
 
 jobs:
