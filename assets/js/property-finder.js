@@ -32,6 +32,7 @@ const finderDetailBackBtn = document.getElementById('finderDetailBackBtn');
 const finderDetailAddress = document.getElementById('finderDetailAddress');
 const finderDetailSaveBtn = document.getElementById('finderDetailSaveBtn');
 const finderZoningBreakdown = document.getElementById('finderZoningBreakdown');
+const finderUnitToggleBtn = document.getElementById('finderUnitToggleBtn');
 const finderProFormaOutput = document.getElementById('finderProFormaOutput');
 const finderSliderUnitCount = document.getElementById('finderSliderUnitCount');
 const finderSliderStairSqft = document.getElementById('finderSliderStairSqft');
@@ -149,6 +150,14 @@ function initPropertyFinder() {
 
   finderSettingsForm.addEventListener('submit', submitFinderSettings);
 
+  finderUnitToggleBtn.textContent = window.UnitSystem.getUnit() === 'imperial' ? 'ft' : 'm';
+  finderUnitToggleBtn.addEventListener('click', () => window.UnitSystem.toggleUnit());
+  window.UnitSystem.onUnitChange((unit) => {
+    finderUnitToggleBtn.textContent = unit === 'imperial' ? 'ft' : 'm';
+    finderUnitToggleBtn.setAttribute('aria-label', `Switch to ${unit === 'imperial' ? 'metric' : 'imperial'} units`);
+    if (finderDetailListing) renderFinderZoningBreakdown(finderDetailListing);
+  });
+
   loadFinderFeed();
 }
 
@@ -202,11 +211,12 @@ function closeFinderDetail() {
   finderDetailListing = null;
 }
 
-function renderFinderZoningBreakdown({ run }) {
+function renderFinderZoningBreakdown({ listing, run }) {
   if (!run) {
     finderZoningBreakdown.innerHTML = '<p class="action-items-empty">No analysis run recorded for this listing yet.</p>';
     return;
   }
+  const lotSize = window.UnitSystem.formatLotSize(listing.lot_width_m, listing.lot_depth_m);
   const notes = (run.constraintNotes || []).map((n) => `<li>${escapeHtml(n)}</li>`).join('');
   finderZoningBreakdown.innerHTML = `
     <div class="finder-zoning-grid">
@@ -214,6 +224,7 @@ function renderFinderZoningBreakdown({ run }) {
       <div><span class="finder-zoning-label">Buildable Units</span><span class="finder-zoning-value">${run.buildable_units}</span></div>
       <div><span class="finder-zoning-label">Buildable Sqft</span><span class="finder-zoning-value">${fmtSqft(run.buildable_sqft)}</span></div>
       <div><span class="finder-zoning-label">Municipal Address</span><span class="finder-zoning-value">${escapeHtml(run.municipal_address || '—')}</span></div>
+      <div><span class="finder-zoning-label">Lot Size (Frontage x Depth)</span><span class="finder-zoning-value">${escapeHtml(lotSize)}</span></div>
     </div>
     ${notes ? `<ul class="finder-zoning-notes">${notes}</ul>` : ''}
   `;
