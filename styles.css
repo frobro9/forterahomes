@@ -1314,6 +1314,7 @@ ul { list-style: none; }
 .register-form-wrap--card .form-field select:focus,
 .register-form-wrap--card .form-field textarea:focus { border-color: var(--bronze); }
 .register-form-wrap--card .form-field select option { background: var(--white); color: var(--charcoal); }
+.register-form-wrap--card .form-field input[type="date"] { color-scheme: light; }
 .register-form-wrap--card .form-field input::placeholder,
 .register-form-wrap--card .form-field textarea::placeholder { color: rgba(28,26,24,0.32); }
 .register-form-wrap--card .form-privacy { color: rgba(28,26,24,0.42); }
