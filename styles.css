@@ -1314,6 +1314,7 @@ ul { list-style: none; }
 .register-form-wrap--card .form-field select:focus,
 .register-form-wrap--card .form-field textarea:focus { border-color: var(--bronze); }
 .register-form-wrap--card .form-field select option { background: var(--white); color: var(--charcoal); }
+.register-form-wrap--card .form-field input[type="date"] { color-scheme: light; }
 .register-form-wrap--card .form-field input::placeholder,
 .register-form-wrap--card .form-field textarea::placeholder { color: rgba(28,26,24,0.32); }
 .register-form-wrap--card .form-privacy { color: rgba(28,26,24,0.42); }
@@ -1352,6 +1353,7 @@ ul { list-style: none; }
 .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--bronze); }
 .form-field select option { background: var(--charcoal); }
 .form-field textarea { resize: vertical; min-height: 100px; }
+.form-field input[type="date"] { color-scheme: dark; min-height: 2.9rem; }
 .form-field input::placeholder, .form-field textarea::placeholder { color: rgba(255,255,255,0.18); }
 .form-error { font-family: 'Montserrat', sans-serif; font-size: 0.63rem; color: #e07070; margin-top: 0.3rem; min-height: 1em; }
 .form-submit { width: 100%; background: var(--bronze); color: var(--white); border: 1px solid var(--bronze); border-radius: 50px; font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 1rem; cursor: pointer; transition: background 0.25s ease; margin-top: 0.5rem; }

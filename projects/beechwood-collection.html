@@ -665,38 +665,58 @@
         </div>
       </div>
       <div class="register-form-wrap register-form-wrap--card">
-        <form id="contactForm" novalidate>
+        <form id="contactForm" data-intake-key="rk_9999d2a2b59f44ccbd75c44108a25e88" novalidate>
           <div class="form-row-2">
             <div class="form-field">
               <label for="bwc-fname">FIRST NAME *</label>
               <input type="text" id="bwc-fname" name="firstName" autocomplete="given-name" placeholder="Your first name">
-              <div class="form-error" id="nameError"></div>
+              <div class="form-error" data-error-for="firstName"></div>
             </div>
             <div class="form-field">
-              <label for="bwc-lname">LAST NAME</label>
+              <label for="bwc-lname">LAST NAME *</label>
               <input type="text" id="bwc-lname" name="lastName" autocomplete="family-name" placeholder="Your last name">
+              <div class="form-error" data-error-for="lastName"></div>
             </div>
           </div>
           <div class="form-field">
             <label for="bwc-femail">EMAIL *</label>
             <input type="email" id="bwc-femail" name="email" autocomplete="email" placeholder="your@email.com">
-            <div class="form-error" id="emailError"></div>
+            <div class="form-error" data-error-for="email"></div>
           </div>
           <div class="form-field">
-            <label for="bwc-fphone">PHONE (OPTIONAL)</label>
+            <label for="bwc-fphone">PHONE *</label>
             <input type="tel" id="bwc-fphone" name="phone" autocomplete="tel" placeholder="(555) 123-4567">
+            <div class="form-error" data-error-for="phone"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="bwc-movein">MOVE-IN DATE *</label>
+              <input type="date" id="bwc-movein" name="moveIn">
+              <div class="form-error" data-error-for="moveIn"></div>
+            </div>
+            <div class="form-field">
+              <label for="bwc-pets">PETS? *</label>
+              <select id="bwc-pets" name="pets">
+                <option value="" disabled selected>Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <div class="form-error" data-error-for="pets"></div>
+            </div>
           </div>
           <div class="form-field">
-            <label for="bwc-layout">PREFERRED UNIT TYPE</label>
-            <select id="bwc-layout" name="layout">
+            <label for="bwc-layout">PREFERRED UNIT TYPE *</label>
+            <select id="bwc-layout" name="preferred_unit_type">
               <option value="" disabled selected>Select a preference</option>
-              <option value="2bed-1bath">Elmwood &mdash; 2 Bed / 1 Bath</option>
-              <option value="manor-2bed-2bath">Manor &mdash; 2 Bed / 2 Bath</option>
-              <option value="2bed-2bath">Rideau (Executive) &mdash; 2 Bed / 2 Bath</option>
-              <option value="undecided">Undecided</option>
+              <option value="Elmwood (2 Bed / 1 Bath)">Elmwood &mdash; 2 Bed / 1 Bath</option>
+              <option value="Manor (2 Bed / 2 Bath)">Manor &mdash; 2 Bed / 2 Bath</option>
+              <option value="Rideau (2 Bed / 2 Bath)">Rideau (Executive) &mdash; 2 Bed / 2 Bath</option>
+              <option value="Undecided">Undecided</option>
             </select>
+            <div class="form-error" data-error-for="preferred_unit_type"></div>
           </div>
           <button type="submit" class="form-submit">SUBMIT APPLICATION</button>
+          <div class="form-error" id="formError"></div>
           <p class="form-privacy">By submitting, you agree to be contacted about Beechwood Collection. Unsubscribe anytime.</p>
         </form>
         <div id="formSuccess" class="form-success"></div>
