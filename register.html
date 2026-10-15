@@ -64,36 +64,58 @@
         </div>
       </div>
       <div class="register-form-wrap reveal">
-        <form id="contactForm" novalidate>
-          <div class="form-field">
-            <label for="fname">NAME *</label>
-            <input type="text" id="fname" name="name" autocomplete="name" placeholder="Your full name">
-            <div class="form-error" id="nameError"></div>
+        <form id="contactForm" data-intake-key="rk_9999d2a2b59f44ccbd75c44108a25e88" novalidate>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="ffirst">FIRST NAME *</label>
+              <input type="text" id="ffirst" name="firstName" autocomplete="given-name" placeholder="First name">
+              <div class="form-error" data-error-for="firstName"></div>
+            </div>
+            <div class="form-field">
+              <label for="flast">LAST NAME *</label>
+              <input type="text" id="flast" name="lastName" autocomplete="family-name" placeholder="Last name">
+              <div class="form-error" data-error-for="lastName"></div>
+            </div>
           </div>
           <div class="form-field">
             <label for="femail">EMAIL *</label>
             <input type="email" id="femail" name="email" autocomplete="email" placeholder="your@email.com">
-            <div class="form-error" id="emailError"></div>
+            <div class="form-error" data-error-for="email"></div>
           </div>
           <div class="form-field">
-            <label for="fphone">PHONE</label>
-            <input type="tel" id="fphone" name="phone" autocomplete="tel" placeholder="Optional">
+            <label for="fphone">PHONE *</label>
+            <input type="tel" id="fphone" name="phone" autocomplete="tel" placeholder="(613) 555-0123">
+            <div class="form-error" data-error-for="phone"></div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="fmovein">MOVE-IN DATE *</label>
+              <input type="date" id="fmovein" name="moveIn">
+              <div class="form-error" data-error-for="moveIn"></div>
+            </div>
+            <div class="form-field">
+              <label for="fpets">PETS? *</label>
+              <select id="fpets" name="pets">
+                <option value="" disabled selected>Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <div class="form-error" data-error-for="pets"></div>
+            </div>
           </div>
           <div class="form-field">
-            <label for="layout">PREFERRED UNIT TYPE</label>
-            <select id="layout" name="layout">
+            <label for="layout">PREFERRED UNIT TYPE *</label>
+            <select id="layout" name="preferred_unit_type">
               <option value="" disabled selected>Select a preference</option>
-              <option value="2bed-1bath">Elmwood &mdash; 2 Bed / 1 Bath</option>
-              <option value="manor-2bed-2bath">Manor &mdash; 2 Bed / 2 Bath</option>
-              <option value="2bed-2bath">Rideau (Executive) &mdash; 2 Bed / 2 Bath</option>
-              <option value="undecided">Undecided</option>
+              <option value="Elmwood (2 Bed / 1 Bath)">Elmwood &mdash; 2 Bed / 1 Bath</option>
+              <option value="Manor (2 Bed / 2 Bath)">Manor &mdash; 2 Bed / 2 Bath</option>
+              <option value="Rideau (2 Bed / 2 Bath)">Rideau (Executive) &mdash; 2 Bed / 2 Bath</option>
+              <option value="Undecided">Undecided</option>
             </select>
+            <div class="form-error" data-error-for="preferred_unit_type"></div>
           </div>
-          <div class="form-field">
-            <label for="fmessage">MESSAGE</label>
-            <textarea id="fmessage" name="message" rows="3" placeholder="Any questions or notes…"></textarea>
-          </div>
-          <button type="submit" class="form-submit">SUBMIT INQUIRY</button>
+          <button type="submit" class="form-submit">SUBMIT APPLICATION</button>
+          <div class="form-error" id="formError"></div>
           <p class="form-privacy">Your information is kept strictly confidential.</p>
         </form>
         <div id="formSuccess" class="form-success"></div>
