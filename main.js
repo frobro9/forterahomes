@@ -214,65 +214,85 @@ document.querySelectorAll('.accordion-trigger').forEach(trigger => {
   });
 });
 
-/* ---- Waitlist form submission ----------------------------- */
+/* ---- Register interest → lead intake ---------------------- */
+const LEAD_INTAKE_URL = 'https://xaeekilxrzjavqplxhrb.supabase.co/functions/v1/lead-intake';
+
 const form = document.getElementById('contactForm');
 const formSuccess = document.getElementById('formSuccess');
-const nameError = document.getElementById('nameError');
-const emailError = document.getElementById('emailError');
+const formError = document.getElementById('formError');
 
 if (form) {
+  const REQUIRED = {
+    firstName: 'Please enter your first name.',
+    lastName: 'Please enter your last name.',
+    email: 'Please enter a valid email address.',
+    phone: 'Please enter your phone number.',
+    moveIn: 'Please choose a move-in date.',
+    pets: 'Please let us know about pets.',
+    preferred_unit_type: 'Please choose a unit type.',
+  };
+
+  const showErrors = (errors) => {
+    form.querySelectorAll('[data-error-for]').forEach(el => {
+      el.textContent = errors[el.dataset.errorFor] || '';
+    });
+  };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    let valid = true;
+    if (formError) formError.textContent = '';
 
-    const name = form.querySelector('[name="firstName"], [name="name"]');
-    const email = form.querySelector('[name="email"]');
+    const values = {};
+    new FormData(form).forEach((v, k) => { values[k] = String(v).trim(); });
 
-    if (nameError) nameError.textContent = '';
-    if (emailError) emailError.textContent = '';
-
-    if (!name || !name.value.trim()) {
-      if (nameError) nameError.textContent = 'Please enter your name.';
-      valid = false;
-    }
-    if (!email || !email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      if (emailError) emailError.textContent = 'Please enter a valid email address.';
-      valid = false;
-    }
-
-    if (!valid) return;
+    const errors = {};
+    Object.keys(REQUIRED).forEach(k => { if (!values[k]) errors[k] = REQUIRED[k]; });
+    if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) errors.email = REQUIRED.email;
+    showErrors(errors);
+    if (Object.keys(errors).length) return;
 
     const submitBtn = form.querySelector('.form-submit');
     if (submitBtn) { submitBtn.textContent = 'SENDING…'; submitBtn.disabled = true; }
 
-    try {
-      const data = new FormData(form);
-      const body = {};
-      data.forEach((v, k) => body[k] = v);
+    // The intake form asks for name/email both as built-in fields and as custom questions.
+    const body = {
+      key: form.dataset.intakeKey,
+      ...values,
+      first_name: values.firstName,
+      last_name: values.lastName,
+      email_address: values.email,
+      pets: values.pets === 'yes',
+    };
 
-      const res = await fetch('https://formspree.io/f/xjybyzjq', {
+    try {
+      const res = await fetch(LEAD_INTAKE_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
+      const data = await res.json().catch(() => ({}));
 
-      if (res.ok) {
+      if (res.ok && data.ok) {
         form.style.display = 'none';
         if (formSuccess) {
           formSuccess.style.display = 'block';
-          formSuccess.textContent = 'Thank you — we\'ll be in touch with early access details.';
+          formSuccess.textContent = 'Thank you — your application has been received. We\'ll be in touch soon.';
         }
-      } else {
-        throw new Error('server error');
+        return;
       }
+
+      if (data.fields) {
+        const aliases = { first_name: 'firstName', last_name: 'lastName', email_address: 'email' };
+        const fieldErrors = {};
+        Object.entries(data.fields).forEach(([k, msg]) => { fieldErrors[aliases[k] || k] = msg; });
+        showErrors(fieldErrors);
+      }
+      if (formError) formError.textContent = data.error || 'Something went wrong. Please try again or email us at admin@forterahomes.ca.';
     } catch {
-      if (submitBtn) {
-        submitBtn.textContent = 'SEND';
-        submitBtn.disabled = false;
-        submitBtn.style.borderColor = '#e07070';
-      }
-      if (emailError) emailError.textContent = 'Something went wrong. Please try again or email us directly.';
+      if (formError) formError.textContent = 'Something went wrong. Please try again or email us at admin@forterahomes.ca.';
     }
+
+    if (submitBtn) { submitBtn.textContent = 'SUBMIT APPLICATION'; submitBtn.disabled = false; }
   });
 }
 
