@@ -692,6 +692,7 @@ ul { list-style: none; }
 
 .project-card-tile { position: relative; }
 .project-card-tile > .project-card { height: 100%; }
+.projects-grid .project-card-title { font-size: 1.5rem; }
 .project-card-tile .wifi-offer { top: -14px; right: 10px; }
 
 .project-card {
