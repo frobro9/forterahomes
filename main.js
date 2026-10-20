@@ -307,6 +307,7 @@ if (adminForm) {
 
     const username = adminForm.username.value.trim();
     const password = adminForm.password.value;
+    const remember = adminForm.remember.checked;
 
     if (adminErrorEl) adminErrorEl.style.display = 'none';
 
@@ -327,7 +328,7 @@ if (adminForm) {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, remember }),
       });
 
       if (res.ok) {
