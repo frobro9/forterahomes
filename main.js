@@ -204,6 +204,20 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') lbPrev();
 });
 
+/* ---- Upcoming project "Coming Soon" flash ----------------- */
+document.querySelectorAll('.project-card--upcoming').forEach(card => {
+  let timer;
+  const flash = () => {
+    card.classList.add('is-soon');
+    clearTimeout(timer);
+    timer = setTimeout(() => card.classList.remove('is-soon'), 3000);
+  };
+  card.addEventListener('click', flash);
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flash(); }
+  });
+});
+
 /* ---- Floorplan lightbox ----------------------------------- */
 const fpLightbox = document.getElementById('fpLightbox');
 const fpLbImg = document.getElementById('fpLbImg');
