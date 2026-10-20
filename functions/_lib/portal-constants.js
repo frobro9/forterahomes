@@ -29,4 +29,5 @@ export const USER_FIRST_NAMES = {
   rgray: 'Ryan',
   adam: 'Adam',
   jacob: 'Jacob',
+  admin: 'Admin',
 };
