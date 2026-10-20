@@ -691,6 +691,7 @@ ul { list-style: none; }
 }
 
 .project-card-tile { position: relative; }
+.project-card-tile > .project-card { height: 100%; }
 .project-card-tile .wifi-offer { top: -14px; right: 10px; }
 
 .project-card {
@@ -741,6 +742,12 @@ ul { list-style: none; }
   background: rgba(255,255,255,0.9);
   border-radius: 50%;
 }
+
+.project-card-badge--upcoming { background: var(--bronze); }
+
+.project-card--upcoming { cursor: default; }
+.project-card--upcoming:hover { transform: none; box-shadow: none; }
+.project-card--upcoming:hover .project-card-image img { transform: none; }
 
 .project-card-body { padding: 1.5rem 1.75rem 2rem; }
 
