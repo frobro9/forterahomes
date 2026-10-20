@@ -529,7 +529,7 @@ ul { list-style: none; }
   .wifi-offer { animation: none; }
 }
 .project-card--feature .project-card-body { padding: 2rem 2.25rem 2.4rem; }
-.project-card--feature .project-card-title { font-size: 2rem; margin-bottom: 0.3rem; text-transform: none; letter-spacing: 0; }
+.project-card--feature .project-card-title { font-size: 2.5rem; margin-bottom: 0.3rem; text-transform: none; letter-spacing: 0; }
 .project-card--feature .project-card-location-simple { font-size: 0.85rem; }
 
 .feature-card-gallery {
@@ -692,7 +692,7 @@ ul { list-style: none; }
 
 .project-card-tile { position: relative; }
 .project-card-tile > .project-card { height: 100%; }
-.projects-grid .project-card-title { font-size: 1.5rem; }
+.projects-grid .project-card-title { font-size: 2rem; }
 .project-card-tile .wifi-offer { top: -14px; right: 10px; }
 
 .project-card {
@@ -767,9 +767,10 @@ ul { list-style: none; }
 .project-card-body { padding: 1.5rem 1.75rem 2rem; }
 
 .project-card-title {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--charcoal);
   line-height: 1.1;
   margin-bottom: 0.4rem;
@@ -2985,7 +2986,7 @@ html:has(.portal-body) { overflow-x: hidden; }
   .feature-card-photo { aspect-ratio: 16 / 10; }
   .feature-card-photo--main { grid-column: auto; grid-row: auto; }
   .feature-card-specs { grid-template-columns: 1fr 1fr; }
-  .project-card--feature .project-card-title { font-size: 1.6rem; }
+  .project-card--feature .project-card-title { font-size: 2rem; }
   .wifi-offer {
     position: static;
     animation: none;
