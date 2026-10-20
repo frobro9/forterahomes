@@ -777,7 +777,7 @@ ul { list-style: none; }
 .project-card-title {
   font-family: 'Cormorant Garamond', serif;
   font-size: 2.1rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.01em;
   color: var(--charcoal);
   line-height: 1.1;
