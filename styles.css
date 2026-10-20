@@ -958,7 +958,25 @@ ul { list-style: none; }
   opacity: 0.6; transition: opacity 0.2s ease;
 }
 .unit-floorplan:hover .unit-floorplan-expand, .unit-floorplan:focus-visible .unit-floorplan-expand { opacity: 1; }
-.fp-lb-img { background: #fff; padding: 1.5rem; max-width: 94vw; }
+.gal-lightbox.fp-lightbox {
+  background: rgba(244,240,234,0.35);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.fp-lightbox .gal-lb-wrap { max-width: 78vw; max-height: 70vh; }
+.gal-lb-img.fp-lb-img {
+  max-width: 78vw; max-height: 70vh;
+  background: #fff;
+  padding: 1.5rem;
+  border: 1px solid var(--sand);
+  box-shadow: 0 20px 60px rgba(28,26,24,0.18);
+}
+.fp-lightbox .gal-lb-close { color: rgba(28,26,24,0.55); }
+.fp-lightbox .gal-lb-close:hover { color: var(--charcoal); }
+@media (max-width: 768px) {
+  .fp-lightbox .gal-lb-wrap, .gal-lb-img.fp-lb-img { max-width: 92vw; }
+  .gal-lb-img.fp-lb-img { padding: 0.75rem; }
+}
 
 .unit-floorplan-placeholder {
   width: 100%;
