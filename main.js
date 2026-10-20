@@ -204,6 +204,33 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') lbPrev();
 });
 
+/* ---- Floorplan lightbox ----------------------------------- */
+const fpLightbox = document.getElementById('fpLightbox');
+const fpLbImg = document.getElementById('fpLbImg');
+
+function closeFpLightbox() {
+  if (!fpLightbox) return;
+  fpLightbox.setAttribute('hidden', '');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.unit-floorplan[data-src]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!fpLightbox || !fpLbImg) return;
+    fpLbImg.src = btn.dataset.src;
+    fpLbImg.alt = btn.dataset.alt || '';
+    fpLightbox.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+const fpLbClose = document.getElementById('fpLbClose');
+if (fpLbClose) fpLbClose.addEventListener('click', closeFpLightbox);
+if (fpLightbox) fpLightbox.addEventListener('click', e => { if (e.target !== fpLbImg) closeFpLightbox(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && fpLightbox && !fpLightbox.hasAttribute('hidden')) closeFpLightbox();
+});
+
 /* ---- Accordion -------------------------------------------- */
 document.querySelectorAll('.accordion-trigger').forEach(trigger => {
   trigger.addEventListener('click', () => {

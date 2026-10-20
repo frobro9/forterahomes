@@ -941,7 +941,24 @@ ul { list-style: none; }
 .unit-feature { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.62); display: flex; align-items: center; gap: 0.75rem; }
 .unit-feature::before { content: ''; width: 4px; height: 4px; background: var(--bronze); border-radius: 50%; flex-shrink: 0; }
 
-.unit-floorplan-img { width: 100%; aspect-ratio: 4/3; object-fit: contain; background: var(--blush); padding: 1rem; margin-bottom: 1.5rem; }
+.unit-floorplan {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--sand);
+  padding: 1.75rem 1rem;
+  margin-bottom: 1.5rem;
+  cursor: zoom-in;
+}
+.unit-floorplan-img { width: 100%; height: auto; display: block; }
+.unit-floorplan-expand {
+  position: absolute; top: 0.6rem; right: 0.75rem;
+  color: var(--bronze); font-size: 1.1rem; line-height: 1;
+  opacity: 0.6; transition: opacity 0.2s ease;
+}
+.unit-floorplan:hover .unit-floorplan-expand, .unit-floorplan:focus-visible .unit-floorplan-expand { opacity: 1; }
+.fp-lb-img { background: #fff; padding: 1.5rem; max-width: 94vw; }
 
 .unit-floorplan-placeholder {
   width: 100%;
