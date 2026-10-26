@@ -269,6 +269,7 @@ if (form) {
     email: 'Please enter a valid email address.',
     phone: 'Please enter your phone number.',
     moveIn: 'Please choose a move-in date.',
+    lease_term: 'Please choose a lease term.',
     pets: 'Please let us know about pets.',
     preferred_unit_type: 'Please choose a unit type.',
   };
