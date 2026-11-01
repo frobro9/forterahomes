@@ -965,7 +965,7 @@ ul { list-style: none; }
 .unit-subtitle { font-family: 'Montserrat', sans-serif; font-size: 0.63rem; color: rgba(28,26,24,0.42); letter-spacing: 0.1em; text-transform: uppercase; }
 .unit-specs-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap: wrap; gap: 0.5rem; }
 .unit-specs { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--bronze); }
-.unit-price { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(28,26,24,0.32); }
+.unit-price { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--charcoal); }
 
 .unit-features { display: flex; flex-direction: column; gap: 0.65rem; flex: 1; margin-bottom: 2rem; }
 .unit-feature { font-family: 'Montserrat', sans-serif; font-size: 0.72rem; color: rgba(28,26,24,0.62); display: flex; align-items: center; gap: 0.75rem; }
