@@ -1,70 +1,75 @@
 # Fortera Homes — Beechwood Collection
 
-> Luxury 2 and 3 bedroom rentals in Beechwood, Ottawa. Coming Spring 2027 to 82 Genest St, Beechwood South. Pre-registration now open.
+> New two bedroom rental apartments in Beechwood, Ottawa. Now leasing at 82 Genest St (Beechwood South), from $2,300/month, with move-ins Spring 2027.
 
-Beechwood Collection by Fortera Homes is a new 8-unit rental building at 82 Genest St in Ottawa's Beechwood South neighbourhood. The development offers spacious 2 bedroom and 3 bedroom suites with premium finishes, high ceilings, in-suite laundry, and private balconies. Estimated completion is Spring 2027.
+Beechwood Collection by Fortera Homes is a new 8-unit purpose-built rental building at 82 Genest St in Ottawa's Beechwood South neighbourhood. Every suite is a two bedroom home of 860 to 920 sq ft, with one or two full bathrooms depending on the floor. Suites include in-suite laundry, high ceilings, premium finishes, and a private balcony or patio. The building is now leasing ahead of its Spring 2027 completion.
 
 ## The Development
 
 - **Project name:** Beechwood Collection
-- **Developer:** Fortera Homes
-- **Address:** 82 Genest St, Ottawa, ON, K1L, Canada
-- **Neighbourhood:** Beechwood South, Ottawa
-- **Units:** 8 residential suites
-- **Unit types:** 2 bedroom and 3 bedroom rentals
+- **Developer / landlord:** Fortera Homes
+- **Address:** 82 Genest St, Ottawa, ON, Canada
+- **Neighbourhood:** Beechwood South, Ottawa (at the edge of New Edinburgh)
+- **Units:** 8 rental suites, all two bedroom
 - **Size range:** 860 to 920 sq ft
-- **Status:** Active development — pre-registration open
-- **Estimated completion:** Spring 2027
+- **Rent:** $2,300 to $2,600 per month
+- **Status:** Now leasing
+- **Estimated move-in:** Spring 2027
+- **Lease terms offered:** 1 year, 2 years, or 3 years or more
 
-## Available Floor Plans
+## Floor Plans & Rent
 
-- **Mackay A** — 2 bed / 1 bath, 860 sq ft (ground floor)
-- **Mackay B** — 2 bed / 1 bath, 860 sq ft (ground floor)
-- **Manor A** — 3 bed / 2 bath, 920 sq ft (2nd and 3rd floor)
-- **Manor B** — 3 bed / 2 bath, 920 sq ft (2nd and 3rd floor)
-- **Rideau A** — 2 bed / 2 bath, 920 sq ft (top floor)
-- **Rideau B** — 2 bed / 2 bath, 920 sq ft (top floor)
+- **Mackay A / Mackay B** — 2 bed / 1 bath, 860 sq ft, ground floor (units 101, 102) — $2,300/month
+- **Manor A / Manor B** — 2 bed / 2 bath, 920 sq ft, 2nd and 3rd floor (units 201, 202, 301, 302) — $2,500/month
+- **Rideau A / Rideau B** — 2 bed / 2 bath, 920 sq ft, 4th (top) floor (units 401, 402) — $2,600/month
+
+Floor plans for every unit are on the project page: https://forterahomes.ca/projects/beechwood-collection
+
+## Included in Every Suite
+
+- In-suite washer and dryer
+- High ceilings and large windows
+- Premium kitchen finishes
+- Private balcony or patio
+- Internet included (Bell Fiber, over 1 Gbps) for leases signed on or before December 31, 2026 — a $110/month value
+- Keyless entry
+- HRV ventilation and smart thermostats
+- Sound insulation and energy-efficient building systems
+- Dedicated storage units and bicycle storage
+- Fully accessible units available
+
+## How to Apply
+
+1. Apply online at https://forterahomes.ca/register (about one minute).
+2. The Fortera team follows up with availability and answers to questions.
+3. Approved applicants choose their floor and unit. Screening includes a credit check plus rental history, income, and references.
+
+## Location & Neighbourhood
+
+82 Genest St is in Beechwood South, one of Ottawa's most walkable and bikeable neighbourhoods, a short walk from the cafés and shops on Beechwood Avenue.
+
+- **Walk Score:** 94 — Walker's Paradise
+- **Transit Score:** 58 — Good Transit (OC Transpo)
+- **Bike Score:** 99 — Biker's Paradise
+- About a 2 minute walk to the Ottawa River Pathway
+- Minutes from Beechwood Cemetery's 160 acres of walking trails
+- OC Transpo bus service into downtown Ottawa
 
 ## Upcoming Projects
 
 - **Rockcliffe Collection** — Ottawa. Currently in design and permitting; not yet leasing.
 
-## Suite Features
-
-- Premium finishes throughout
-- High ceilings
-- In-suite laundry
-- Private balconies
-- Modern kitchens with quality appliances
-- Large windows
-- Storage units
-
-## Project Timeline
-
-- 2025: Planning & Design
-- 2025–2026: Permits & Approvals
-- 2026: Construction
-- Spring 2027: Estimated Completion
-
-## Location & Neighbourhood
-
-82 Genest St is located in Beechwood South, one of Ottawa's most walkable and bikeable urban neighbourhoods.
-
-- **Walk Score:** 94 — Walker's Paradise
-- **Transit Score:** 58 — Good Transit (OC Transpo)
-- **Bike Score:** 99 — Biker's Paradise
-- Nearby: restaurants, cafés, parks, cycling trails, fitness facilities
-
 ## About Fortera Homes
 
-Fortera Homes is grounded in hands-on construction expertise. The company is committed to superior craftsmanship, responsible development, and building lasting communities. Core values include vision-driven design, premium build quality, strategic site selection, and trusted execution with full transparency.
-
-Mission: to build lasting homes and enduring value by utilizing hands-on construction expertise to develop high-quality communities with integrity and vision.
+Fortera Homes is an Ottawa developer grounded in hands-on construction expertise, building purpose-built rental homes designed for long-term residents. Core values include vision-driven design, premium build quality, strategic site selection, and trusted execution with full transparency.
 
 ## Site Pages
 
 - **Home:** https://forterahomes.ca/
-- **Floor Plans & Units:** https://forterahomes.ca/development.html
-- **Neighbourhood:** https://forterahomes.ca/neighbourhood.html
-- **Register / Contact:** https://forterahomes.ca/contact.html
+- **Beechwood Collection (floor plans, rent, FAQ):** https://forterahomes.ca/projects/beechwood-collection
+- **Rent & floor plans guide:** https://forterahomes.ca/blog/beechwood-collection-rent-floor-plans
+- **All projects:** https://forterahomes.ca/projects
+- **Apply / contact:** https://forterahomes.ca/register
+- **Blog:** https://forterahomes.ca/blog
 - **Sitemap:** https://forterahomes.ca/sitemap.xml
+- **Email:** admin@forterahomes.ca

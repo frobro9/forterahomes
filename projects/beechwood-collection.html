@@ -21,22 +21,184 @@
   <link rel="stylesheet" href="../assets/leaflet/leaflet.css"/>
   <script src="../assets/leaflet/leaflet.js"></script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ApartmentComplex",
-    "name": "Beechwood Collection at 82 Genest St., Ottawa",
-    "description": "Spacious two bedroom rental suites from 860–920 sq ft. Premium finishes, high ceilings, in-suite laundry. Coming Spring 2027.",
-    "url": "https://forterahomes.ca/projects/beechwood-collection",
-    "image": "https://forterahomes.ca/assets/front.jpg",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "82 Genest St.",
-      "addressLocality": "Ottawa",
-      "addressRegion": "ON",
-      "postalCode": "K1L",
-      "addressCountry": "CA"
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ApartmentComplex",
+      "@id": "https://forterahomes.ca/projects/beechwood-collection#building",
+      "name": "Beechwood Collection",
+      "description": "New two bedroom rental apartments in Beechwood, Ottawa. 8 suites from 860 to 920 sq ft, $2,300 to $2,600 per month. Now leasing, move-ins Spring 2027.",
+      "url": "https://forterahomes.ca/projects/beechwood-collection",
+      "image": "https://forterahomes.ca/assets/front.jpg",
+      "numberOfAccommodationUnits": 8,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "82 Genest St.",
+        "addressLocality": "Ottawa",
+        "addressRegion": "ON",
+        "addressCountry": "CA"
+      },
+      "landlord": {
+        "@type": "Organization",
+        "name": "Fortera Homes",
+        "url": "https://forterahomes.ca/"
+      },
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "In-suite laundry",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Internet included",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Private balcony or patio",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Keyless entry",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Storage units",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Bicycle storage",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Smart thermostat",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "HRV ventilation",
+          "value": true
+        }
+      ],
+      "accommodationFloorPlan": [
+        {
+          "@type": "FloorPlan",
+          "name": "Mackay",
+          "description": "2 bed / 1 bath, 860 sq ft, ground floor. $2,300/month.",
+          "numberOfBedrooms": 2,
+          "numberOfFullBathrooms": 1,
+          "floorSize": {
+            "@type": "QuantitativeValue",
+            "value": 860,
+            "unitCode": "FTK"
+          },
+          "numberOfAvailableAccommodationUnits": 2
+        },
+        {
+          "@type": "FloorPlan",
+          "name": "Manor",
+          "description": "2 bed / 2 bath, 920 sq ft, 2nd and 3rd floor. $2,500/month.",
+          "numberOfBedrooms": 2,
+          "numberOfFullBathrooms": 2,
+          "floorSize": {
+            "@type": "QuantitativeValue",
+            "value": 920,
+            "unitCode": "FTK"
+          },
+          "numberOfAvailableAccommodationUnits": 4
+        },
+        {
+          "@type": "FloorPlan",
+          "name": "Rideau",
+          "description": "2 bed / 2 bath, 920 sq ft, 4th floor. $2,600/month.",
+          "numberOfBedrooms": 2,
+          "numberOfFullBathrooms": 2,
+          "floorSize": {
+            "@type": "QuantitativeValue",
+            "value": 920,
+            "unitCode": "FTK"
+          },
+          "numberOfAvailableAccommodationUnits": 2
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much is rent at Beechwood Collection?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Rent starts at $2,300 per month. Mackay suites (2 bed / 1 bath, 860 sq ft, ground floor) are $2,300/month, Manor suites (2 bed / 2 bath, 920 sq ft, 2nd and 3rd floor) are $2,500/month, and Rideau suites (2 bed / 2 bath, 920 sq ft, top floor) are $2,600/month."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When can I move in?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Beechwood Collection is now leasing, with move-ins starting Spring 2027. Applying now lets you lock in your rent and choose your floor and unit before the building opens."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are all the suites two bedrooms?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. All 8 suites are two bedroom homes from 860 to 920 sq ft. Ground floor suites have one full bathroom; suites on the 2nd to 4th floors have two full bathrooms."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is internet included?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Bell Fiber internet with speeds over 1 Gbps is included at no extra cost for leases signed on or before December 31, 2026, a $110/month value."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What lease terms are available?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can choose a 1 year, 2 year, or 3 year or longer lease."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is included in each suite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every suite includes an in-suite washer and dryer, high ceilings, premium kitchen finishes, a private balcony or patio, keyless entry, HRV ventilation, and a smart thermostat. The building also has dedicated storage units and bicycle storage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where is Beechwood Collection?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Beechwood Collection is at 82 Genest St. in Beechwood South, Ottawa, a short walk from the cafés and shops on Beechwood Avenue and about two minutes from the Ottawa River Pathway. OC Transpo buses run into downtown Ottawa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I apply?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Fill out the short application form on this page. Our team follows up with availability and next steps. Screening includes a quick credit check plus a look at your rental history, income, and references."
+          }
+        }
+      ]
     }
-  }
+  ]
+}
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-7X71SV3ET6"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7X71SV3ET6');</script>
@@ -188,7 +350,7 @@
             <p class="unit-subtitle">Ground Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 1 BATH &middot; 860 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,300 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-101.jpg" data-alt="Mackay A floor plan" aria-label="Expand Mackay A floor plan">
@@ -204,7 +366,7 @@
             <p class="unit-subtitle">Ground Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 1 BATH &middot; 860 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,300 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-102.jpg" data-alt="Mackay B floor plan" aria-label="Expand Mackay B floor plan">
@@ -221,7 +383,7 @@
             <p class="unit-subtitle">2nd Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-201.jpg" data-alt="Manor A floor plan" aria-label="Expand Manor A floor plan">
@@ -237,7 +399,7 @@
             <p class="unit-subtitle">2nd Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-202.jpg" data-alt="Manor B floor plan" aria-label="Expand Manor B floor plan">
@@ -254,7 +416,7 @@
             <p class="unit-subtitle">3rd Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-301.jpg" data-alt="Manor A floor plan" aria-label="Expand Manor A floor plan">
@@ -270,7 +432,7 @@
             <p class="unit-subtitle">3rd Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-302.jpg" data-alt="Manor B floor plan" aria-label="Expand Manor B floor plan">
@@ -287,7 +449,7 @@
             <p class="unit-subtitle">4th Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,600 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-401.jpg" data-alt="Rideau A floor plan" aria-label="Expand Rideau A floor plan">
@@ -303,7 +465,7 @@
             <p class="unit-subtitle">4th Floor</p>
             <div class="unit-specs-row">
               <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
-              <span class="unit-price">PRICING COMING SOON</span>
+              <span class="unit-price">$2,600 / MONTH</span>
             </div>
           </div>
           <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-402.jpg" data-alt="Rideau B floor plan" aria-label="Expand Rideau B floor plan">
@@ -622,6 +784,50 @@
   }());
   </script>
 
+  <!-- ===================== FAQ ===================== -->
+  <section id="faq" class="section-faq">
+    <div class="section-inner">
+      <div class="faq-header reveal">
+        <p class="section-label">FAQ</p>
+        <h2 class="section-h2">Questions, Answered</h2>
+      </div>
+      <div class="faq-list reveal">
+        <details class="faq-item">
+          <summary class="faq-q">How much is rent at Beechwood Collection?</summary>
+          <p class="faq-a">Rent starts at $2,300 per month. Mackay suites (2 bed / 1 bath, 860 sq ft, ground floor) are $2,300/month, Manor suites (2 bed / 2 bath, 920 sq ft, 2nd and 3rd floor) are $2,500/month, and Rideau suites (2 bed / 2 bath, 920 sq ft, top floor) are $2,600/month.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">When can I move in?</summary>
+          <p class="faq-a">Beechwood Collection is now leasing, with move-ins starting Spring 2027. Applying now lets you lock in your rent and choose your floor and unit before the building opens.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Are all the suites two bedrooms?</summary>
+          <p class="faq-a">Yes. All 8 suites are two bedroom homes from 860 to 920 sq ft. Ground floor suites have one full bathroom; suites on the 2nd to 4th floors have two full bathrooms.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Is internet included?</summary>
+          <p class="faq-a">Yes. Bell Fiber internet with speeds over 1 Gbps is included at no extra cost for leases signed on or before December 31, 2026, a $110/month value.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">What lease terms are available?</summary>
+          <p class="faq-a">You can choose a 1 year, 2 year, or 3 year or longer lease.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">What is included in each suite?</summary>
+          <p class="faq-a">Every suite includes an in-suite washer and dryer, high ceilings, premium kitchen finishes, a private balcony or patio, keyless entry, HRV ventilation, and a smart thermostat. The building also has dedicated storage units and bicycle storage.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Where is Beechwood Collection?</summary>
+          <p class="faq-a">Beechwood Collection is at 82 Genest St. in Beechwood South, Ottawa, a short walk from the cafés and shops on Beechwood Avenue and about two minutes from the Ottawa River Pathway. OC Transpo buses run into downtown Ottawa.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">How do I apply?</summary>
+          <p class="faq-a">Fill out the short application form on this page. Our team follows up with availability and next steps. Screening includes a quick credit check plus a look at your rental history, income, and references.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== PROCESS ===================== -->
   <section id="process" class="section-process">
     <div class="section-inner">
@@ -634,7 +840,7 @@
         <div class="process-row">
           <span class="process-row-num">01</span>
           <div class="process-row-body">
-            <h3 class="process-row-title">Register Your Interest</h3>
+            <h3 class="process-row-title">Apply Online</h3>
             <p class="process-row-desc">Fill out our short form for Beechwood Collection. It only takes a minute.</p>
           </div>
         </div>
@@ -649,7 +855,7 @@
           <span class="process-row-num">03</span>
           <div class="process-row-body">
             <h3 class="process-row-title">Secure Your Suite</h3>
-            <p class="process-row-desc">Registered applicants get early access to choose their floor and unit.</p>
+            <p class="process-row-desc">Approved applicants choose their floor and unit, and lock in their rent.</p>
           </div>
         </div>
       </div>
