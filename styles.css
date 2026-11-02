@@ -2886,6 +2886,8 @@ html:has(.portal-body) { overflow-x: hidden; }
    ============================================================ */
 .blog-post-header { width: 100%; max-height: 500px; overflow: hidden; margin-top: var(--nav-h); }
 .blog-post-header img { width: 100%; max-height: 500px; object-fit: cover; display: block; }
+.blog-post-header--poster { max-height: none; background: #2a211b; display: flex; justify-content: center; padding: 2.5rem 1rem; }
+.blog-post-header--poster img { width: auto; max-width: 100%; max-height: 640px; object-fit: contain; border-radius: 12px; }
 .blog-post-body { background: var(--cream); padding: 5rem 0 7rem; }
 .blog-post-container { max-width: 760px; margin: 0 auto; padding: 0 2rem; }
 .blog-back-link { display: inline-block; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--bronze); text-decoration: none; margin-bottom: 2.5rem; transition: opacity 0.2s ease; }
