@@ -1,0 +1,10 @@
+# Cloudflare Pages redirects
+/projects       /collections                                   301
+/vision         /about                                         301
+/expertise      /about                                         301
+/neighbourhood  /projects/beechwood-collection#neighbourhood   301
+/floorplans     /projects/beechwood-collection#floorplans      301
+/gallery        /projects/beechwood-collection#gallery         301
+/services/development-consulting  /services/multiplexes  301
+/services/custom-homes  /services/multiplexes  301
+/services  /services/multiplexes  301
