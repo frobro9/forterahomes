@@ -1,5 +1,5 @@
 /* ============================================================
-   FORTERA HOMES — main.js
+   FORTERA HOMES, main.js
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -318,7 +318,7 @@ if (form) {
         form.style.display = 'none';
         if (formSuccess) {
           formSuccess.style.display = 'block';
-          formSuccess.textContent = 'Thank you — your application has been received. We\'ll be in touch soon.';
+          formSuccess.textContent = 'Thank you! Your application has been received. We\'ll be in touch soon.';
         }
         return;
       }
@@ -408,7 +408,7 @@ if (adminPasswordToggle && adminPasswordInput) {
   });
 }
 
-/* ---- Wifi offer bubble — expands to show offer details ---- */
+/* ---- Wifi offer bubble, expands to show offer details ---- */
 const wifiOffer        = document.getElementById('wifiOffer');
 const wifiOfferTrigger = document.getElementById('wifiOfferTrigger');
 const wifiOfferDetails = document.getElementById('wifiOfferDetails');
@@ -430,4 +430,120 @@ if (wifiOffer && wifiOfferTrigger && wifiOfferDetails) {
   });
 }
 
+/* ---- Video: lazy-load section clips, play only while visible ---- */
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const lazyVideos = document.querySelectorAll('video.lazy-video[data-src]');
+if (lazyVideos.length && !reduceMotion && 'IntersectionObserver' in window) {
+  const videoObs = new IntersectionObserver((entries) => {
+    entries.forEach(({ target: v, isIntersecting }) => {
+      if (isIntersecting) {
+        if (!v.src) { v.src = v.dataset.src; v.load(); }
+        const p = v.play();
+        if (p && p.catch) p.catch(() => {});
+      } else if (!v.paused) {
+        v.pause();
+      }
+    });
+  }, { rootMargin: '200px 0px', threshold: 0.15 });
+  lazyVideos.forEach(v => videoObs.observe(v));
+}
+if (reduceMotion) {
+  document.querySelectorAll('video[autoplay]').forEach(v => { v.removeAttribute('autoplay'); v.pause(); });
+}
+
+/* ---- Contact: inquiry type picker --------------------------- */
+const inquiryPills = document.querySelectorAll('.inquiry-pill');
+if (inquiryPills.length) {
+  const panels = document.querySelectorAll('.inquiry-panel');
+  const projectType = document.getElementById('projectType');
+  const select = (pill) => {
+    inquiryPills.forEach(p => p.setAttribute('aria-pressed', String(p === pill)));
+    panels.forEach(panel => { panel.hidden = panel.dataset.panel !== pill.dataset.panel; });
+    if (projectType && pill.dataset.label) projectType.value = pill.dataset.label;
+  };
+  inquiryPills.forEach(pill => pill.addEventListener('click', () => select(pill)));
+  const type = new URLSearchParams(window.location.search).get('type');
+  const initial = Array.from(inquiryPills).find(p => (p.dataset.types || '').split(' ').includes(type));
+  if (initial) select(initial);
+}
+
+/* ---- Contact: multiplex + general inquiries ------------------ */
+/* Inquiries post to the /api/inquiry Pages Function, which emails them via Resend
+   (functions/api/inquiry.js). */
+const INQUIRY_ENDPOINT = '/api/inquiry';
+
+document.querySelectorAll('form.js-inquiry-form').forEach(form => {
+  const btn = form.querySelector('.form-submit');
+  const btnText = btn ? btn.textContent : '';
+  const note = form.querySelector('[data-form-note]');
+  const success = form.querySelector('[data-form-success]');
+  const isGeneral = form.id === 'generalForm';
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const v = {};
+    new FormData(form).forEach((val, k) => { v[k] = String(val).trim(); });
+    const errors = {};
+    if (!v.name) errors.name = 'Please enter your name.';
+    if (!v.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) errors.email = 'Please enter a valid email address.';
+    if (!v.message) errors.message = isGeneral ? 'Please enter a message.' : 'Tell us a little about your project.';
+    form.querySelectorAll('[data-error-for]').forEach(el => { el.textContent = errors[el.dataset.errorFor] || ''; });
+    if (Object.keys(errors).length) return;
+
+    const kind = v.project_type || form.dataset.kind || 'Inquiry';
+    const subject = `${kind}: ${v.name}`;
+    const lines = [
+      `Inquiry: ${kind}`,
+      `Name: ${v.name}`,
+      `Email: ${v.email}`,
+      v.phone && `Phone: ${v.phone}`,
+      v.location && `Property / area: ${v.location}`,
+      v.land && `Own the land: ${v.land}`,
+      v.timeline && `Timeline: ${v.timeline}`,
+    ].filter(Boolean).concat(['', v.message]);
+
+    if (!INQUIRY_ENDPOINT) {
+      window.location.href = `mailto:admin@forterahomes.ca?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+      if (note) note.textContent = 'Your email app should open with your message ready to send. If it doesn’t, email us at admin@forterahomes.ca.';
+      return;
+    }
+
+    if (btn) { btn.textContent = 'SENDING…'; btn.disabled = true; }
+    try {
+      const res = await fetch(INQUIRY_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ ...v, inquiry: kind }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        if (data.fields) form.querySelectorAll('[data-error-for]').forEach(el => { el.textContent = data.fields[el.dataset.errorFor] || ''; });
+        throw new Error(data.error || 'send failed');
+      }
+      form.querySelectorAll('.form-field, .form-row-2, .form-submit, [data-form-note]').forEach(el => { el.hidden = true; });
+      if (success) { success.style.display = 'block'; success.textContent = form.dataset.success || 'Thanks! We’ll be in touch soon.'; }
+    } catch (err) {
+      if (note) note.textContent = (err && err.message && err.message !== 'send failed' && err.message !== 'Failed to fetch') ? err.message : 'Something went wrong sending your message. Please email us at admin@forterahomes.ca.';
+      if (btn) { btn.textContent = btnText; btn.disabled = false; }
+    }
+  });
 });
+
+});
+
+/* ---- "Apply for this suite": pre-select that suite's unit type in the form ---- */
+(function () {
+  const layout = document.getElementById('bwc-layout');
+  if (!layout) return;
+  document.querySelectorAll('.unit-cta').forEach(link => {
+    link.addEventListener('click', () => {
+      const card = link.closest('.unit-card');
+      const name = card && card.querySelector('.unit-name');
+      if (!name) return;
+      const type = name.textContent.trim().split(/\s+/)[0].toLowerCase(); // "MACKAY A" -> "mackay"
+      const opt = Array.from(layout.options).find(o => o.value.toLowerCase().startsWith(type));
+      if (!opt) return;
+      layout.value = opt.value;
+      layout.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
+})();

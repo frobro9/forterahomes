@@ -2,8 +2,14 @@ name = "forterahomes"
 compatibility_date = "2026-06-01"
 pages_build_output_dir = "."
 
-# D1 binding only — secrets (SESSION_SECRET, ADMIN_USERS) stay in the
+# D1 binding only — secrets (SESSION_SECRET, ADMIN_USERS, RESEND_API_KEY) stay in the
 # Cloudflare Pages dashboard, never here.
+
+# Plain (non-secret) variables. Website inquiry emails (functions/api/inquiry.js)
+# are sent from this address; forterahomes.ca is verified in Resend.
+[vars]
+INQUIRY_FROM = "Fortera Homes <website@forterahomes.ca>"
+INQUIRY_TO = "admin@forterahomes.ca"
 [[d1_databases]]
 binding = "DB"
 database_name = "forterahomes-portal"

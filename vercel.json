@@ -2,9 +2,50 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/expertise",     "destination": "/vision",                                          "permanent": true },
-    { "source": "/neighbourhood", "destination": "/projects/beechwood-collection#neighbourhood",     "permanent": true },
-    { "source": "/floorplans",    "destination": "/projects/beechwood-collection#floorplans",        "permanent": true },
-    { "source": "/gallery",       "destination": "/projects/beechwood-collection#gallery",           "permanent": true }
+    {
+      "source": "/projects",
+      "destination": "/collections",
+      "permanent": true
+    },
+    {
+      "source": "/vision",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/expertise",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/neighbourhood",
+      "destination": "/projects/beechwood-collection#neighbourhood",
+      "permanent": true
+    },
+    {
+      "source": "/floorplans",
+      "destination": "/projects/beechwood-collection#floorplans",
+      "permanent": true
+    },
+    {
+      "source": "/gallery",
+      "destination": "/projects/beechwood-collection#gallery",
+      "permanent": true
+    },
+    {
+      "source": "/services/development-consulting",
+      "destination": "/services/multiplexes",
+      "permanent": true
+    },
+    {
+      "source": "/services/custom-homes",
+      "destination": "/services/multiplexes",
+      "permanent": true
+    },
+    {
+      "source": "/services",
+      "destination": "/services/multiplexes",
+      "permanent": true
+    }
   ]
 }

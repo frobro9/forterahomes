@@ -2,24 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" type="image/png" href="../assets/favicon1.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Beechwood Collection by Fortera Homes — spacious two bedroom rentals at 82 Genest St., Beechwood South, Ottawa. Arriving early 2027.">
-  <title>Beechwood Collection | Fortera Homes</title>
+  <title>Beechwood Collection | Two Bedroom Rentals in Beechwood, Ottawa | Fortera Homes</title>
+  <meta name="description" content="Beechwood Collection by Fortera Homes: eight two bedroom rentals at 82 Genest St., Beechwood South, Ottawa, from $2,300/month. Now leasing for move-ins early 2027.">
   <link rel="canonical" href="https://forterahomes.ca/projects/beechwood-collection">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" href="/assets/favicon1.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon1.png">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://forterahomes.ca/projects/beechwood-collection">
-  <meta property="og:title" content="Beechwood Collection | Fortera Homes">
-  <meta property="og:description" content="Spacious two bedroom rentals at 82 Genest St., Beechwood South, Ottawa. Arriving early 2027.">
+  <meta property="og:title" content="Beechwood Collection | Two Bedroom Rentals in Beechwood, Ottawa | Fortera Homes">
+  <meta property="og:description" content="Beechwood Collection by Fortera Homes: eight two bedroom rentals at 82 Genest St., Beechwood South, Ottawa, from $2,300/month. Now leasing for move-ins early 2027.">
   <meta property="og:image" content="https://forterahomes.ca/assets/front.jpg">
   <meta property="og:site_name" content="Fortera Homes">
+  <meta property="og:locale" content="en_CA">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="robots" content="index, follow">
+  <meta name="geo.region" content="CA-ON">
+  <meta name="geo.placename" content="Ottawa">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
-  <link rel="stylesheet" href="../assets/leaflet/leaflet.css"/>
-  <script src="../assets/leaflet/leaflet.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=Cormorant+Garamond:wght@500;600&family=Source+Serif+4:ital,opsz,wght@1,8..60,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/fortera.css?v=20261115g">
+  <link rel="stylesheet" href="/assets/leaflet/leaflet.css">
+  <script src="/assets/leaflet/leaflet.js"></script>
+  <style>#neighbourhood-map .nb-tiles{filter:grayscale(1) sepia(.18) brightness(1.06) contrast(.88);}</style>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -208,139 +215,106 @@
 <body>
 
   <!-- NAV -->
-  <nav id="nav" class="nav nav--solid">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo" aria-label="Fortera Homes">FORTERA</a>
-      <div class="nav-links">
-        <a href="/projects" class="nav-link">Projects</a>
-        <a href="/vision" class="nav-link">Vision</a>
-        <a href="/blog" class="nav-link">Blog</a>
-      </div>
-      <div class="nav-right">
-        <a href="/register" class="nav-cta">Contact Us</a>
-        <button class="nav-menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">MENU <span aria-hidden="true">&#9776;</span></button>
-      </div>
+  <header class="fx-nav" id="fxNav">
+    <a href="/" class="fx-mark" aria-label="Fortera Homes, home">FORTERA</a>
+    <nav class="fx-nav-links" aria-label="Main navigation">
+      <a href="/services/multiplexes">Build with us</a>
+      <a href="/collections">Live with us</a>
+      <a href="/our-work">Our Work</a>
+      <a href="/about">About</a>
+    </nav>
+    <div class="fx-nav-right">
+      <a href="/register?type=build" class="btn-line btn-line--bronze">Book a Consultation</a>
+      <button class="fx-explore" type="button" data-menu-open aria-controls="fxMenu" aria-expanded="false">Explore<i aria-hidden="true"></i></button>
     </div>
-  </nav>
+  </header>
 
-  <!-- PROJECT HERO -->
-  <div class="project-hero">
-    <img src="../assets/landingpage1.jpg" alt="Beechwood Collection — Ottawa, Ontario">
-    <div class="project-hero-overlay"></div>
-    <div class="project-hero-content">
-      <a href="/projects" class="project-hero-back">
-        <span aria-hidden="true">&#8592;</span> All Projects
-      </a>
-      <div class="project-hero-meta">
-        <span class="project-hero-badge">
-          <span class="badge-dot" aria-hidden="true"></span> Now Leasing
-        </span>
-        <span class="project-hero-location">
-          <svg class="location-pin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-          82 Genest Street, Ottawa, Ontario
-        </span>
-      </div>
-      <h1 class="project-hero-title">Beechwood Collection</h1>
-    </div>
-  </div>
+  <a href="/register?type=build" class="fx-rail" aria-label="Start a project"><span>Start a project</span><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 10 10 2M4 2h6v6"/></svg></a>
 
-  <!-- ===================== FIRST RENTERS ===================== -->
-  <section id="first-renters" class="section-first-renters">
-    <div class="section-inner">
-      <div class="section-header first-renters-header reveal">
-        <p class="section-label">THE DIFFERENCE</p>
-        <h2 class="section-h2">Built for the Way You Live</h2>
-        <p class="first-renters-desc">At Beechwood Collection, you're not just renting a home, you're the first person to ever call it yours. We're leasing now, ahead of our early 2027 opening, so early applicants can lock in their price before the building is even finished.</p>
-        <div class="first-renters-urgency">
-          <span class="first-renters-urgency-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-          </span>
-          <div>
-            <p class="first-renters-urgency-label">Now Leasing</p>
-            <p class="first-renters-urgency-text">Lock in your price before early 2027.</p>
-          </div>
+  <main id="main">
+    <section class="fx-phero fx-phero--split">
+      <div class="fx-phero-media" data-speed="0.18"><img src="/assets/beechwood/hero-rear.jpg?v=2" alt="Rear of the Beechwood Collection at dusk, with balconies and landscaped yard"></div>
+      <div class="fx-phero-inner">
+        <div>
+          <div class="fx-crumb"><a href="/">Home</a> <span>/</span> <a href="/collections">Live with us</a> <span>/</span> <span>Beechwood</span></div>
+          <span class="f-kicker">Live with us &middot; Now leasing</span>
+          <h1 class="f-display fx-split">Beechwood<br>Collection</h1>
+        </div>
+        <div data-in="up">
+          <p class="f-body">Eight spacious two bedroom suites at 82 Genest St. in Beechwood South, Ottawa, leasing now for move-ins in early 2027.</p>
+          <a href="#apply" class="btn-line btn-line--light">Apply now</a>
         </div>
       </div>
-      <div class="first-renters-grid reveal">
-        <div class="first-renters-item">
-          <div class="first-renters-item-head">
-            <span class="first-renters-icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15 8.5 22 9.5 17 14.5 18.5 21.5 12 18 5.5 21.5 7 14.5 2 9.5 9 8.5 12 2"/></svg>
-            </span>
-            <h4 class="first-renters-item-title">First to Live Here</h4>
-          </div>
-          <p class="first-renters-item-desc">Thoughtfully designed suites throughout, including fully accessible units. Nobody has lived in your home before you.</p>
+    </section>
+
+    <nav class="fx-subnav" aria-label="On this page">
+      <div class="fx-subnav-inner">
+        <a href="#overview" class="subnav-link">Overview</a>
+        <a href="#suites" class="subnav-link">Suites</a>
+        <a href="#floorplans" class="subnav-link">Floor plans</a>
+        <a href="#included" class="subnav-link">What&rsquo;s included</a>
+        <a href="#gallery" class="subnav-link">Gallery</a>
+        <a href="#neighbourhood" class="subnav-link">Neighbourhood</a>
+        <a href="#faq" class="subnav-link">FAQ</a>
+        <a href="#apply" class="btn-line btn-line--bronze">Apply now</a>
+      </div>
+    </nav>
+
+    <section class="fx-wrap" id="overview" aria-label="Key facts">
+      <div class="fx-facts">
+        <div class="fx-fact" data-in="up"><span class="f-kicker">Suites</span><span class="f-display f-m">8 &middot; 2 bed</span></div>
+        <div class="fx-fact" data-in="up"><span class="f-kicker">Rent from</span><span class="f-display f-m">$2,300</span></div>
+        <div class="fx-fact" data-in="up"><span class="f-kicker">Size</span><span class="f-display f-m">860&ndash;920 ft&sup2;</span></div>
+        <div class="fx-fact" data-in="up"><span class="f-kicker">Move-in</span><span class="f-display f-m">Early 2027</span></div>
+      </div>
+    </section>
+
+    <section class="fx-sec fx-wrap" aria-label="The first to call it home">
+      <div class="fx-split2">
+        <div class="fx-split2-text">
+          <span class="f-kicker">The difference</span>
+          <h2 class="f-display f-l fx-split">The first to<br>call it home</h2>
+          <p class="f-body">At Beechwood Collection you&rsquo;re not just renting a home. You&rsquo;re the first person to ever call it yours. We&rsquo;re leasing now, ahead of our early 2027 opening, so early applicants can lock in their price before the building is finished.</p>
+          <ul class="fx-points">
+            <li><span><strong>First to live here</strong>: thoughtfully designed suites throughout, including fully accessible units.</span></li>
+            <li><span><strong>Healthy by design</strong>: HRV ventilation keeps the air clean, and smart thermostats keep every suite comfortable.</span></li>
+            <li><span><strong>Built to last</strong>: sound insulation and premium finishes keep suites quiet, with energy-efficient systems keeping bills low.</span></li>
+            <li><span><strong>Space that works</strong>: dedicated storage units plus generous in-suite storage, in layouts built for working from home.</span></li>
+          </ul>
+          <p class="fx-offer" style="margin-top:1.8rem"><b>Offer</b> Free Bell Fiber internet on leases signed by Dec 31, 2026</p>
         </div>
-        <div class="first-renters-item">
-          <div class="first-renters-item-head">
-            <span class="first-renters-icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 4.6a2 2 0 1 1 2 3.4H2"/><path d="M12.6 19.4a2 2 0 1 0 2-3.4H2"/><path d="M17.7 8a2.5 2.5 0 1 1 2.5 4H2"/></svg>
-            </span>
-            <h4 class="first-renters-item-title">Healthy By Design</h4>
-          </div>
-          <p class="first-renters-item-desc">HRV ventilation keeps the air clean, while smart thermostats keep every suite comfortable in every season.</p>
+        <div class="fx-split2-media" data-in="right"><img src="/assets/beechwood/kitchen.jpg" class="has-label" alt="Beechwood Collection kitchen rendering with walnut island and quartz counters" loading="lazy"></div>
+      </div>
+    </section>
+
+    <section class="fx-sec fx-sec--stone fx-wrap" id="suites" aria-label="Suite types">
+      <div class="fx-head">
+          <div><span class="f-kicker">Suite types</span><h2 class="f-display f-l fx-split">Sized for<br>how you live</h2></div>
+          <div data-in="up"><p class="f-body">Every Beechwood suite is a spacious two bedroom home, with one or two full bathrooms depending on the floor.</p></div>
         </div>
-        <div class="first-renters-item">
-          <div class="first-renters-item-head">
-            <span class="first-renters-icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-            </span>
-            <h4 class="first-renters-item-title">Built to Last</h4>
-          </div>
-          <p class="first-renters-item-desc">Sound insulation and luxury finishes keep suites quiet and refined, while energy-efficient systems keep bills low.</p>
+      <div class="fx-cards fx-cards--2">
+        <div class="fx-card fx-suite" data-in="left">
+          <div class="fx-card-media"><img src="/assets/beechwood/secondary-bedroom.jpg" class="has-label" alt="Secondary bedroom rendering with warm evening light" loading="lazy"></div>
+          <div class="fx-card-body"><span class="fx-suite-meta"><span>Ground floor</span><span>860 sq ft</span><span>From $2,300</span></span><span class="f-display f-m">Two bed, one bath</span><p class="f-body">Mackay suites on the ground floor, with easy at-grade access and a private entrance feel.</p></div>
         </div>
-        <div class="first-renters-item">
-          <div class="first-renters-item-head">
-            <span class="first-renters-icon" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-            </span>
-            <h4 class="first-renters-item-title">Space That Works for You</h4>
-          </div>
-          <p class="first-renters-item-desc">Dedicated storage units plus generous in-suite storage, in layouts built for working from home.</p>
+        <div class="fx-card fx-suite" data-in="right">
+          <div class="fx-card-media"><img src="/assets/beechwood/primary-bedroom.jpg" class="has-label" alt="Primary bedroom rendering with balcony door" loading="lazy"></div>
+          <div class="fx-card-body"><span class="fx-suite-meta"><span>2nd&ndash;4th floor</span><span>920 sq ft</span><span>From $2,500</span></span><span class="f-display f-m">Two bed, two bath</span><p class="f-body">Manor and Rideau suites across the upper floors, with a second full bath and, on the top floor, executive finishes.</p></div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===================== SUITE TYPES ===================== -->
-  <section id="suite-types" class="section-suite-types">
-    <div class="section-inner">
-      <div class="section-header reveal">
-        <p class="section-label">SUITE TYPES</p>
-        <h2 class="section-h2">Sized For How You Live</h2>
-        <p class="unit-types-desc">Every Beechwood suite is a spacious two bedroom home, available with either one or two full bathrooms depending on floor.</p>
-      </div>
-
-      <div class="unit-types-grid reveal">
-        <div class="unit-type-card">
-          <h3 class="unit-type-name">Two Bed, One Bath</h3>
-          <p class="unit-type-spec">Ground Floor &middot; 860 sq ft</p>
-          <p class="unit-type-desc">Mackay-collection suites on the ground floor, with easy at-grade access and a private entrance feel.</p>
+    <section class="fx-sec fx-wrap" id="floorplans" aria-label="Floor plans">
+      <div class="fx-head">
+          <div><span class="f-kicker">Floor plans</span><h2 class="f-display f-l fx-split">Choose<br>your suite</h2></div>
+          <div data-in="up"><p class="f-body">Pick a floor to see its suites. Click any plan to enlarge it.</p></div>
         </div>
-        <div class="unit-type-card">
-          <h3 class="unit-type-name">Two Bed, Two Bath</h3>
-          <p class="unit-type-spec">2nd&ndash;4th Floor &middot; 920 sq ft</p>
-          <p class="unit-type-desc">Manor and Rideau-collection suites across the upper floors, with a second full bath and, on the top floor, executive finishes.</p>
-        </div>
+      <div class="unit-filters" role="group" aria-label="Choose a floor">
+        <button class="unit-filter-tab active" data-filter="ground">Ground floor</button>
+        <button class="unit-filter-tab" data-filter="second">2nd floor</button>
+        <button class="unit-filter-tab" data-filter="third">3rd floor</button>
+        <button class="unit-filter-tab" data-filter="fourth">4th floor</button>
       </div>
-    </div>
-  </section>
-
-  <!-- ===================== FLOORPLANS ===================== -->
-  <section id="floorplans" class="section-floorplans">
-    <div class="section-inner">
-      <div class="section-header reveal">
-        <p class="section-label">FLOOR PLANS</p>
-        <h2 class="section-h2">Choose Your Suite</h2>
-      </div>
-
-      <div class="unit-filters">
-        <button class="unit-filter-tab active" data-filter="ground">Ground Floor</button>
-        <button class="unit-filter-tab" data-filter="second">2nd Floor</button>
-        <button class="unit-filter-tab" data-filter="third">3rd Floor</button>
-        <button class="unit-filter-tab" data-filter="fourth">4th Floor</button>
-      </div>
-
       <div class="units-grid">
 
         <!-- GROUND FLOOR -->
@@ -349,15 +323,15 @@
             <h3 class="unit-name">MACKAY A</h3>
             <p class="unit-subtitle">Ground Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 1 BATH &middot; 860 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 1 BATH &middot; 860 SQ FT</span>
               <span class="unit-price">$2,300 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-101.jpg" data-alt="Mackay A floor plan" aria-label="Expand Mackay A floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-101.jpg" alt="Mackay A floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-101.jpg" data-alt="Mackay A floor plan" aria-label="Expand Mackay A floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-101.jpg" alt="Mackay A floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
         <div class="unit-card" data-floor="ground">
@@ -365,15 +339,15 @@
             <h3 class="unit-name">MACKAY B</h3>
             <p class="unit-subtitle">Ground Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 1 BATH &middot; 860 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 1 BATH &middot; 860 SQ FT</span>
               <span class="unit-price">$2,300 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-102.jpg" data-alt="Mackay B floor plan" aria-label="Expand Mackay B floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-102.jpg" alt="Mackay B floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-102.jpg" data-alt="Mackay B floor plan" aria-label="Expand Mackay B floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-102.jpg" alt="Mackay B floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
         <!-- 2ND FLOOR -->
@@ -382,15 +356,15 @@
             <h3 class="unit-name">MANOR A</h3>
             <p class="unit-subtitle">2nd Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 2 BATH &middot; 920 SQ FT</span>
               <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-201.jpg" data-alt="Manor A floor plan" aria-label="Expand Manor A floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-201.jpg" alt="Manor A floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-201.jpg" data-alt="Manor A floor plan" aria-label="Expand Manor A floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-201.jpg" alt="Manor A floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
         <div class="unit-card" data-floor="second" style="display:none">
@@ -398,15 +372,15 @@
             <h3 class="unit-name">MANOR B</h3>
             <p class="unit-subtitle">2nd Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 2 BATH &middot; 920 SQ FT</span>
               <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-202.jpg" data-alt="Manor B floor plan" aria-label="Expand Manor B floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-202.jpg" alt="Manor B floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-202.jpg" data-alt="Manor B floor plan" aria-label="Expand Manor B floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-202.jpg" alt="Manor B floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
         <!-- 3RD FLOOR -->
@@ -415,15 +389,15 @@
             <h3 class="unit-name">MANOR A</h3>
             <p class="unit-subtitle">3rd Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 2 BATH &middot; 920 SQ FT</span>
               <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-301.jpg" data-alt="Manor A floor plan" aria-label="Expand Manor A floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-301.jpg" alt="Manor A floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-301.jpg" data-alt="Manor A floor plan" aria-label="Expand Manor A floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-301.jpg" alt="Manor A floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
         <div class="unit-card" data-floor="third" style="display:none">
@@ -431,15 +405,15 @@
             <h3 class="unit-name">MANOR B</h3>
             <p class="unit-subtitle">3rd Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 2 BATH &middot; 920 SQ FT</span>
               <span class="unit-price">$2,500 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-302.jpg" data-alt="Manor B floor plan" aria-label="Expand Manor B floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-302.jpg" alt="Manor B floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-302.jpg" data-alt="Manor B floor plan" aria-label="Expand Manor B floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-302.jpg" alt="Manor B floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
         <!-- 4TH FLOOR -->
@@ -448,15 +422,15 @@
             <h3 class="unit-name">RIDEAU A</h3>
             <p class="unit-subtitle">4th Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 2 BATH &middot; 920 SQ FT</span>
               <span class="unit-price">$2,600 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-401.jpg" data-alt="Rideau A floor plan" aria-label="Expand Rideau A floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-401.jpg" alt="Rideau A floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-401.jpg" data-alt="Rideau A floor plan" aria-label="Expand Rideau A floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-401.jpg" alt="Rideau A floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
         <div class="unit-card" data-floor="fourth" style="display:none">
@@ -464,422 +438,147 @@
             <h3 class="unit-name">RIDEAU B</h3>
             <p class="unit-subtitle">4th Floor</p>
             <div class="unit-specs-row">
-              <span class="unit-specs">2 BED &mdash; 2 BATH &middot; 920 SQ FT</span>
+              <span class="unit-specs">2 BED &middot; 2 BATH &middot; 920 SQ FT</span>
               <span class="unit-price">$2,600 / MONTH</span>
             </div>
           </div>
-          <button type="button" class="unit-floorplan" data-src="../assets/floorplans/unit-402.jpg" data-alt="Rideau B floor plan" aria-label="Expand Rideau B floor plan">
-            <img class="unit-floorplan-img" src="../assets/floorplans/unit-402.jpg" alt="Rideau B floor plan" loading="lazy" width="1960" height="531">
+          <button type="button" class="unit-floorplan" data-src="/assets/floorplans/unit-402.jpg" data-alt="Rideau B floor plan" aria-label="Expand Rideau B floor plan">
+            <img class="unit-floorplan-img" src="/assets/floorplans/unit-402.jpg" alt="Rideau B floor plan" loading="lazy" width="1960" height="531">
             <span class="unit-floorplan-expand" aria-hidden="true">&#x2922;</span>
           </button>
-          <a href="/register" class="unit-cta">Request Info</a>
+          <a href="#apply" class="unit-cta">Apply for this suite</a>
         </div>
 
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Floorplan lightbox -->
-  <div class="gal-lightbox fp-lightbox" id="fpLightbox" hidden>
-    <button class="gal-lb-close" id="fpLbClose" aria-label="Close">&times;</button>
-    <div class="gal-lb-wrap">
-      <img class="gal-lb-img fp-lb-img" id="fpLbImg" src="" alt="">
-    </div>
-  </div>
-
-  <!-- ===================== AMENITIES ===================== -->
-  <section id="amenities" class="section-amenities">
-    <div class="section-inner">
-      <div class="amenities-header reveal">
-        <p class="section-label">THE BUILDING</p>
-        <h2 class="section-h2">What&rsquo;s Included</h2>
-        <p class="amenities-subhead">Every Beechwood suite comes standard with the features that matter for comfortable, long-term living.</p>
-      </div>
-
-      <div class="amenities-list reveal">
-        <div class="amenities-row">
-          <span class="amenities-row-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17h20"/><path d="M4 17v-4a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v4"/><path d="M13 13V9a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v8"/><path d="M4 17v3M20 17v3"/></svg>
-          </span>
-          <h4 class="amenities-row-title">Suite Comfort</h4>
-          <p class="amenities-row-items">In-suite laundry, high ceilings</p>
-        </div>
-        <div class="amenities-row">
-          <span class="amenities-row-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V10l8-6 8 6v11"/><path d="M9 21v-6h6v6"/></svg>
-          </span>
-          <h4 class="amenities-row-title">Kitchen &amp; Outdoor</h4>
-          <p class="amenities-row-items">Premium kitchen finishes, private balconies &amp; patios</p>
-        </div>
-        <div class="amenities-row">
-          <span class="amenities-row-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5 12a11 11 0 0 1 14 0"/><path d="M8.5 15.4a6 6 0 0 1 7 0"/><line x1="12" y1="19" x2="12.01" y2="19"/></svg>
-          </span>
-          <h4 class="amenities-row-title">Connectivity &amp; Access</h4>
-          <p class="amenities-row-items">Internet included, keyless entry</p>
-        </div>
-        <div class="amenities-row">
-          <span class="amenities-row-icon" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </span>
-          <h4 class="amenities-row-title">Building Systems</h4>
-          <p class="amenities-row-items">Energy efficient systems, bicycle storage</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== SPECIAL OFFER ===================== -->
-  <section id="special-offer" class="section-special-offer">
-    <div class="section-inner">
-      <div class="offer-grid reveal">
-        <div class="offer-text">
-          <p class="section-label">SPECIAL OFFER</p>
-          <h2 class="section-h2">Internet, On Us</h2>
-          <p class="offer-desc">Founding members of Beechwood Collection lease with ultra-fast Bell Fiber internet included. No setup, no monthly bill, just fast wifi from day one.</p>
-        </div>
-        <div class="offer-value">
-          <span class="offer-value-label">Included Monthly Value</span>
-          <span class="offer-value-amount">$110<span class="offer-value-unit">&nbsp;/ month</span></span>
-          <span class="offer-value-sub">A $1,320 yearly value, included with every founding-member lease.</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== GALLERY ===================== -->
-  <section id="gallery" class="section-gallery">
-    <div class="section-inner">
-      <div class="reveal">
-        <p class="section-label">PHOTOGRAPHY</p>
-        <h2 class="section-h2">The Collection</h2>
-        <div class="gallery-toggle">
-          <button class="gallery-toggle-btn active" data-target="galleryExt">Exteriors</button>
-          <button class="gallery-toggle-btn" data-target="galleryInt">Interiors</button>
-        </div>
-      </div>
-
-      <!-- Exteriors -->
-      <div class="gallery-grid gallery-grid--ext" id="galleryExt">
-        <div class="gallery-item gal-ext-2" data-src="../assets/front.jpg" data-alt="Front exterior — Beechwood Collection, Ottawa">
-          <img src="../assets/front.jpg" alt="Front exterior">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-ext-3" data-src="../assets/back.jpg" data-alt="Rear exterior — Beechwood Collection, Ottawa">
-          <img src="../assets/back.jpg" alt="Rear exterior">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-ext-4" data-src="../assets/frontday.jpg" data-alt="Building exterior — daytime">
-          <img src="../assets/frontday.jpg" alt="Building exterior daytime">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-ext-5" data-src="../assets/frontnight.jpg" data-alt="Building exterior — evening">
-          <img src="../assets/frontnight.jpg" alt="Building exterior evening">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-      </div>
-
-      <!-- Interiors (hidden by default) -->
-      <div class="gallery-grid gallery-grid--int" id="galleryInt" style="display:none">
-        <div class="gallery-item gal-int-1" data-src="../assets/kitchen.jpg" data-alt="Modern kitchen — Beechwood Collection suite">
-          <img src="../assets/kitchen.jpg" alt="Modern kitchen">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-int-2" data-src="../assets/living2.jpg" data-alt="Open-plan living — Beechwood Collection">
-          <img src="../assets/living2.jpg" alt="Living room">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-int-3" data-src="../assets/Bed1.jpg" data-alt="Primary bedroom — Beechwood Collection">
-          <img src="../assets/Bed1.jpg" alt="Primary bedroom">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-int-4" data-src="../assets/Bath1.jpg" data-alt="Bathroom — Beechwood Collection">
-          <img src="../assets/Bath1.jpg" alt="Bathroom">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-int-5" data-src="../assets/Bed2.jpg" data-alt="Second bedroom — Beechwood Collection">
-          <img src="../assets/Bed2.jpg" alt="Second bedroom">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-int-6" data-src="../assets/Bath2.jpg" data-alt="Second bathroom — Beechwood Collection">
-          <img src="../assets/Bath2.jpg" alt="Second bathroom">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-        <div class="gallery-item gal-int-7" data-src="../assets/Bed1.jpg" data-alt="Bedroom detail — Beechwood Collection">
-          <img src="../assets/Bed1.jpg" alt="Bedroom detail" style="object-position: center 30%">
-          <div class="gallery-item-overlay"><span class="gallery-expand-icon">&#x2922;</span></div>
-        </div>
-      </div>
+    <div class="gal-lightbox fp-lightbox" id="fpLightbox" hidden>
+      <button class="gal-lb-close" id="fpLbClose" aria-label="Close">&times;</button>
+      <div class="gal-lb-wrap"><img class="gal-lb-img fp-lb-img" id="fpLbImg" src="" alt=""></div>
     </div>
 
-    <!-- Lightbox -->
-    <div class="gal-lightbox" id="galLightbox" hidden>
-      <button class="gal-lb-close" id="galLbClose" aria-label="Close">&times;</button>
-      <div class="gal-lb-wrap">
-        <img class="gal-lb-img" id="galLbImg" src="" alt="">
-      </div>
-      <div class="gal-lb-counter" id="galLbCounter"></div>
-      <button class="gal-lb-prev" id="galLbPrev" aria-label="Previous">&#8592;</button>
-      <button class="gal-lb-next" id="galLbNext" aria-label="Next">&#8594;</button>
-    </div>
-  </section>
-
-  <!-- ===================== NEIGHBOURHOOD ===================== -->
-  <section id="neighbourhood" class="section-neighbourhood">
-    <div class="neighbourhood-inner neighbourhood-inner--split">
-      <div class="neighbourhood-text reveal">
-        <p class="section-label">WHAT'S AROUND</p>
-        <h2 class="section-h2 neighbourhood-heading">Living in Beechwood, <span class="heading-light">Ottawa.</span></h2>
-        <p class="neighbourhood-desc">Positioned in one of Ottawa's most walkable and dynamic communities, 82 Genest St. offers unmatched connectivity and urban convenience.</p>
-        <ul class="neighbourhood-facts">
-          <li>3 minute walk to JnJ Bakery Café and neighbourhood coffee spots.</li>
-          <li>2 minute walk to the Ottawa River Pathway for running and cycling.</li>
-          <li>Steps to OC Transpo bus service into downtown Ottawa.</li>
-          <li>Minutes from Beechwood Cemetery&rsquo;s 160 acres of walking trails.</li>
-        </ul>
-      </div>
-      <div class="neighbourhood-map-col reveal">
-        <div class="map-filters">
-          <button class="map-filter active" data-cat="all">All</button>
-          <button class="map-filter" data-cat="food">Food &amp; Drink</button>
-          <button class="map-filter" data-cat="fitness">Fitness</button>
-          <button class="map-filter" data-cat="parks">Parks</button>
-          <button class="map-filter" data-cat="transit">Transit</button>
-          <button class="map-filter" data-cat="shopping">Shopping</button>
-          <button class="map-filter" data-cat="school">School</button>
+    <section class="fx-sec fx-sec--stone fx-wrap" id="included" aria-label="What's included">
+      <div class="fx-head">
+          <div><span class="f-kicker">The building</span><h2 class="f-display f-l fx-split">What&rsquo;s<br>included</h2></div>
+          <div data-in="up"><p class="f-body">Every suite comes standard with the features that matter for comfortable, long-term living.</p></div>
         </div>
-        <div class="map-wrap">
-          <a class="map-open-link" href="https://www.google.com/maps?q=82+Genest+St,+Ottawa,+ON" target="_blank" rel="noopener noreferrer">
-            Open in Maps
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-          <div id="neighbourhood-map"></div>
+      <div class="fx-values">
+        <div class="fx-value" data-in="up"><span class="f-kicker">i.</span><span class="f-display f-s">Suite comfort</span><p>In-suite washer and dryer, high ceilings and large windows.</p></div>
+        <div class="fx-value" data-in="up"><span class="f-kicker">ii.</span><span class="f-display f-s">Kitchen &amp; outdoor</span><p>Premium kitchen finishes and a private balcony or patio.</p></div>
+        <div class="fx-value" data-in="up"><span class="f-kicker">iii.</span><span class="f-display f-s">Connected</span><p>Internet included and keyless entry.</p></div>
+        <div class="fx-value" data-in="up"><span class="f-kicker">iv.</span><span class="f-display f-s">Healthy air</span><p>HRV ventilation and smart thermostats in every suite.</p></div>
+        <div class="fx-value" data-in="up"><span class="f-kicker">v.</span><span class="f-display f-s">Storage</span><p>Dedicated storage units and bicycle storage.</p></div>
+        <div class="fx-value" data-in="up"><span class="f-kicker">vi.</span><span class="f-display f-s">Efficient &amp; quiet</span><p>Energy-efficient systems and sound insulation between suites.</p></div>
+      </div>
+    </section>
+
+    <section class="fx-sec fx-sec--ink fx-wrap" aria-label="Special offer">
+      <div class="fx-offerband">
+        <div>
+          <span class="f-kicker">Special offer</span>
+          <h2 class="f-display f-l fx-split" style="margin-top:1.2rem">Internet,<br>on us</h2>
+          <p class="f-body" style="margin-top:1.4rem">Founding residents lease with ultra-fast Bell Fiber internet included, over 1&nbsp;Gbps, no setup and no monthly bill. For leases signed on or before December&nbsp;31,&nbsp;2026.</p>
+        </div>
+        <div class="fx-offerband-value" data-in="up">
+          <span class="f-display f-xl">$110</span>
+          <span class="f-kicker">per month included, a $1,320 yearly value</span>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <script>
-  (function () {
-    var HOME = { lat: 45.4389969, lng: -75.6727247 };
-    var POIS = [
-      /* Food & Drink */
-      { name: 'JnJ Bakery Café',         cat: 'food',     desc: 'Neighbourhood bakery & espresso bar — 3 min walk',                   lat: 45.4394, lng: -75.6748 },
-      { name: 'The Clocktower Brew Pub', cat: 'food',     desc: 'Local craft beers & pub fare on MacKay St',                          lat: 45.4396, lng: -75.6772 },
-      { name: 'Signatures Restaurant',   cat: 'food',     desc: 'Upscale dining by Le Cordon Bleu on Laurier Ave E',                  lat: 45.4292, lng: -75.6747 },
-      { name: 'Byward Market',           cat: 'food',     desc: "Ottawa's premier open-air market — restaurants, cafés & fresh food", lat: 45.4276, lng: -75.6924 },
-      /* Fitness */
-      { name: 'Ottawa River Pathway',    cat: 'fitness',  desc: 'Scenic multi-use trail along the Ottawa River — 2 min walk',         lat: 45.4435, lng: -75.6728 },
-      { name: 'Rideau River E. Pathway', cat: 'fitness',  desc: 'Waterfront trail along the Rideau River — cycling & running',        lat: 45.4195, lng: -75.6870 },
-      /* Parks */
-      { name: 'Riverain Park',           cat: 'parks',    desc: 'Open green space with Ottawa River access',                          lat: 45.4298, lng: -75.6696 },
-      { name: 'Beechwood Cemetery',      cat: 'parks',    desc: 'National Historic Site — 160 acres of peaceful walking',             lat: 45.4469, lng: -75.6599 },
-      { name: 'Strathcona Park',         cat: 'parks',    desc: 'Riverside park with green space & sports fields',                    lat: 45.4286, lng: -75.6731 },
-      { name: "Major's Hill Park",       cat: 'parks',    desc: 'Iconic Ottawa park overlooking the Rideau Canal & Parliament',       lat: 45.4279, lng: -75.6988 },
-      /* Transit */
-      { name: 'OC Transpo — Beechwood', cat: 'transit',  desc: 'Frequent bus service to downtown Ottawa & Rideau Centre',            lat: 45.4395, lng: -75.6750 },
-      { name: 'Rideau LRT Station',      cat: 'transit',  desc: 'O-Train Confederation Line — direct to downtown & airport',         lat: 45.4263, lng: -75.6915 },
-      /* Shopping */
-      { name: 'Metro Beechwood',         cat: 'shopping', desc: 'Full-service grocery at 50 Beechwood Ave — 4 min walk',             lat: 45.4395, lng: -75.6756 },
-      { name: 'LCBO Beechwood',          cat: 'shopping', desc: 'Liquor & wine at Beechwood & MacKay',                               lat: 45.4439, lng: -75.6704 },
-      { name: 'Rideau Centre',           cat: 'shopping', desc: "Ottawa's largest downtown mall — 180+ stores",                      lat: 45.4254, lng: -75.6924 },
-      { name: 'Byward Market Shops',     cat: 'shopping', desc: 'Independent boutiques, galleries & specialty food',                  lat: 45.4279, lng: -75.6924 },
-      /* School */
-      { name: 'University of Ottawa',    cat: 'school',   desc: 'Major university campus — 10 min by bus or bike',                   lat: 45.4225, lng: -75.6834 },
-    ];
-
-    var CAT_COLORS = {
-      food:     '#b2977d',
-      fitness:  '#8c9e8c',
-      parks:    '#6b8a72',
-      transit:  '#9a8c82',
-      shopping: '#c4a882',
-      school:   '#8a8070',
-    };
-
-    var CAT_LABELS = {
-      food: 'Food & Drink', fitness: 'Fitness',
-      parks: 'Parks', transit: 'Transit', shopping: 'Shopping', school: 'School',
-    };
-
-    var ICON_PATHS = {
-      food:     '<g stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"><line x1="13" y1="6" x2="13" y2="20"/><path d="M10 6L10 10Q10 14 13 14Q16 14 16 10L16 6"/></g>',
-      fitness:  '<g fill="white" transform="translate(3,3) scale(0.83)"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/></g>',
-      parks:    '<polygon points="13,5 8,12 10.5,12 7,17 11,17 11,21 15,21 15,17 19,17 15.5,12 18,12" fill="white"/>',
-      transit:  '<g stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"><rect x="8" y="6" width="10" height="12" rx="2"/><line x1="8" y1="11" x2="18" y2="11"/><circle cx="10.5" cy="16" r="1.5" fill="white" stroke="none"/><circle cx="15.5" cy="16" r="1.5" fill="white" stroke="none"/></g>',
-      shopping: '<g stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10L8 20 18 20 17 10Z"/><path d="M11 10L11 8Q13 5 15 8L15 10"/></g>',
-      school:   '<g fill="white"><polygon points="13,5 21,9 13,13 5,9"/><polygon points="9,12 9,18 13,20 17,18 17,12 13,14"/><rect x="20" y="9" width="2" height="7" rx="1"/><circle cx="21" cy="17" r="1.8"/></g>',
-    };
-
-    function makeIcon(cat, isHome) {
-      if (isHome) {
-        var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">'
-          + '<path d="M16 1C8.3 1 1 8.3 1 16c0 11 15 25 15 25S31 27 31 16C31 8.3 23.7 1 16 1z" fill="#1c1a18"/>'
-          + '<polygon points="16,7 25,17 7,17" fill="white"/>'
-          + '<rect x="9" y="17" width="14" height="9" fill="white"/>'
-          + '<rect x="13" y="21" width="6" height="5" fill="#1c1a18"/>'
-          + '</svg>';
-        return L.divIcon({ className: '', html: svg, iconSize: [32, 42], iconAnchor: [16, 42], popupAnchor: [0, -44] });
-      }
-      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="34" viewBox="0 0 26 34">'
-        + '<path d="M13 1C6.3 1 1 6.3 1 13c0 10.5 12 21 12 21S25 23.5 25 13C25 6.3 19.7 1 13 1z" fill="' + CAT_COLORS[cat] + '"/>'
-        + (ICON_PATHS[cat] || '')
-        + '</svg>';
-      return L.divIcon({ className: '', html: svg, iconSize: [26, 34], iconAnchor: [13, 34], popupAnchor: [0, -36] });
-    }
-
-    function makePopup(name, cat, desc, isHome) {
-      var tag = isHome
-        ? '<span style="font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#b2977d;font-family:Montserrat,sans-serif;font-weight:600;">82 GENEST ST.</span>'
-        : '<span style="font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:' + CAT_COLORS[cat] + ';font-family:Montserrat,sans-serif;font-weight:600;">' + (CAT_LABELS[cat] || '') + '</span>';
-      return '<div style="font-family:Montserrat,sans-serif;min-width:180px;max-width:230px;">'
-        + tag
-        + '<div style="font-size:0.8rem;font-weight:600;color:#1c1a18;margin:0.3rem 0 0.25rem;line-height:1.3;">' + name + '</div>'
-        + (desc ? '<div style="font-size:0.72rem;color:rgba(28,26,24,0.6);line-height:1.6;">' + desc + '</div>' : '')
-        + '</div>';
-    }
-
-    var markers = [];
-
-    document.addEventListener('DOMContentLoaded', function () {
-      var el = document.getElementById('neighbourhood-map');
-      if (!el) return;
-
-      var map = L.map('neighbourhood-map', { scrollWheelZoom: false, zoomControl: true }).setView([45.4275, -75.6760], 13);
-
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: 'abcd', maxZoom: 19,
-      }).addTo(map);
-
-      var homeMarker = L.marker([HOME.lat, HOME.lng], { icon: makeIcon(null, true) })
-        .addTo(map)
-        .bindPopup(makePopup('Beechwood Collection', null, '82 Genest St., Ottawa, ON K1L 7Z2', true), { maxWidth: 260 });
-      homeMarker._cat = 'home';
-      markers.push(homeMarker);
-
-      POIS.forEach(function (poi) {
-        var m = L.marker([poi.lat, poi.lng], { icon: makeIcon(poi.cat, false) })
-          .addTo(map)
-          .bindPopup(makePopup(poi.name, poi.cat, poi.desc, false), { maxWidth: 260 });
-        m._cat = poi.cat;
-        markers.push(m);
-      });
-
-      document.querySelectorAll('.map-filter').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          document.querySelectorAll('.map-filter').forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          var cat = btn.dataset.cat;
-          markers.forEach(function (m) {
-            if (cat === 'all' || m._cat === cat || m._cat === 'home') {
-              if (!map.hasLayer(m)) map.addLayer(m);
-            } else {
-              if (map.hasLayer(m)) map.removeLayer(m);
-            }
-          });
-        });
-      });
-    });
-  }());
-  </script>
-
-  <!-- ===================== FAQ ===================== -->
-  <section id="faq" class="section-faq">
-    <div class="section-inner">
-      <div class="faq-header reveal">
-        <p class="section-label">FAQ</p>
-        <h2 class="section-h2">Questions, Answered</h2>
+    <section class="fx-sec fx-wrap" id="gallery" aria-label="Gallery">
+      <div class="fx-head fx-head--single">
+        <div><span class="f-kicker">Gallery</span><h2 class="f-display f-l fx-split">The collection</h2></div>
       </div>
-      <div class="faq-list reveal">
-        <details class="faq-item">
-          <summary class="faq-q">How much is rent at Beechwood Collection?</summary>
-          <p class="faq-a">Rent starts at $2,300 per month. Mackay suites (2 bed / 1 bath, 860 sq ft, ground floor) are $2,300/month, Manor suites (2 bed / 2 bath, 920 sq ft, 2nd and 3rd floor) are $2,500/month, and Rideau suites (2 bed / 2 bath, 920 sq ft, top floor) are $2,600/month.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">When can I move in?</summary>
-          <p class="faq-a">Beechwood Collection is now leasing, with move-ins starting early 2027. Applying now lets you lock in your rent and choose your floor and unit before the building opens.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Are all the suites two bedrooms?</summary>
-          <p class="faq-a">Yes. All 8 suites are two bedroom homes from 860 to 920 sq ft. Ground floor suites have one full bathroom; suites on the 2nd to 4th floors have two full bathrooms.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Is internet included?</summary>
-          <p class="faq-a">Yes. Bell Fiber internet with speeds over 1 Gbps is included at no extra cost for leases signed on or before December 31, 2026, a $110/month value.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">What lease terms are available?</summary>
-          <p class="faq-a">You can choose a 1 year, 2 year, or 3 year or longer lease.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">What is included in each suite?</summary>
-          <p class="faq-a">Every suite includes an in-suite washer and dryer, high ceilings, premium kitchen finishes, a private balcony or patio, keyless entry, HRV ventilation, and a smart thermostat. The building also has dedicated storage units and bicycle storage.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">Where is Beechwood Collection?</summary>
-          <p class="faq-a">Beechwood Collection is at 82 Genest St. in Beechwood South, Ottawa, a short walk from the cafés and shops on Beechwood Avenue and about two minutes from the Ottawa River Pathway. OC Transpo buses run into downtown Ottawa.</p>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-q">How do I apply?</summary>
-          <p class="faq-a">Fill out the short application form on this page. Our team follows up with availability and next steps. Screening includes a quick credit check plus a look at your rental history, income, and references.</p>
-        </details>
+      <div class="gallery-grid gallery-grid--int" id="galleryInt">
+        <div class="gallery-item" data-src="/assets/beechwood/kitchen.jpg" data-alt="Kitchen rendering, Beechwood Collection"><img src="/assets/beechwood/kitchen.jpg" class="has-label" alt="Kitchen rendering, Beechwood Collection" loading="lazy"><div class="gallery-item-overlay"></div></div>
+        <div class="gallery-item" data-src="/assets/beechwood/secondary-bedroom.jpg" data-alt="Secondary bedroom rendering, Beechwood Collection"><img src="/assets/beechwood/secondary-bedroom.jpg" class="has-label" alt="Secondary bedroom rendering, Beechwood Collection" loading="lazy"><div class="gallery-item-overlay"></div></div>
+        <div class="gallery-item" data-src="/assets/beechwood/primary-bedroom.jpg" data-alt="Primary bedroom rendering, Beechwood Collection"><img src="/assets/beechwood/primary-bedroom.jpg" class="has-label" alt="Primary bedroom rendering, Beechwood Collection" loading="lazy"><div class="gallery-item-overlay"></div></div>
+        <div class="gallery-item" data-src="/assets/beechwood/ensuite.jpg" data-alt="Ensuite rendering, Beechwood Collection"><img src="/assets/beechwood/ensuite.jpg" class="has-label" alt="Ensuite rendering, Beechwood Collection" loading="lazy"><div class="gallery-item-overlay"></div></div>
+        <div class="gallery-item" data-src="/assets/living2.jpg" data-alt="Living room rendering, Beechwood Collection"><img src="/assets/living2.jpg" alt="Living room rendering, Beechwood Collection" loading="lazy"><div class="gallery-item-overlay"></div></div>
       </div>
-    </div>
-  </section>
+      <div class="gal-lightbox" id="galLightbox" hidden>
+        <button class="gal-lb-close" id="galLbClose" aria-label="Close">&times;</button>
+        <div class="gal-lb-wrap"><img class="gal-lb-img" id="galLbImg" src="" alt=""></div>
+        <div class="gal-lb-counter" id="galLbCounter"></div>
+        <button class="gal-lb-prev" id="galLbPrev" aria-label="Previous">&#8592;</button>
+        <button class="gal-lb-next" id="galLbNext" aria-label="Next">&#8594;</button>
+      </div>
+    </section>
 
-  <!-- ===================== PROCESS ===================== -->
-  <section id="process" class="section-process">
-    <div class="section-inner">
-      <div class="process-header reveal">
-        <p class="section-label">NEXT STEPS</p>
-        <h2 class="section-h2">How to Apply</h2>
-        <p class="process-subhead">A straightforward path from interest to move-in, with a real person following up at every step.</p>
-      </div>
-      <div class="process-list reveal">
-        <div class="process-row">
-          <span class="process-row-num">01</span>
-          <div class="process-row-body">
-            <h3 class="process-row-title">Apply Online</h3>
-            <p class="process-row-desc">Fill out our short form for Beechwood Collection. It only takes a minute.</p>
+    <section class="fx-sec fx-sec--stone fx-wrap" id="neighbourhood" aria-label="Neighbourhood">
+      <div class="fx-split2" style="align-items:start">
+        <div class="fx-split2-text">
+          <span class="f-kicker">What&rsquo;s around</span>
+          <h2 class="f-display f-l fx-split">Living in<br>Beechwood</h2>
+          <p class="f-body">One of Ottawa&rsquo;s most walkable neighbourhoods, with the river, the market and downtown all close by.</p>
+          <ul class="fx-points">
+            <li><span><strong>3 minutes</strong> on foot to JnJ Bakery Caf&eacute; and neighbourhood coffee spots.</span></li>
+            <li><span><strong>2 minutes</strong> to the Ottawa River Pathway for running and cycling.</span></li>
+            <li><span><strong>Steps</strong> to OC Transpo bus service into downtown Ottawa.</span></li>
+            <li><span><strong>Minutes</strong> from Beechwood Cemetery&rsquo;s 160 acres of walking trails.</span></li>
+          </ul>
+        </div>
+        <div data-in="up">
+          <div class="map-filters">
+            <button class="map-filter active" data-cat="all">All</button>
+            <button class="map-filter" data-cat="food">Food &amp; Drink</button>
+            <button class="map-filter" data-cat="fitness">Fitness</button>
+            <button class="map-filter" data-cat="parks">Parks</button>
+            <button class="map-filter" data-cat="transit">Transit</button>
+            <button class="map-filter" data-cat="shopping">Shopping</button>
+            <button class="map-filter" data-cat="school">School</button>
           </div>
-        </div>
-        <div class="process-row">
-          <span class="process-row-num">02</span>
-          <div class="process-row-body">
-            <h3 class="process-row-title">We&rsquo;ll Be In Touch</h3>
-            <p class="process-row-desc">Our team follows up with availability, pricing, and answers to your questions.</p>
-          </div>
-        </div>
-        <div class="process-row">
-          <span class="process-row-num">03</span>
-          <div class="process-row-body">
-            <h3 class="process-row-title">Secure Your Suite</h3>
-            <p class="process-row-desc">Approved applicants choose their floor and unit, and lock in their rent.</p>
+          <div class="map-wrap">
+            <a class="map-open-link" href="https://www.google.com/maps?q=82+Genest+St,+Ottawa,+ON" target="_blank" rel="noopener noreferrer">Open in Maps <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 10 10 2M4 2h6v6"/></svg></a>
+            <div id="neighbourhood-map"></div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===================== REGISTER ===================== -->
-  <section id="register" class="section-register">
-    <div class="register-inner register-inner--cta reveal">
-      <div class="register-cta-text">
-        <p class="section-label">GET STARTED</p>
-        <h2 class="section-h2">Apply for a Home</h2>
-        <p class="register-desc">Fill out the form below to apply for a suite at Beechwood Collection. Nothing is final until you sign a lease, we&rsquo;ll reach out once we&rsquo;ve had a look at your application.</p>
-        <div class="register-checklist-box">
-          <ul class="register-checklist">
+    <section class="fx-sec fx-wrap" id="faq" aria-label="Questions">
+      <div class="fx-head fx-head--single">
+          <div><span class="f-kicker">Questions, answered</span><h2 class="f-display f-l fx-split">Beechwood FAQ</h2></div>
+          
+        </div>
+      <div class="fx-faq"><details><summary><span class="f-display f-s">How much is rent at Beechwood Collection?</span><i aria-hidden="true"></i></summary><p>Rent starts at $2,300 per month. Mackay suites (2 bed / 1 bath, 860 sq ft, ground floor) are $2,300/month, Manor suites (2 bed / 2 bath, 920 sq ft, 2nd and 3rd floor) are $2,500/month, and Rideau suites (2 bed / 2 bath, 920 sq ft, top floor) are $2,600/month.</p></details>
+<details><summary><span class="f-display f-s">When can I move in?</span><i aria-hidden="true"></i></summary><p>Beechwood Collection is now leasing, with move-ins starting early 2027. Applying now lets you lock in your rent and choose your floor and unit before the building opens.</p></details>
+<details><summary><span class="f-display f-s">Are all the suites two bedrooms?</span><i aria-hidden="true"></i></summary><p>Yes. All 8 suites are two bedroom homes from 860 to 920 sq ft. Ground floor suites have one full bathroom; suites on the 2nd to 4th floors have two full bathrooms.</p></details>
+<details><summary><span class="f-display f-s">Is internet included?</span><i aria-hidden="true"></i></summary><p>Yes. Bell Fiber internet with speeds over 1 Gbps is included at no extra cost for leases signed on or before December 31, 2026, a $110/month value.</p></details>
+<details><summary><span class="f-display f-s">What lease terms are available?</span><i aria-hidden="true"></i></summary><p>You can choose a 1 year, 2 year, or 3 year or longer lease.</p></details>
+<details><summary><span class="f-display f-s">What is included in each suite?</span><i aria-hidden="true"></i></summary><p>Every suite includes an in-suite washer and dryer, high ceilings, premium kitchen finishes, a private balcony or patio, keyless entry, HRV ventilation, and a smart thermostat. The building also has dedicated storage units and bicycle storage.</p></details>
+<details><summary><span class="f-display f-s">Where is Beechwood Collection?</span><i aria-hidden="true"></i></summary><p>Beechwood Collection is at 82 Genest St. in Beechwood South, Ottawa, a short walk from the caf&eacute;s and shops on Beechwood Avenue and about two minutes from the Ottawa River Pathway. OC Transpo buses run into downtown Ottawa.</p></details>
+<details><summary><span class="f-display f-s">How do I apply?</span><i aria-hidden="true"></i></summary><p>Fill out the short application form on this page. Our team follows up with availability and next steps. Screening includes a quick credit check plus a look at your rental history, income, and references.</p></details></div>
+    </section>
+
+    <section class="fx-sec fx-sec--ink fx-wrap" aria-label="How to apply">
+      <div class="fx-head">
+          <div><span class="f-kicker">Next steps</span><h2 class="f-display f-l fx-split">How to apply</h2></div>
+          <div data-in="up"><p class="f-body">A straightforward path from interest to move-in, with a real person following up at every step.</p></div>
+        </div>
+      <ol class="fx-steps fx-steps--3">
+        <li class="fx-step" data-in="up"><span class="f-kicker">01</span><span class="f-display f-s">Apply online</span><p>Fill out the short form below. It only takes a minute.</p></li>
+        <li class="fx-step" data-in="up"><span class="f-kicker">02</span><span class="f-display f-s">We&rsquo;ll be in touch</span><p>Our team follows up with availability, pricing and answers to your questions.</p></li>
+        <li class="fx-step" data-in="up"><span class="f-kicker">03</span><span class="f-display f-s">Secure your suite</span><p>Approved applicants choose their floor and unit, and lock in their rent.</p></li>
+      </ol>
+    </section>
+
+    <section class="fx-sec fx-wrap" id="apply" aria-label="Apply for a suite">
+      <div class="fx-formwrap">
+        <div>
+          <span class="f-kicker">Get started</span>
+          <h2 class="f-display f-l fx-split" style="margin-top:1.2rem">Apply for<br>a home</h2>
+          <p class="f-body" style="margin-top:1.6rem">Apply for a suite at Beechwood Collection. Nothing is final until you sign a lease. We&rsquo;ll reach out once we&rsquo;ve looked at your application.</p>
+          <ul class="fx-check">
             <li>First choice as suites become available</li>
             <li>Every application is kept private and secure</li>
-            <li>A quick credit check, plus a look at your rental history, income, and references</li>
+            <li>A quick credit check, plus a look at your rental history, income and references</li>
             <li>In-person suite tours opening soon</li>
           </ul>
         </div>
-      </div>
-      <div class="register-form-wrap register-form-wrap--card">
-        <form id="contactForm" data-intake-key="rk_9999d2a2b59f44ccbd75c44108a25e88" novalidate>
+        <div class="fx-form" data-in="up">
+          <form id="contactForm" data-intake-key="rk_9999d2a2b59f44ccbd75c44108a25e88" novalidate>
           <div class="form-row-2">
             <div class="form-field">
               <label for="bwc-fname">FIRST NAME *</label>
@@ -933,9 +632,9 @@
               <label for="bwc-layout">PREFERRED UNIT TYPE *</label>
               <select id="bwc-layout" name="preferred_unit_type">
                 <option value="" disabled selected>Select a preference</option>
-                <option value="Mackay (2 Bed / 1 Bath)">Mackay &mdash; 2 Bed / 1 Bath</option>
-                <option value="Manor (2 Bed / 2 Bath)">Manor &mdash; 2 Bed / 2 Bath</option>
-                <option value="Rideau (2 Bed / 2 Bath)">Rideau &mdash; 2 Bed / 2 Bath</option>
+                <option value="Mackay (2 Bed / 1 Bath)">Mackay (2 Bed / 1 Bath)</option>
+                <option value="Manor (2 Bed / 2 Bath)">Manor (2 Bed / 2 Bath)</option>
+                <option value="Rideau (2 Bed / 2 Bath)">Rideau (2 Bed / 2 Bath)</option>
                 <option value="Undecided">Undecided</option>
               </select>
               <div class="form-error" data-error-for="preferred_unit_type"></div>
@@ -945,58 +644,214 @@
           <div class="form-error" id="formError"></div>
           <p class="form-privacy">By submitting, you agree to be contacted about Beechwood Collection. Unsubscribe anytime.</p>
         </form>
-        <div id="formSuccess" class="form-success"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-top">
-        <nav class="footer-nav-col" aria-label="Footer navigation">
-          <a href="/projects" class="footer-nav-link">Projects</a>
-        <a href="/vision" class="footer-nav-link">Vision</a>
-        <a href="/blog" class="footer-nav-link">Blog</a>
-        <a href="/admin" class="footer-management-btn">Management Portal</a>
-        </nav>
-        <div class="footer-wordmark" aria-hidden="true">FORTERA</div>
-        <div class="footer-social-col">
-          <a href="https://www.instagram.com/forterahomes" class="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/company/forterahomes/about/" class="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          </a>
+          <div id="formSuccess" class="form-success"></div>
         </div>
       </div>
-      <div class="footer-bar">
-        <span>&copy; 2026 Fortera Homes. All rights reserved.</span>
-        
+    </section>
+
+      <section class="fx-cta" aria-label="All collections">
+        <div class="fx-cta-bg" data-speed="0.3"><video autoplay muted loop playsinline preload="metadata" poster="/assets/media/river.jpg" aria-hidden="true"><source src="/assets/media/river.mp4" type="video/mp4" media="(max-width: 860px)"><source src="/assets/media/river-hd.mp4" type="video/mp4"></video></div>
+        <div class="fx-cta-inner">
+          <span class="f-kicker">More from Fortera</span>
+          <h2 class="f-display f-l fx-split">Explore our<br>collections</h2>
+          <p class="f-body" data-in="up">See Beechwood alongside our upcoming Rockcliffe Collection.</p>
+          <a href="/collections" class="btn-line btn-line--light" data-in="up">All collections</a>
+        </div>
+      </section>
+
+
+    <div class="fx-stack">
+      <!-- FOOTER -->
+      <footer class="fx-footer">
+        <div class="fx-footer-grid">
+          <div>
+            <p class="f-display f-s fx-footer-lead">Building Ottawa from the ground up.</p>
+          </div>
+          <div>
+            <h4>Explore</h4>
+            <ul>
+              <li><a href="/services/multiplexes">Build with us</a></li>
+              <li><a href="/collections">Live with us</a></li>
+              <li><a href="/our-work">Our Work</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/about">About</a></li>
+              <li><a href="/blog">Journal</a></li>
+              <li><a href="/register">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Get in touch</h4>
+            <ul>
+              <li><a href="mailto:admin@forterahomes.ca">admin@forterahomes.ca</a></li>
+              <li>Ottawa, Ontario</li>
+              <li><a href="https://www.instagram.com/forterahomes" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              <li><a href="https://www.linkedin.com/company/forterahomes/about/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="fx-footer-mark" aria-hidden="true">FORTERA</div>
+        <div class="fx-footer-bar">
+          <span>&copy; 2026 Fortera Homes. All rights reserved.</span>
+          <a href="/admin">Management Portal</a>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <!-- MENU -->
+  <div class="fx-menu" id="fxMenu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+    <div class="fx-menu-top">
+      <a href="/" class="fx-mark">FORTERA</a>
+      <button class="fx-explore fx-explore--close" type="button" data-menu-close>Close<i aria-hidden="true"></i></button>
+    </div>
+    <div class="fx-menu-list">
+      <nav class="fx-menu-main" aria-label="Menu">
+        <div class="fx-menu-group">
+          <a href="/services/multiplexes" class="f-display f-l"><span>Build with us</span></a>
+        </div>
+        <a href="/collections" class="f-display f-l"><span>Live with us</span></a>
+        <a href="/our-work" class="f-display f-l"><span>Our Work</span></a>
+        <a href="/about" class="f-display f-l"><span>About</span></a>
+        <a href="/register" class="f-display f-l"><span>Contact</span></a>
+      </nav>
+      <div class="fx-menu-side">
+        <div><p class="f-kicker">Read</p><p><a href="/blog">Journal</a></p></div>
+        <div><p class="f-kicker">Get in touch</p><p><a href="mailto:admin@forterahomes.ca">admin@forterahomes.ca</a><br>Ottawa, Ontario</p></div>
       </div>
     </div>
-  </footer>
-
-  <script src="../main.js"></script>
-
-  <!-- NAV OVERLAY -->
-  <div class="nav-overlay" id="navOverlay" role="dialog" aria-modal="true" aria-label="Navigation" aria-hidden="true">
-    <div class="nav-overlay-header">
-      <a href="/" class="nav-overlay-logo">FORTERA</a>
-      <button class="nav-overlay-close" id="navOverlayClose" aria-label="Close navigation">CLOSE <span aria-hidden="true">&#10005;</span></button>
-    </div>
-    <nav class="nav-overlay-nav" aria-label="Main navigation">
-      <a href="/projects" class="nav-overlay-link" style="--i:0">Projects</a>
-        <a href="/vision" class="nav-overlay-link" style="--i:2">Vision</a>
-        <a href="/blog" class="nav-overlay-link" style="--i:3">Blog</a>
-        <a href="/register" class="nav-overlay-link" style="--i:4">Contact Us</a>
-    </nav>
-    <div class="nav-overlay-footer">
-      <a href="https://www.instagram.com/forterahomes" class="nav-overlay-ig" target="_blank" rel="noopener noreferrer" aria-label="Fortera Homes on Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
-      <a href="https://www.linkedin.com/company/forterahomes/about/" class="nav-overlay-ig" target="_blank" rel="noopener noreferrer" aria-label="Fortera Homes on LinkedIn"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-      <span>Beechwood Collection &mdash; Early 2027</span>
-    </div>
+    <div class="fx-menu-foot f-label"><span>Ottawa &amp; the surrounding region</span><a href="https://www.instagram.com/forterahomes" target="_blank" rel="noopener noreferrer">Instagram</a></div>
   </div>
 
+  <script src="/assets/js/fortera.js?v=20261115g"></script>
+  <script>
+  (function () {
+    var HOME = { lat: 45.4389969, lng: -75.6727247 };
+    var POIS = [
+      /* Food & Drink */
+      { name: 'JnJ Bakery Café',         cat: 'food',     desc: 'Neighbourhood bakery & espresso bar, 3 min walk',                   lat: 45.4394, lng: -75.6748 },
+      { name: 'The Clocktower Brew Pub', cat: 'food',     desc: 'Local craft beers & pub fare on MacKay St',                          lat: 45.4396, lng: -75.6772 },
+      { name: 'Signatures Restaurant',   cat: 'food',     desc: 'Upscale dining by Le Cordon Bleu on Laurier Ave E',                  lat: 45.4292, lng: -75.6747 },
+      { name: 'Byward Market',           cat: 'food',     desc: "Ottawa's premier open-air market, restaurants, cafés & fresh food", lat: 45.4276, lng: -75.6924 },
+      /* Fitness */
+      { name: 'Ottawa River Pathway',    cat: 'fitness',  desc: 'Scenic multi-use trail along the Ottawa River, 2 min walk',         lat: 45.4435, lng: -75.6728 },
+      { name: 'Rideau River E. Pathway', cat: 'fitness',  desc: 'Waterfront trail along the Rideau River, cycling & running',        lat: 45.4195, lng: -75.6870 },
+      /* Parks */
+      { name: 'Riverain Park',           cat: 'parks',    desc: 'Open green space with Ottawa River access',                          lat: 45.4298, lng: -75.6696 },
+      { name: 'Beechwood Cemetery',      cat: 'parks',    desc: 'National Historic Site, 160 acres of peaceful walking',             lat: 45.4469, lng: -75.6599 },
+      { name: 'Strathcona Park',         cat: 'parks',    desc: 'Riverside park with green space & sports fields',                    lat: 45.4286, lng: -75.6731 },
+      { name: "Major's Hill Park",       cat: 'parks',    desc: 'Iconic Ottawa park overlooking the Rideau Canal & Parliament',       lat: 45.4279, lng: -75.6988 },
+      /* Transit */
+      { name: 'OC Transpo, Beechwood', cat: 'transit',  desc: 'Frequent bus service to downtown Ottawa & Rideau Centre',            lat: 45.4395, lng: -75.6750 },
+      { name: 'Rideau LRT Station',      cat: 'transit',  desc: 'O-Train Confederation Line, direct to downtown & airport',         lat: 45.4263, lng: -75.6915 },
+      /* Shopping */
+      { name: 'Metro Beechwood',         cat: 'shopping', desc: 'Full-service grocery at 50 Beechwood Ave, 4 min walk',             lat: 45.4395, lng: -75.6756 },
+      { name: 'LCBO Beechwood',          cat: 'shopping', desc: 'Liquor & wine at Beechwood & MacKay',                               lat: 45.4439, lng: -75.6704 },
+      { name: 'Rideau Centre',           cat: 'shopping', desc: "Ottawa's largest downtown mall, 180+ stores",                      lat: 45.4254, lng: -75.6924 },
+      { name: 'Byward Market Shops',     cat: 'shopping', desc: 'Independent boutiques, galleries & specialty food',                  lat: 45.4279, lng: -75.6924 },
+      /* School */
+      { name: 'University of Ottawa',    cat: 'school',   desc: 'Major university campus, 10 min by bus or bike',                   lat: 45.4225, lng: -75.6834 },
+    ];
+
+    var CAT_COLORS = {
+      food:     '#b2977d',
+      fitness:  '#8c9e8c',
+      parks:    '#6b8a72',
+      transit:  '#9a8c82',
+      shopping: '#c4a882',
+      school:   '#8a8070',
+    };
+
+    var CAT_LABELS = {
+      food: 'Food & Drink', fitness: 'Fitness',
+      parks: 'Parks', transit: 'Transit', shopping: 'Shopping', school: 'School',
+    };
+
+    var ICON_PATHS = {
+      food:     '<g stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"><line x1="13" y1="6" x2="13" y2="20"/><path d="M10 6L10 10Q10 14 13 14Q16 14 16 10L16 6"/></g>',
+      fitness:  '<g fill="white" transform="translate(3,3) scale(0.83)"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/></g>',
+      parks:    '<polygon points="13,5 8,12 10.5,12 7,17 11,17 11,21 15,21 15,17 19,17 15.5,12 18,12" fill="white"/>',
+      transit:  '<g stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"><rect x="8" y="6" width="10" height="12" rx="2"/><line x1="8" y1="11" x2="18" y2="11"/><circle cx="10.5" cy="16" r="1.5" fill="white" stroke="none"/><circle cx="15.5" cy="16" r="1.5" fill="white" stroke="none"/></g>',
+      shopping: '<g stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10L8 20 18 20 17 10Z"/><path d="M11 10L11 8Q13 5 15 8L15 10"/></g>',
+      school:   '<g fill="white"><polygon points="13,5 21,9 13,13 5,9"/><polygon points="9,12 9,18 13,20 17,18 17,12 13,14"/><rect x="20" y="9" width="2" height="7" rx="1"/><circle cx="21" cy="17" r="1.8"/></g>',
+    };
+
+    function makeIcon(cat, isHome) {
+      if (isHome) {
+        var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">'
+          + '<path d="M16 1C8.3 1 1 8.3 1 16c0 11 15 25 15 25S31 27 31 16C31 8.3 23.7 1 16 1z" fill="#1c1a18"/>'
+          + '<polygon points="16,7 25,17 7,17" fill="white"/>'
+          + '<rect x="9" y="17" width="14" height="9" fill="white"/>'
+          + '<rect x="13" y="21" width="6" height="5" fill="#1c1a18"/>'
+          + '</svg>';
+        return L.divIcon({ className: '', html: svg, iconSize: [32, 42], iconAnchor: [16, 42], popupAnchor: [0, -44] });
+      }
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="34" viewBox="0 0 26 34">'
+        + '<path d="M13 1C6.3 1 1 6.3 1 13c0 10.5 12 21 12 21S25 23.5 25 13C25 6.3 19.7 1 13 1z" fill="' + CAT_COLORS[cat] + '"/>'
+        + (ICON_PATHS[cat] || '')
+        + '</svg>';
+      return L.divIcon({ className: '', html: svg, iconSize: [26, 34], iconAnchor: [13, 34], popupAnchor: [0, -36] });
+    }
+
+    function makePopup(name, cat, desc, isHome) {
+      var tag = isHome
+        ? '<span style="font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#b2977d;font-family:Archivo,sans-serif;font-weight:600;">82 GENEST ST.</span>'
+        : '<span style="font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:' + CAT_COLORS[cat] + ';font-family:Archivo,sans-serif;font-weight:600;">' + (CAT_LABELS[cat] || '') + '</span>';
+      return '<div style="font-family:Archivo,sans-serif;min-width:180px;max-width:230px;">'
+        + tag
+        + '<div style="font-size:0.8rem;font-weight:600;color:#1c1a18;margin:0.3rem 0 0.25rem;line-height:1.3;">' + name + '</div>'
+        + (desc ? '<div style="font-size:0.72rem;color:rgba(28,26,24,0.6);line-height:1.6;">' + desc + '</div>' : '')
+        + '</div>';
+    }
+
+    var markers = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var el = document.getElementById('neighbourhood-map');
+      if (!el) return;
+
+      var map = L.map('neighbourhood-map', { scrollWheelZoom: false, zoomControl: true }).setView([45.4275, -75.6760], 13);
+
+      // OpenStreetMap tiles (no API key); toned down with CSS (.nb-tiles) to match the site
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19, className: 'nb-tiles',
+      }).addTo(map);
+
+      var homeMarker = L.marker([HOME.lat, HOME.lng], { icon: makeIcon(null, true) })
+        .addTo(map)
+        .bindPopup(makePopup('Beechwood Collection', null, '82 Genest St., Ottawa, ON K1L 7Z2', true), { maxWidth: 260 });
+      homeMarker._cat = 'home';
+      markers.push(homeMarker);
+
+      POIS.forEach(function (poi) {
+        var m = L.marker([poi.lat, poi.lng], { icon: makeIcon(poi.cat, false) })
+          .addTo(map)
+          .bindPopup(makePopup(poi.name, poi.cat, poi.desc, false), { maxWidth: 260 });
+        m._cat = poi.cat;
+        markers.push(m);
+      });
+
+      document.querySelectorAll('.map-filter').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.map-filter').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          var cat = btn.dataset.cat;
+          markers.forEach(function (m) {
+            if (cat === 'all' || m._cat === cat || m._cat === 'home') {
+              if (!map.hasLayer(m)) map.addLayer(m);
+            } else {
+              if (map.hasLayer(m)) map.removeLayer(m);
+            }
+          });
+        });
+      });
+    });
+  }());
+  </script>
+  <script src="/main.js?v=20261115"></script>
 </body>
 </html>
