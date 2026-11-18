@@ -452,6 +452,7 @@ ul, ol { list-style: none; }
 /* Cards */
 .fx-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.2rem, 2.5vw, 2.4rem); }
 .fx-cards--2 { grid-template-columns: repeat(2, 1fr); }
+.fx-cards--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: clamp(2rem, 4vw, 3.5rem); }
 .fx-card { display: flex; flex-direction: column; }
 .fx-card-media { position: relative; overflow: hidden; aspect-ratio: 4 / 5; }
 .fx-card-media img, .fx-card-media video { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s var(--ease); }
