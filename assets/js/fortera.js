@@ -126,3 +126,29 @@
     });
   });
 })();
+
+/* ---- Home panels: still image comes to life on hover ------------ */
+(function () {
+  var panels = document.querySelectorAll('.fx-panel');
+  if (!panels.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function start(panel, v) {
+    if (!v.src) { v.src = v.getAttribute('data-hover-src'); v.addEventListener('loadedmetadata', function () { v.currentTime = 0.5; }, { once: true }); }
+    var p = v.play();
+    if (p && p.then) p.then(function () { panel.classList.add('is-playing'); }).catch(function () {});
+    else panel.classList.add('is-playing');
+  }
+  function stop(panel, v) { panel.classList.remove('is-playing'); v.pause(); }
+  var touch = window.matchMedia('(hover: none)').matches;
+  var io = touch && 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { var v = e.target.querySelector('video[data-hover-src]'); if (!v) return; if (e.isIntersecting) start(e.target, v); else stop(e.target, v); });
+  }, { threshold: 0.6 }) : null;
+  panels.forEach(function (panel) {
+    var v = panel.querySelector('video[data-hover-src]');
+    if (!v) return;
+    if (io) { io.observe(panel); return; }
+    panel.addEventListener('mouseenter', function () { start(panel, v); });
+    panel.addEventListener('mouseleave', function () { stop(panel, v); });
+    panel.addEventListener('focus', function () { start(panel, v); });
+    panel.addEventListener('blur', function () { stop(panel, v); });
+  });
+})();
