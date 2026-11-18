@@ -177,12 +177,7 @@ ul, ol { list-style: none; }
 .fx-panels.is-in .fx-panel:nth-child(2) { transition-delay: 0.12s; }
 .fx-panels.is-in .fx-panel:nth-child(3) { transition-delay: 0.24s; }
 .fx-panels.is-in .fx-panel:nth-child(4) { transition-delay: 0.36s; }
-.fx-panel img, .fx-panel video { position: absolute; inset: -6% 0; width: 100%; height: 112%; object-fit: cover; object-position: var(--pos, 50% 50%); transform: scale(1.12); transition: transform 1.8s var(--ease); }
-/* hover video: hidden until it is actually playing, then fades in over the matching still */
-.fx-panel video { opacity: 0; transition: opacity 0.5s var(--ease), transform 1.8s var(--ease); }
-.fx-panel.is-playing video { opacity: 1; }
-.fx-panels.is-in .fx-panel video { transform: scale(1); }
-.fx-panel:hover video { transform: scale(1.04); transition: opacity 0.5s var(--ease), transform 1.2s var(--ease); }
+.fx-panel img { position: absolute; inset: -6% 0; width: 100%; height: 112%; object-fit: cover; transform: scale(1.12); transition: transform 1.8s var(--ease); }
 .fx-panels.is-in .fx-panel img { transform: scale(1); }
 .fx-panel::after { content: ''; position: absolute; inset: 0; background: rgba(20,18,16,0.42); transition: background 0.6s var(--ease); }
 .fx-panel:hover::after { background: rgba(20,18,16,0.25); }
