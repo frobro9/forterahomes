@@ -3,6 +3,11 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/projects/beechwood-collection",
+      "destination": "/collections/beechwood",
+      "permanent": true
+    },
+    {
       "source": "/projects",
       "destination": "/collections",
       "permanent": true
@@ -19,17 +24,17 @@
     },
     {
       "source": "/neighbourhood",
-      "destination": "/projects/beechwood-collection#neighbourhood",
+      "destination": "/collections/beechwood#neighbourhood",
       "permanent": true
     },
     {
       "source": "/floorplans",
-      "destination": "/projects/beechwood-collection#floorplans",
+      "destination": "/collections/beechwood#floorplans",
       "permanent": true
     },
     {
       "source": "/gallery",
-      "destination": "/projects/beechwood-collection#gallery",
+      "destination": "/collections/beechwood#gallery",
       "permanent": true
     },
     {
