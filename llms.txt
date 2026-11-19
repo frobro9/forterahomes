@@ -102,6 +102,6 @@ Fortera Homes is an Ottawa builder and developer backed by 25 years of construct
 - **Beechwood Collection (floor plans, rent, FAQ):** https://forterahomes.ca/collections/beechwood
 - **Rent & floor plans guide:** https://forterahomes.ca/blog/beechwood-collection-rent-floor-plans
 - **Apply / contact (rentals and project inquiries):** https://forterahomes.ca/register
-- **Blog:** https://forterahomes.ca/blog
+- **Blog:** https://forterahomes.ca/blog/
 - **Sitemap:** https://forterahomes.ca/sitemap.xml
 - **Email:** admin@forterahomes.ca
